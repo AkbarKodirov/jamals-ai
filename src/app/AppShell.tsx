@@ -1,6 +1,6 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
+import { Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
 import { HumoFab } from './components/HumoFab'
 import { useAuth } from '../lib/auth'
 import { streak, useBindStore, useStore } from './store'
@@ -58,9 +58,8 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
 const MOBILE = [
   { to: '/app', label: 'Home', icon: Home, end: true },
   { to: '/app/tests', label: 'Tests', icon: ClipboardList },
-  { to: '/app/humo', label: 'Humo', icon: MessageCircle },
+  { to: '/app/drills', label: 'Drills', icon: Target },
   { to: '/app/vocab', label: 'Vocab', icon: BookMarked },
-  { to: '/app/results', label: 'Results', icon: Trophy },
 ]
 
 export function Avatar({ size = 'size-8' }: { size?: string }) {
@@ -84,6 +83,7 @@ export default function AppShell() {
   const nav = useNavigate()
   const { pathname } = useLocation()
   const days = streak(s.activeDays)
+  const [more, setMore] = useState(false)
 
   // The test runner is full-screen, like the real exam app.
   if (/\/app\/tests\/[^/]+\/take/.test(pathname))
@@ -196,12 +196,43 @@ export default function AppShell() {
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/10 bg-pine pb-[env(safe-area-inset-bottom)] md:hidden">
         {MOBILE.map(({ to, label, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] ${isActive ? 'text-jg-400' : 'text-cream/50'}`}>
+          <NavLink key={to} to={to} end={end} onClick={() => setMore(false)} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] ${isActive && !more ? 'text-jg-400' : 'text-cream/50'}`}>
             <Icon className="size-5" />
             {label}
           </NavLink>
         ))}
+        <button onClick={() => setMore((m) => !m)} aria-expanded={more} className={`flex flex-col items-center gap-1 py-2.5 text-[11px] ${more ? 'text-jg-400' : 'text-cream/50'}`}>
+          {more ? <XIcon className="size-5" /> : <Menu className="size-5" />}
+          More
+        </button>
       </nav>
+      {more && (
+        <div className="fixed inset-0 z-30 bg-pine/40 md:hidden" onClick={() => setMore(false)}>
+          <div onClick={(e) => e.stopPropagation()} className="absolute inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] max-h-[70svh] overflow-y-auto rounded-t-[28px] bg-pine p-5 text-cream">
+            {GROUPS.map((g, i) => (
+              <div key={i} className="mb-4">
+                {g.label && <p className="mb-1.5 px-1 text-[11px] font-semibold text-cream/40">{g.label}</p>}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {g.items.map(({ to, label, icon: Icon, end }) => (
+                    <NavLink key={to} to={to} end={end} onClick={() => setMore(false)} className={({ isActive }) => `flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] ${isActive ? 'bg-white/[0.12]' : 'bg-white/[0.04]'}`}>
+                      <Icon className="size-4" /> {label}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                signOut()
+                nav('/')
+              }}
+              className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-white/[0.04] py-2.5 text-[13px] text-cream/70"
+            >
+              <LogOut className="size-4" /> Log out
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

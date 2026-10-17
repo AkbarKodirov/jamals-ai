@@ -4,6 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, Sigma, X } from 'lucide-react'
 import { isCorrect, loadTest, markActive, scaleSection, setStore, useAsync, type Attempt, type Mode, type Test, type TestQuestion } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
+import { RichText } from '../components/RichText'
+import { askHumo, questionPayload } from '../humo'
+import { useAuth } from '../../lib/auth'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -31,6 +34,45 @@ export default function TakeTest() {
       </div>
     )
   return <Runner test={test} mode={mode} />
+}
+
+function HintButton({ q, value }: { q: TestQuestion; value: string | null }) {
+  const { token } = useAuth()
+  const [hint, setHint] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  useEffect(() => setHint(null), [q])
+  async function get() {
+    setBusy(true)
+    const p = questionPayload(q, value)
+    try {
+      setHint(
+        await askHumo(
+          [{ role: 'user', text: `Give me ONE short hint (max 2 sentences) for this question. Do NOT reveal the answer or say which letter is correct.\n${p.passage ? `Text: ${p.passage}\n` : ''}Question: ${p.question}\n${p.options.join('\n')}${p.chosen ? `\nI'm leaning towards ${p.chosen}.` : ''}` }],
+          token,
+        ),
+      )
+    } catch (e) {
+      setHint((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <div className="mt-3">
+      {!hint ? (
+        <button onClick={get} disabled={busy} className="inline-flex items-center gap-2 text-[13px] font-medium text-jg-700 hover:text-jg-600 disabled:opacity-60">
+          <img src="/humo-mark.svg" alt="" className="size-5 rounded-md" /> {busy ? 'Humo is thinking…' : 'Get a hint from Humo'}
+        </button>
+      ) : (
+        <div className="flex gap-2.5 rounded-xl border border-jg-500/25 bg-jg-50 p-3 text-[13.5px]">
+          <img src="/humo-mark.svg" alt="" className="size-6 shrink-0 rounded-md" />
+          <div>
+            <RichText text={hint} />
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 function Runner({ test, mode }: { test: Test; mode: Mode }) {
@@ -357,9 +399,12 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
               {mode === 'practice' && (
                 <div className="mt-6">
                   {!a.checked ? (
-                    <button disabled={a.value == null || a.value === ''} onClick={() => patch({ checked: true })} className="btn btn-green h-10 px-5 text-[14px] disabled:opacity-40">
-                      Check answer
-                    </button>
+                    <>
+                      <button disabled={a.value == null || a.value === ''} onClick={() => patch({ checked: true })} className="btn btn-green h-10 px-5 text-[14px] disabled:opacity-40">
+                        Check answer
+                      </button>
+                      <HintButton q={q} value={a.value} />
+                    </>
                   ) : (
                     <HumoExplain testId={test.id} qKey={`${mod}:${idx}`} q={q} />
                   )}
