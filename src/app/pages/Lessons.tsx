@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, BookOpen, Calculator, Clock } from 'lucide-react'
 import { HumoDrawer } from '../components/HumoDrawer'
 
-type Lesson = { id: string; section: 'Reading & Writing' | 'Math'; title: string; min: number; why: string; steps: string[]; trap: string; example: { q: string; a: string } }
+type Lesson = { skill: string; id: string; section: 'Reading & Writing' | 'Math'; title: string; min: number; why: string; steps: string[]; trap: string; example: { q: string; a: string } }
 
 const LESSONS: Lesson[] = [
   {
     id: 'wic',
+    skill: 'Words in context',
     section: 'Reading & Writing',
     title: 'Words in Context',
     min: 6,
@@ -23,6 +24,7 @@ const LESSONS: Lesson[] = [
   },
   {
     id: 'transitions',
+    skill: 'Transitions',
     section: 'Reading & Writing',
     title: 'Transitions',
     min: 5,
@@ -38,6 +40,7 @@ const LESSONS: Lesson[] = [
   },
   {
     id: 'coe',
+    skill: 'Command of evidence',
     section: 'Reading & Writing',
     title: 'Command of Evidence',
     min: 7,
@@ -53,6 +56,7 @@ const LESSONS: Lesson[] = [
   },
   {
     id: 'conventions',
+    skill: 'Standard English conventions',
     section: 'Reading & Writing',
     title: 'Standard English: punctuation',
     min: 6,
@@ -69,6 +73,7 @@ const LESSONS: Lesson[] = [
   },
   {
     id: 'linear',
+    skill: 'Algebra',
     section: 'Math',
     title: 'Linear equations and functions',
     min: 7,
@@ -85,6 +90,7 @@ const LESSONS: Lesson[] = [
   },
   {
     id: 'angles',
+    skill: 'Geometry & trigonometry',
     section: 'Math',
     title: 'Lines and angles',
     min: 5,
@@ -137,7 +143,7 @@ export default function Lessons() {
           <p className="mt-2 text-[14.5px]">{open.example.a}</p>
         </section>
         <div className="mt-6 flex flex-wrap gap-2">
-          <Link to="/app/drills" className="btn btn-dark h-11 px-5 text-[14px]">
+          <Link to={`/app/drills?skill=${encodeURIComponent(open.skill)}`} className="btn btn-dark h-11 px-5 text-[14px]">
             Drill this now
           </Link>
           <button onClick={() => setChat(true)} className="btn btn-ghost h-11 px-5 text-[14px]">

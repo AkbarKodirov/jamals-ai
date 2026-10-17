@@ -1,21 +1,27 @@
 import { useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { BookOpen, Calculator, Check, X } from 'lucide-react'
-import { isCorrect, loadIndex, loadTest, markActive, setStore, useStore, type TestQuestion } from '../store'
+import { isCorrect, loadIndex, loadTest, markActive, setStore, skillOf, SKILLS, useStore, type Skill, type TestQuestion } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
 import { Passage, QuestionBody } from './TakeTest'
 
 type Item = { q: TestQuestion; testId: string; key: string }
 
-async function buildDrill(subject: 'EBRW' | 'MATH', n: number): Promise<Item[]> {
+async function buildDrill(subject: 'EBRW' | 'MATH', n: number, skill: Skill | null): Promise<Item[]> {
   const idx = (await loadIndex()).filter((t) => t.type === subject)
   const tests = await Promise.all(idx.map((t) => loadTest(t.id)))
-  const items = tests.flatMap((t) => t.modules.flatMap((m, mi) => m.questions.map((q, qi) => ({ q, testId: t.id, key: `${mi}:${qi}` }))))
+  const items = tests
+    .flatMap((t) => t.modules.flatMap((m, mi) => m.questions.map((q, qi) => ({ q, testId: t.id, key: `${mi}:${qi}` }))))
+    .filter((it) => !skill || skillOf(it.q, subject) === skill)
   return items.sort(() => Math.random() - 0.5).slice(0, n)
 }
 
 export default function Drills() {
   const s = useStore()
-  const [subject, setSubject] = useState<'EBRW' | 'MATH'>('EBRW')
+  const [params] = useSearchParams()
+  const initialSkill = (SKILLS as readonly string[]).includes(params.get('skill') ?? '') ? (params.get('skill') as Skill) : null
+  const [subject, setSubject] = useState<'EBRW' | 'MATH'>(initialSkill && SKILLS.indexOf(initialSkill) >= 8 ? 'MATH' : 'EBRW')
+  const [skill, setSkill] = useState<Skill | null>(initialSkill)
   const [n, setN] = useState(10)
   const [items, setItems] = useState<Item[] | null>(null)
   const [i, setI] = useState(0)
@@ -27,7 +33,7 @@ export default function Drills() {
 
   async function start() {
     setLoading(true)
-    setItems(await buildDrill(subject, n))
+    setItems(await buildDrill(subject, n, skill))
     setLoading(false)
     setI(0)
     setRight(0)
@@ -68,7 +74,12 @@ export default function Drills() {
               ['MATH', 'Math', Calculator, 'bg-sky-50 text-sky-700', '44 questions'],
             ] as const
           ).map(([id, name, Icon, c, count]) => (
-            <button key={id} onClick={() => setSubject(id)} aria-pressed={subject === id} className={`card p-6 text-left transition ${subject === id ? 'ring-2 ring-jg-500' : 'card-hover'}`}>
+            <button
+              key={id}
+              onClick={() => {
+                setSubject(id)
+                setSkill(null)
+              }} aria-pressed={subject === id} className={`card p-6 text-left transition ${subject === id ? 'ring-2 ring-jg-500' : 'card-hover'}`}>
               <span className={`grid size-11 place-items-center rounded-2xl ${c}`}>
                 <Icon className="size-5" />
               </span>
@@ -76,6 +87,19 @@ export default function Drills() {
               <p className="text-[13px] text-moss">{count} in the pool</p>
             </button>
           ))}
+        </div>
+        <div className="card mt-3 p-5">
+          <p className="text-[14px] font-medium">Skill</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button onClick={() => setSkill(null)} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ${!skill ? 'bg-pine text-cream' : 'bg-cream'}`}>
+              Mixed
+            </button>
+            {SKILLS.slice(subject === 'MATH' ? 8 : 0, subject === 'MATH' ? 12 : 8).map((k) => (
+              <button key={k} onClick={() => setSkill(k)} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ${skill === k ? 'bg-pine text-cream' : 'bg-cream'}`}>
+                {k}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="card mt-3 flex flex-wrap items-center justify-between gap-4 p-5">
           <div className="flex items-center gap-2 text-[14px]">
