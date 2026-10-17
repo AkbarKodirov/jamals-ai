@@ -1,7 +1,70 @@
 @import "tailwindcss";
 
-@layer base {
-  body {
-    @apply bg-black text-white antialiased;
+/* Jamals International Academy brand — taken from jamals.uz */
+@theme {
+  --font-sans: "Onest", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Literata", ui-serif, Georgia, serif;
+
+  --color-ink: #0a0f0e;        /* page background */
+  --color-pine: #1b2925;       /* brand dark green */
+  --color-pine-2: #253731;
+  --color-moss: #4c605a;       /* muted green-grey */
+  --color-cream: #faf7f1;      /* brand light */
+  --color-sand: #e3dccf;
+
+  --color-jg-50: #eef8ef;
+  --color-jg-200: #b9e3bc;
+  --color-jg-300: #8fd295;
+  --color-jg-400: #62b968;     /* brand green, bright */
+  --color-jg-500: #48ae4f;     /* brand green */
+  --color-jg-600: #3a8f40;
+  --color-jg-700: #2a652e;     /* brand forest */
+
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-ink text-cream antialiased;
+  }
+  ::selection { background: #62b968; color: #0a0f0e; }
+  :focus-visible { outline: 2px solid #62b968; outline-offset: 3px; border-radius: 8px; }
+}
+
+@layer components {
+  /* Literata display — Jamals' signature serif */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 450;
+    font-optical-sizing: auto;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+  /* Jamals' hand-drawn green underline */
+  .brush {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9c40-5 90-7 150-6s100 3 144 1' fill='none' stroke='%2362b968' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 0.22em;
+    background-position: 0 100%;
+    padding-bottom: 0.12em;
+  }
+  .gold-text {
+    background: linear-gradient(180deg, #fff3cf 0%, #f7d27a 40%, #d79a2c 75%, #9c6512 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .panel {
+    background: linear-gradient(180deg, rgb(37 55 49 / 0.55), rgb(27 41 37 / 0.25));
+    border: 1px solid rgb(250 247 241 / 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

@@ -1,0 +1,151 @@
+import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Environment, Lightformer, Sparkles } from '@react-three/drei'
+import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing'
+import * as THREE from 'three'
+import { HumoBird } from './HumoBird'
+
+type Layout = 'hero' | 'compact'
+
+/** Thin glowing rings behind Humo — the "orbit of fortune". */
+function Halo() {
+  const a = useRef<THREE.Mesh>(null)
+  const b = useRef<THREE.Mesh>(null)
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime()
+    if (a.current) a.current.rotation.z = t * 0.05
+    if (b.current) {
+      b.current.rotation.x = 1.2 + Math.sin(t * 0.2) * 0.08
+      b.current.rotation.z = -t * 0.08
+    }
+  })
+  return (
+    <group position={[0, 0.35, -1.1]}>
+      <mesh ref={a}>
+        <torusGeometry args={[2.35, 0.008, 16, 256]} />
+        <meshBasicMaterial color={[0.75, 2.2, 0.85]} toneMapped={false} transparent opacity={0.85} />
+      </mesh>
+      <mesh ref={b} rotation={[1.2, 0, 0]}>
+        <torusGeometry args={[2.9, 0.005, 16, 256]} />
+        <meshBasicMaterial color={[0.5, 1.4, 0.6]} toneMapped={false} transparent opacity={0.45} />
+      </mesh>
+      {/* soft disc glow */}
+      <mesh position={[0, 0, -0.3]}>
+        <circleGeometry args={[2.2, 64]} />
+        <meshBasicMaterial color="#48ae4f" transparent opacity={0.07} depthWrite={false} />
+      </mesh>
+    </group>
+  )
+}
+
+/** Drifting gold dust filling the whole hero. */
+function GoldDust({ count = 1400 }: { count?: number }) {
+  const ref = useRef<THREE.Points>(null)
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    const p = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      const r = 3 + Math.random() * 9
+      const th = Math.random() * Math.PI * 2
+      const ph = Math.acos(2 * Math.random() - 1)
+      p[i * 3] = r * Math.sin(ph) * Math.cos(th)
+      p[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.6
+      p[i * 3 + 2] = r * Math.cos(ph) - 4
+    }
+    g.setAttribute('position', new THREE.BufferAttribute(p, 3))
+    return g
+  }, [count])
+  useFrame(({ clock }) => {
+    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.012
+  })
+  return (
+    <points ref={ref} geometry={geo}>
+      <pointsMaterial size={0.028} color="#fcd34d" transparent opacity={0.7} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
+    </points>
+  )
+}
+
+/** Places Humo depending on screen shape and scroll position. */
+function Rig({ layout, children }: { layout: Layout; children: React.ReactNode }) {
+  const group = useRef<THREE.Group>(null)
+  const { viewport, size } = useThree()
+  const wide = size.width >= 900
+  const snapped = useRef(false)
+
+  useFrame(() => {
+    const g = group.current
+    if (!g) return
+    const scroll = layout === 'hero' ? Math.min(window.scrollY / Math.max(window.innerHeight, 1), 1.2) : 0
+    const baseX = layout === 'hero' && wide ? viewport.width * 0.25 : 0
+    const baseY = layout === 'hero' ? (wide ? -0.15 : viewport.height * 0.22) : 0.1
+    const baseScale = layout === 'compact' ? 0.58 : wide ? Math.min(0.66, viewport.height / 7.4) : Math.min(0.5, viewport.width / 6)
+    const s = baseScale * (1 - scroll * 0.15)
+    // first frame snaps into place (matters for reduced-motion, which renders on demand)
+    const k = snapped.current ? 0.08 : 1
+    snapped.current = true
+    g.position.x = THREE.MathUtils.lerp(g.position.x, baseX, k)
+    g.position.y = THREE.MathUtils.lerp(g.position.y, baseY + scroll * 1.6, k)
+    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, scroll * 0.35, k)
+    g.scale.setScalar(THREE.MathUtils.lerp(g.scale.x, s, k))
+  })
+
+  return <group ref={group}>{children}</group>
+}
+
+/** On-demand mode (reduced motion) renders only when asked — keep asking until assets and effects settle. */
+function SettleFrames() {
+  const invalidate = useThree((s) => s.invalidate)
+  useEffect(() => {
+    let n = 0
+    const id = setInterval(() => {
+      invalidate()
+      if (++n > 40) clearInterval(id)
+    }, 100)
+    return () => clearInterval(id)
+  }, [invalidate])
+  return null
+}
+
+export default function HumoScene({ layout = 'hero' }: { layout?: Layout }) {
+  const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  return (
+    <Canvas
+      dpr={[1, 1.75]}
+      camera={{ position: [0, 0.2, 8], fov: 34 }}
+      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      frameloop={reduced ? 'demand' : 'always'}
+      style={{ background: 'transparent' }}
+    >
+      {reduced && <SettleFrames />}
+      <color attach="background" args={["#0a0f0e"]} />
+      <ambientLight intensity={0.15} />
+      <directionalLight position={[3, 5, 6]} intensity={2.2} color="#ffe2a8" />
+      <directionalLight position={[-4, 3, 6]} intensity={1.2} color="#fff1d0" />
+      <directionalLight position={[-6, 2, -4]} intensity={1.8} color="#62b968" />
+      <pointLight position={[0, -0.5, 4]} intensity={1.4} color="#ffcf7a" distance={9} />
+
+      <Suspense fallback={null}>
+        <Rig layout={layout}>
+          <Halo />
+          <HumoBird />
+          <Sparkles count={60} scale={[6, 5, 3]} size={2.2} speed={0.35} color="#fde68a" opacity={0.9} />
+        </Rig>
+        {layout === 'hero' && <GoldDust />}
+
+        {/* Studio lighting baked into an environment — no HDR download needed */}
+        <Environment resolution={256} frames={1}>
+          <Lightformer form="rect" intensity={4} color="#fff3d6" position={[0, 5, 2]} scale={[10, 2, 1]} />
+          <Lightformer form="rect" intensity={2.5} color="#ffd38a" position={[-5, 1, 3]} scale={[2, 8, 1]} rotation-y={Math.PI / 2} />
+          <Lightformer form="rect" intensity={2} color="#ffffff" position={[5, 0, 2]} scale={[2, 6, 1]} rotation-y={-Math.PI / 2} />
+          <Lightformer form="ring" intensity={2.5} color="#62b968" position={[0, -3, 4]} scale={4} />
+          <Lightformer form="rect" intensity={1.4} color="#2a652e" position={[0, 2, -6]} scale={[12, 4, 1]} />
+        </Environment>
+      </Suspense>
+
+      <EffectComposer multisampling={0}>
+        <Bloom mipmapBlur intensity={0.75} luminanceThreshold={0.82} luminanceSmoothing={0.2} />
+        <Vignette eskil={false} offset={0.25} darkness={0.75} />
+      </EffectComposer>
+    </Canvas>
+  )
+}

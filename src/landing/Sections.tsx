@@ -1,0 +1,228 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Check, Plus } from 'lucide-react'
+import { GoogleButton } from '../auth/GoogleButton'
+
+const UNIVERSITIES = [
+  'Westminster International University in Tashkent',
+  'Inha University in Tashkent',
+  'New York University Abu Dhabi',
+  'KAIST',
+  'University of Toronto',
+  "King's College London",
+  'Seoul National University',
+  'Technical University of Munich',
+  'National University of Singapore',
+  'Turin Polytechnic University in Tashkent',
+]
+
+export function Proof() {
+  const row = [...UNIVERSITIES, ...UNIVERSITIES]
+  return (
+    <section className="border-t border-white/[0.07] py-12" aria-label="Universities our students aim for">
+      <p className="mx-auto max-w-7xl px-4 text-[13px] text-white/40 sm:px-6">Built for the scores these universities ask for</p>
+      <div className="relative mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+        <ul className="flex w-max animate-marquee gap-12 whitespace-nowrap hover:[animation-play-state:paused]">
+          {row.map((u, i) => (
+            <li key={i} className="text-[19px] font-medium tracking-tight text-white/30" aria-hidden={i >= UNIVERSITIES.length}>
+              {u}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+export function HowItWorks() {
+  const steps = [
+    ['Take a 40-minute diagnostic', 'A short, timed mix of every SAT domain or IELTS skill. You get an estimated score right away.'],
+    ['Humo builds your plan', 'Your test date, target score and weak spots become a week-by-week schedule.'],
+    ['Practice and review daily', 'Short sets from the question bank. Every mistake goes to your notebook with an explanation.'],
+    ['Sit full mocks before test day', 'Timed, adaptive mocks show whether you are on track — and what to fix in the last weeks.'],
+  ]
+  return (
+    <section className="border-t border-white/[0.07] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">From first login to test day.</h2>
+        <ol className="mt-14 grid gap-px overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map(([t, b], i) => (
+            <li key={t} className="bg-ink p-6 sm:p-7">
+              <span className="grid size-8 place-items-center rounded-full border border-jg-500/40 text-[13px] font-semibold tabular-nums text-jg-300">{i + 1}</span>
+              <h3 className="mt-6 text-[17px] font-semibold tracking-tight">{t}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-white/50">{b}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+const PLANS = [
+  {
+    name: 'Free',
+    price: '0',
+    unit: "so'm",
+    note: 'For trying Jamals AI',
+    cta: 'Start free',
+    features: ['300 practice questions', '1 full Digital SAT mock', '20 Humo messages a day', 'Mistake notebook'],
+  },
+  {
+    name: 'Pro',
+    price: '149 000',
+    unit: "so'm / month",
+    note: 'For students with a test date',
+    cta: 'Start with Pro',
+    featured: true,
+    features: ['Full question bank', 'Unlimited SAT and IELTS mocks', 'Unlimited Humo', 'Personal study plan', 'IELTS Writing band estimates'],
+  },
+  {
+    name: 'Academy',
+    price: 'Included',
+    unit: 'with your course',
+    note: 'For Jamals Academy students',
+    cta: 'Join with academy code',
+    features: ['Everything in Pro', 'Your teacher sees your progress', 'Weekly mock with group ranking', 'Speaking practice with teachers'],
+  },
+]
+
+export function Pricing() {
+  return (
+    <section id="pricing" className="scroll-mt-20 border-t border-white/[0.07] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="max-w-xl">
+          <h2 className="display text-[clamp(2.1rem,4.4vw,3.5rem)]">Less than one private lesson a month.</h2>
+          <p className="mt-5 text-[16px] leading-relaxed text-white/55">Start free. Upgrade when your test date gets close.</p>
+        </div>
+        <div className="mt-14 grid gap-3 lg:grid-cols-3">
+          {PLANS.map((p) => (
+            <div
+              key={p.name}
+              className={`relative flex flex-col rounded-[24px] p-7 ${p.featured ? 'border border-jg-500/40 bg-gradient-to-b from-jg-500/[0.12] via-jg-500/[0.03] to-transparent' : 'panel'}`}
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-[17px] font-semibold">{p.name}</h3>
+                {p.featured && <span className="rounded-full bg-jg-500 px-2.5 py-0.5 text-[11px] font-semibold text-ink">Most chosen</span>}
+              </div>
+              <p className="mt-1 text-[13px] text-white/45">{p.note}</p>
+              <p className="mt-7 flex items-baseline gap-2">
+                <span className="text-[40px] font-semibold tracking-tight tabular-nums">{p.price}</span>
+                <span className="text-[13px] text-white/45">{p.unit}</span>
+              </p>
+              <ul className="mt-7 flex-1 space-y-3 text-[14px] text-white/75">
+                {p.features.map((f) => (
+                  <li key={f} className="flex gap-2.5">
+                    <Check className="mt-0.5 size-4 shrink-0 text-jg-400" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/signup"
+                className={`mt-8 h-11 rounded-full text-center text-[14px] font-medium leading-[44px] transition ${
+                  p.featured ? 'bg-jg-500 text-ink hover:bg-jg-400' : 'border border-white/15 hover:border-white/30 hover:bg-white/[0.04]'
+                }`}
+              >
+                {p.cta}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const FAQ = [
+  ['Is Jamals AI the same as the official SAT or IELTS?', 'No. Our questions and mocks follow the official formats and timing closely, but they are written by Jamals Academy teachers. Use the official Bluebook practice tests as well before test day.'],
+  ['How accurate are the score estimates?', 'Estimates are most reliable after a full mock. A single practice set gives a rough range; Humo tells you how confident the estimate is.'],
+  ['Can Humo explain in Uzbek or Russian?', "Yes. Ask in O'zbekcha or Русский and Humo will answer in that language, while keeping exam terms in English so they match the real test."],
+  ['Does Humo just give me the answers?', 'When you are practising, Humo starts with a hint and only shows the full solution if you ask. In review mode it explains the full reasoning.'],
+  ['I study at Jamals Academy. Do I pay separately?', 'No. Academy students get full access with the code from their teacher.'],
+  ['Can I cancel Pro at any time?', 'Yes. Pro is monthly, and you keep access until the end of the month you paid for.'],
+]
+
+export function Faq() {
+  const [open, setOpen] = useState<number | null>(0)
+  return (
+    <section id="faq" className="scroll-mt-20 border-t border-white/[0.07] py-24 sm:py-32">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <h2 className="display text-[clamp(2.1rem,4.4vw,3.5rem)]">Questions students ask us.</h2>
+        <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+          {FAQ.map(([q, a], i) => {
+            const isOpen = open === i
+            return (
+              <div key={q}>
+                <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} className="flex w-full items-center justify-between gap-6 py-5 text-left text-[16px] font-medium">
+                  {q}
+                  <Plus className={`size-4 shrink-0 text-white/50 transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`} />
+                </button>
+                <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] pb-5 opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                  <p className="overflow-hidden pr-10 text-[15px] leading-relaxed text-white/55">{a}</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function FinalCta() {
+  return (
+    <section className="relative overflow-hidden border-t border-white/[0.07] py-28 sm:py-36">
+      <div className="pointer-events-none absolute left-1/2 top-1/2 size-[46rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-jg-500/[0.13] blur-[140px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 size-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-jg-500/20" />
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
+        <img src="/brand/jamals-mark.png" alt="" className="size-16 rounded-full" />
+        <h2 className="display mt-8 pb-2 text-[clamp(2.4rem,6vw,4.6rem)]">Humo is ready <span className="gold-text">when you are</span>.</h2>
+        <p className="mt-5 max-w-md text-[16px] text-white/55">Take the diagnostic today and see where you stand in 40 minutes.</p>
+        <div className="mt-9">
+          <GoogleButton />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function Footer() {
+  return (
+    <footer className="border-t border-white/[0.07]">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div>
+          <span className="flex items-center gap-2.5">
+            <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full" />
+            <span className="text-[15px] font-semibold tracking-tight">Jamals AI</span>
+          </span>
+          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">The exam platform of Jamals International Academy — teaching SAT in Tashkent since 2020. Digital SAT and IELTS preparation with Humo.</p>
+        </div>
+        {[
+          ['Product', [['Try Humo', '#try'], ['Features', '#features'], ['Pricing', '#pricing']]],
+          ['Academy', [['jamals.uz', 'https://jamals.uz'], ['Courses', 'https://jamals.uz'], ['+998 55 588 99 39', 'tel:+998555889939']]],
+          ['Follow', [['Telegram', '#'], ['Instagram', '#'], ['YouTube', '#']]],
+        ].map(([h, links]) => (
+          <div key={h as string}>
+            <p className="text-[13px] font-medium">{h as string}</p>
+            <ul className="mt-4 space-y-2.5 text-[13px] text-white/45">
+              {(links as string[][]).map(([l, href]) => (
+                <li key={l}>
+                  <a href={href} className="hover:text-white">
+                    {l}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-white/[0.07]">
+        <p className="mx-auto max-w-7xl px-4 py-6 text-[11px] leading-relaxed text-white/30 sm:px-6">
+          © {new Date().getFullYear()} Jamals International Academy. SAT® is a trademark of the College Board, and IELTS™ is jointly owned by the British Council, IDP and Cambridge University Press &
+          Assessment; neither is affiliated with or endorses this product.
+        </p>
+      </div>
+    </footer>
+  )
+}
