@@ -145,6 +145,8 @@ export default function Results() {
   const secs = attempt.answers.reduce((x, a) => x + a.seconds, 0)
   const wrongN = attempt.answers.filter((a) => !a.correct).length
   const flaggedN = attempt.answers.filter((a) => a.flagged).length
+  const slowLimit = attempt.type === 'MATH' ? 150 : 120
+  const slowN = attempt.answers.filter((a) => a.seconds > slowLimit).length
   const items = attempt.answers.map((a, n) => ({ a, n: n + 1 })).filter(({ a }) => (filter === 'all' ? true : filter === 'wrong' ? !a.correct : filter === 'flagged' ? a.flagged : a.correct))
 
   return (
@@ -214,12 +216,20 @@ export default function Results() {
               key={n}
               href={`#q-${a.module}-${a.index}`}
               onClick={() => setFilter('all')}
-              className={`grid size-8 place-items-center rounded-lg text-[11.5px] font-semibold tabular-nums ${a.correct ? 'bg-emerald-500 text-white' : a.value == null || a.value === '' ? 'bg-[#e9e3d7] text-moss' : 'bg-red-500 text-white'}`}
+              title={a.seconds > slowLimit ? `${a.seconds}s — slow` : `${a.seconds}s`}
+              className={`relative grid size-8 place-items-center rounded-lg text-[11.5px] font-semibold tabular-nums ${a.correct ? 'bg-emerald-500 text-white' : a.value == null || a.value === '' ? 'bg-[#e9e3d7] text-moss' : 'bg-red-500 text-white'}`}
             >
               {n + 1}
+              {a.seconds > slowLimit && <span className="absolute -right-1 -top-1 size-2.5 rounded-full bg-orange-500 ring-2 ring-white" />}
             </a>
           ))}
         </div>
+        <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-moss">
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-emerald-500" /> Correct</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-red-500" /> Wrong</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-[#e9e3d7]" /> Blank</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-orange-500" /> Over {slowLimit / 60} min{slowN ? ` (${slowN})` : ''}</span>
+        </p>
       </section>
 
       {/* Review */}
