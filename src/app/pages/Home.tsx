@@ -89,7 +89,9 @@ export default function Home() {
       ? { icon: Trophy, title: 'Take Practice Test 1 in practice mode', sub: 'Your first full test sets your starting score.', to: '/app/tests', done: false }
       : { icon: Trophy, title: 'Full test in exam mode', sub: 'Timed, no hints — like test day.', to: '/app/tests', done: s.attempts.some((a) => new Date(a.finishedAt).toISOString().slice(0, 10) === today()) },
     { icon: BookMarked, title: `Daily 20 words`, sub: `${Math.min(20, dueWords)} words due for review`, to: '/app/vocab', done: dueWords === 0 },
-    openMistakes
+    s.weakSkills[0]
+      ? { icon: Target, title: `Drill your weakest skill: ${s.weakSkills[0]}`, sub: 'From your last test — 10 questions with Humo explanations.', to: `/app/drills?skill=${encodeURIComponent(s.weakSkills[0])}`, done: false }
+      : openMistakes
       ? { icon: NotebookPen, title: `Review ${openMistakes} mistake${openMistakes > 1 ? 's' : ''}`, sub: 'Fix them before they repeat on test day.', to: '/app/mistakes', done: false }
       : { icon: Zap, title: 'One Blitz run', sub: '60 seconds a question, three lives.', to: '/app/blitz', done: false },
   ]
