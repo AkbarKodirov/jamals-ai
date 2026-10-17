@@ -165,7 +165,7 @@ export default function Tests() {
       {!data && !error && (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }, (_, i) => (
-            <div key={i} className="card h-56 animate-pulse" />
+            <div key={i} className="skeleton h-56 rounded-[24px]" />
           ))}
         </div>
       )}

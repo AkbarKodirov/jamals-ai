@@ -263,7 +263,7 @@ export default function Results() {
 
       <div className="mt-5 space-y-4">
         {!test ? (
-          <div className="card h-40 animate-pulse" />
+          <div className="skeleton h-40 rounded-[24px]" />
         ) : items.length === 0 ? (
           <div className="card p-10 text-center text-[14px] text-moss">Nothing here.</div>
         ) : (

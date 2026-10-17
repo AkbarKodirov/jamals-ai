@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { GoogleButton } from './GoogleButton'
 import { GOOGLE_CLIENT_ID, useAuth } from '../lib/auth'
 import { Logo } from '../landing/Landing'
@@ -65,7 +66,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
             <Logo />
           </Link>
         </div>
-        <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
           <h1 className="display text-[40px]">{signup ? 'Create your account' : 'Welcome back'}</h1>
           <p className="mt-3 text-[15px] text-white/50">{signup ? 'Start with a free diagnostic. Takes 40 minutes.' : 'Pick up where you left off with Humo.'}</p>
 
@@ -115,7 +116,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
               {signup ? 'Log in' : 'Create an account'}
             </Link>
           </p>
-        </div>
+        </motion.div>
         <p className="text-center text-[11px] text-white/30">
           By continuing you agree to the{' '}
           <Link to="/terms" className="underline hover:text-white/60">Terms</Link> and{' '}

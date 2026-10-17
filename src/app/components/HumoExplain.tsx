@@ -50,9 +50,9 @@ export function HumoExplain({ testId, qKey, q, compact = false, onAsk }: { testI
           </div>
         ) : (
           <div className="mt-2.5 space-y-2" aria-label="Humo is writing">
-            <div className="h-2.5 w-11/12 animate-pulse rounded-full bg-jg-500/15" />
-            <div className="h-2.5 w-4/5 animate-pulse rounded-full bg-jg-500/15" />
-            <div className="h-2.5 w-2/3 animate-pulse rounded-full bg-jg-500/15" />
+            <div className="h-2.5 w-11/12 skeleton rounded-full" />
+            <div className="h-2.5 w-4/5 skeleton rounded-full" />
+            <div className="h-2.5 w-2/3 skeleton rounded-full" />
           </div>
         )}
       </div>

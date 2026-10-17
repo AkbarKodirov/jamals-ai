@@ -103,9 +103,20 @@ function Hero() {
             Meet Humo, the AI tutor from Jamals Academy
           </motion.a>
 
-          <motion.h1 custom={1} initial="hidden" animate="show" variants={item} className="display text-[clamp(2.75rem,min(7.2vw,11vh),5.9rem)]">
-            Your SAT score, raised by <span className="brush">Humo</span>.
-          </motion.h1>
+          <h1 className="display text-[clamp(2.75rem,min(7.2vw,11vh),5.9rem)]" aria-label="Your SAT score, raised by Humo.">
+            {['Your', 'SAT', 'score,', 'raised', 'by'].map((w, i) => (
+              <span key={w} className="inline-block overflow-hidden pb-[0.08em] align-bottom" aria-hidden>
+                <motion.span className="inline-block" initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ delay: 0.3 + i * 0.07, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+                  {w}&nbsp;
+                </motion.span>
+              </span>
+            ))}
+            <span className="inline-block overflow-hidden pb-[0.14em] align-bottom" aria-hidden>
+              <motion.span className="inline-block" initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ delay: 0.65, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+                <span className="brush brush-draw">Humo</span>.
+              </motion.span>
+            </span>
+          </h1>
 
           <motion.p custom={2} initial="hidden" animate="show" variants={item} className="mt-6 max-w-[31rem] text-[17px] leading-relaxed text-white/60">
             Six years of Jamals Academy teaching, now in one platform: real Digital SAT practice, timed mocks, and Humo — an AI tutor that shows you why you missed a question, in English, O'zbekcha or Русский.

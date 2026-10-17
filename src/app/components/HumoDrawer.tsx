@@ -13,22 +13,32 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
   return (
     <div className="space-y-4">
       {msgs.map((m, i) => (
-        <div key={i} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}>
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 10, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: m.role === 'user' ? 'bottom right' : 'bottom left' }}
+          className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}
+        >
           {m.role === 'humo' && <img src="/humo-mark.svg" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
           <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'bg-pine text-cream' : 'border border-[#ece6da] bg-white text-pine'}`}>
             {m.role === 'humo' ? <RichText text={m.text} /> : m.text}
           </div>
-        </div>
+        </motion.div>
       ))}
       {busy && (
-        <div className="flex gap-2.5">
-          <img src="/humo-mark.svg" alt="" className="size-7 rounded-lg" />
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5">
+          <span className="relative">
+            <span className="absolute inset-0 animate-ping rounded-lg bg-jg-400/40" />
+            <img src="/humo-mark.svg" alt="" className="relative size-7 rounded-lg" />
+          </span>
           <span className="flex items-center gap-1 rounded-2xl border border-[#ece6da] bg-white px-4 py-3">
             {[0, 1, 2].map((i) => (
               <span key={i} className="size-1.5 animate-bounce rounded-full bg-jg-500" style={{ animationDelay: `${i * 120}ms` }} />
             ))}
           </span>
-        </div>
+        </motion.div>
       )}
       <div ref={end} />
     </div>

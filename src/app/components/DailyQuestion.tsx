@@ -23,7 +23,7 @@ export function DailyQuestion() {
   }, [])
 
   const streakDays = Object.keys(s.planDone).filter((k) => k.startsWith('daily:') && !k.endsWith(':ok')).length
-  if (!item) return <div className="card h-48 animate-pulse" />
+  if (!item) return <div className="skeleton h-48 rounded-[24px]" />
   const chosen = value ?? (answered ? (s.planDone[`daily:${day}:ok`] ? String(item.q.correct) : null) : null)
   const done = answered || value != null
 

@@ -9,7 +9,7 @@ function MistakeCard({ k, testId, module, index }: { k: string; testId: string; 
   const { data: test } = useAsync(() => loadTest(testId), [testId])
   const [value, setValue] = useState<string | null>(null)
   const [show, setShow] = useState(false)
-  if (!test) return <div className="card h-40 animate-pulse" />
+  if (!test) return <div className="skeleton h-40 rounded-[24px]" />
   const q = test.modules[module].questions[index]
   const done = value != null && value !== ''
   const ok = done && isCorrect(q, value)

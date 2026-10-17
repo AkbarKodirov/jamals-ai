@@ -217,8 +217,8 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
   const body = (() => {
     if (phase === 'break')
       return (
-        <div className="mx-auto max-w-lg px-6 py-20 text-center">
-          <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="mx-auto max-w-lg px-6 py-20 text-center">
+          <motion.img src="/humo-mark.svg" alt="" className="mx-auto size-16 rounded-2xl shadow-lg shadow-jg-500/20" animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
           <h2 className="display mt-6 text-[34px]">Module {mod + 1} done</h2>
           <p className="mt-3 text-[15px] text-moss">
             {mode === 'practice' ? 'Take a breath, then continue to the next module.' : `Module ${mod + 2} starts with a fresh ${Math.round(perModule / 60)}-minute timer. On test day you get a 10-minute break between sections, not between modules — so keep going while you're warm.`}
@@ -226,7 +226,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
           <button onClick={startNextModule} className="btn btn-dark mt-8 h-12 px-8 text-[15px]">
             Start module {mod + 2}
           </button>
-        </div>
+        </motion.div>
       )
     if (phase === 'review')
       return (
@@ -285,7 +285,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
           <div className="flex flex-col items-center">
             {timed ? (
               <>
-                <span className={`font-mono text-[20px] font-semibold tabular-nums ${hideTimer ? 'invisible' : ''} ${left < 300 ? 'text-red-600' : ''}`}>
+                <span className={`font-mono text-[20px] font-semibold tabular-nums ${hideTimer ? 'invisible' : ''} ${left < 300 ? 'animate-pulse text-red-600' : ''}`}>
                   {mm}:{ss}
                 </span>
                 <button onClick={() => setHideTimer((h) => !h)} className="flex items-center gap-1 rounded-full border border-[#e3dccf] px-2.5 py-0.5 text-[11px] text-moss hover:bg-cream">
@@ -320,7 +320,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
             </button>
           </div>
         </div>
-        {timed && <div className="h-0.5 bg-jg-500 transition-[width] duration-1000" style={{ width: `${Math.max(0, (left / perModule) * 100)}%` }} />}
+        {timed && <div className={`h-0.5 transition-[width,background-color] duration-1000 ${left < 300 ? 'bg-red-500' : 'bg-jg-500'}`} style={{ width: `${Math.max(0, (left / perModule) * 100)}%` }} />}
       </header>
 
       {/* Main */}
@@ -328,11 +328,11 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
         {body ?? (
           <div className={`mx-auto grid h-full ${hasPassage ? 'max-w-7xl lg:grid-cols-2' : 'max-w-3xl'}`}>
             {hasPassage && (
-              <section className="border-b border-[#efe9de] px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
+              <motion.section key={`p-${mod}-${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="border-b border-[#efe9de] px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
                 <Passage html={q.passage!} />
-              </section>
+              </motion.section>
             )}
-            <section className="px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto">
+            <motion.section key={`${mod}-${idx}`} initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }} className="px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto">
               <div className="flex items-center justify-between rounded-lg bg-cream px-3 py-2">
                 <span className="grid size-7 place-items-center rounded-md bg-pine text-[13px] font-semibold text-cream tabular-nums">{idx + 1}</span>
                 <button onClick={() => patch({ flagged: !a.flagged })} className={`flex items-center gap-1.5 text-[13px] ${a.flagged ? 'font-semibold text-red-600' : 'text-moss hover:text-pine'}`}>
@@ -410,7 +410,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                   )}
                 </div>
               )}
-            </section>
+            </motion.section>
           </div>
         )}
       </main>

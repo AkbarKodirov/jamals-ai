@@ -91,6 +91,13 @@
     background-position: 0 100%;
     padding-bottom: 0.12em;
   }
+  .brush-draw {
+    animation: brush-draw 0.9s cubic-bezier(.22,1,.36,1) 1.25s both;
+  }
+  @keyframes brush-draw {
+    from { background-size: 0% 0.22em; }
+    to { background-size: 100% 0.22em; }
+  }
   .gold-text {
     background: linear-gradient(180deg, #fff3cf 0%, #f7d27a 40%, #d79a2c 75%, #9c6512 100%);
     -webkit-background-clip: text;
