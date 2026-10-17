@@ -225,3 +225,32 @@ export function Footer() {
     </footer>
   )
 }
+
+const INSIDE = [
+  ['Exam, practice & sprint modes', 'Take any full test the way you need today: real timing, instant feedback, or less time to build pacing.'],
+  ['Humo in every screen', 'A hint while you practise, an explanation above every reviewed question, and a chat that knows your answers.'],
+  ['Desmos & reference sheet', 'The same graphing calculator and formula sheet you get in Bluebook, built into every Math test.'],
+  ['Weekly study plan', 'A schedule that counts down to your test date, with tasks you tick off.'],
+  ['Drills & daily question', 'Short sets with instant explanations, plus one new question every day.'],
+  ['Vocabulary you own', '120 SAT words with spaced repetition, a spelling mode, and your own words from the passages you read.'],
+  ['Strategy lessons', 'Words in Context, Transitions, Command of Evidence, linear equations and more — then drill them straight away.'],
+  ['Analytics & predicted score', 'Accuracy and pacing by section, a 12-week activity map, and a predicted SAT range.'],
+]
+
+export function Inside() {
+  return (
+    <section className="border-t border-white/[0.07] py-24 sm:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">Built like a tutor, not a question dump.</h2>
+        <div className="mt-12 grid gap-px overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
+          {INSIDE.map(([t, b]) => (
+            <div key={t} className="bg-ink p-6">
+              <h3 className="text-[16px] font-semibold tracking-tight">{t}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-white/50">{b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

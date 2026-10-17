@@ -5,7 +5,7 @@ import { GoogleButton } from '../auth/GoogleButton'
 import { useAuth } from '../lib/auth'
 import { TryHumo } from './TryHumo'
 import { Features } from './Features'
-import { Proof, HowItWorks, Pricing, Faq, FinalCta, Footer } from './Sections'
+import { Proof, HowItWorks, Inside, Pricing, Faq, FinalCta, Footer } from './Sections'
 
 const HumoScene = lazy(() => import('../three/HumoScene'))
 
@@ -157,6 +157,7 @@ export default function Landing() {
         <Proof />
         <TryHumo />
         <Features />
+        <Inside />
         <HowItWorks />
         <Pricing />
         <Faq />

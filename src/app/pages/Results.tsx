@@ -172,6 +172,11 @@ export default function Results() {
           <button onClick={() => setChat({ open: true })} className="btn btn-green h-11 px-5 text-[14px]">
             <img src="/humo-mark.svg" alt="" className="size-6 rounded-md" /> Talk it through with Humo
           </button>
+          {wrongN > 0 && (
+            <Link to="/app/mistakes" className="btn h-11 border border-white/15 px-5 text-[14px] text-cream hover:bg-white/[0.06]">
+              Retry my {wrongN} mistakes
+            </Link>
+          )}
           <Link to="/app/tests" className="btn h-11 border border-white/15 px-5 text-[14px] text-cream hover:bg-white/[0.06]">
             <RotateCcw className="size-4" /> Another test
           </Link>

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
+import { Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
 import { HumoFab } from './components/HumoFab'
 import { useAuth } from '../lib/auth'
 import { streak, useBindStore, useStore } from './store'
@@ -20,6 +20,7 @@ const Drills = lazy(() => import('./pages/Drills'))
 const ExamPapers = lazy(() => import('./pages/ExamPapers'))
 const Lessons = lazy(() => import('./pages/Lessons'))
 const Analytics = lazy(() => import('./pages/Analytics'))
+const ScoreCalculator = lazy(() => import('./pages/ScoreCalculator'))
 
 type Item = { to: string; label: string; icon: typeof Home; end?: boolean }
 const GROUPS: { label: string | null; items: Item[] }[] = [
@@ -52,6 +53,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
       { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
       { to: '/app/mistakes', label: 'Saved & mistakes', icon: NotebookPen },
       { to: '/app/results', label: 'My results', icon: Trophy },
+      { to: '/app/calculator', label: 'Score calculator', icon: Calculator },
     ],
   },
 ]
@@ -186,6 +188,7 @@ export default function AppShell() {
             <Route path="papers" element={<ExamPapers />} />
             <Route path="lessons" element={<Lessons />} />
             <Route path="analytics" element={<Analytics />} />
+            <Route path="calculator" element={<ScoreCalculator />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
         </Suspense>
