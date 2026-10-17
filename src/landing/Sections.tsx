@@ -201,7 +201,7 @@ export function Footer() {
         {[
           ['Product', [['Try Humo', '#try'], ['Features', '#features'], ['Pricing', '#pricing']]],
           ['Academy', [['jamals.uz', 'https://jamals.uz'], ['Courses', 'https://jamals.uz'], ['+998 55 588 99 39', 'tel:+998555889939']]],
-          ['Follow', [['Telegram', '#'], ['Instagram', '#'], ['YouTube', '#']]],
+          ['Legal', [['Privacy Policy', '/privacy'], ['Terms of Service', '/terms']]],
         ].map(([h, links]) => (
           <div key={h as string}>
             <p className="text-[13px] font-medium">{h as string}</p>

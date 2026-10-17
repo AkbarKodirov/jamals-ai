@@ -5,6 +5,7 @@ import { useAuth } from './lib/auth'
 
 const AuthPage = lazy(() => import('./auth/AuthPage'))
 const AppShell = lazy(() => import('./app/AppShell'))
+const Legal = lazy(() => import('./legal/Legal'))
 
 function Protected({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
@@ -26,6 +27,8 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<AuthPage mode="login" />} />
         <Route path="/signup" element={<AuthPage mode="signup" />} />
+        <Route path="/privacy" element={<Legal page="privacy" />} />
+        <Route path="/terms" element={<Legal page="terms" />} />
         <Route
           path="/app/*"
           element={

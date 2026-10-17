@@ -116,7 +116,11 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
             </Link>
           </p>
         </div>
-        <p className="text-center text-[11px] text-white/30">By continuing you agree to the Terms and Privacy Policy of Jamals Academy.</p>
+        <p className="text-center text-[11px] text-white/30">
+          By continuing you agree to the{' '}
+          <Link to="/terms" className="underline hover:text-white/60">Terms</Link> and{' '}
+          <Link to="/privacy" className="underline hover:text-white/60">Privacy Policy</Link> of Jamals International Academy.
+        </p>
       </main>
     </div>
   )
