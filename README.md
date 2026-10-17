@@ -9,12 +9,16 @@ The exam platform of **Jamals International Academy** (Tashkent, since 2020): Di
 | `/` | Landing page with a real-time 3D Humo (Three.js / React Three Fiber), live "try a question" demo, features, pricing, FAQ |
 | `/login`, `/signup` | Google sign-in + email auth, 3D Humo on the side |
 | `/privacy`, `/terms` | Privacy Policy and Terms of Service (needed for Google publishing) |
-| `/app` | Light dashboard: score goal, exam countdown, streak, analytics, today's plan |
-| `/app/tests` | 10 original practice tests (476 questions, from Shakhna Academy's originals) as cards → Exam / Practice / Sprint mode |
-| `/app/tests/:id/take` | Full-screen Bluebook-style runner: module timer, mark for review, answer eliminator, navigator, keyboard A–D/arrows |
-| `/app/results/:id` | Estimated score, answer map, review with **Humo's explanation above every question**, Ask Humo drawer with the test as context |
-| `/app/vocab` | 120 SAT words in 3 levels: Daily 20, 4-type quiz with combos, flip flashcards with spaced repetition |
-| `/app/blitz`, `/app/mistakes` | Speed mode (lives, streak multiplier, best score); mistakes notebook that clears when you get it right |
+| `/app` | Home: score goal + predicted SAT range, exam countdown, streak, analytics strip, daily question, today's plan, live 3D Humo |
+| `/app/plan` | Weekly study plan toward the test date, driven by the student's weakest skills |
+| `/app/tests` · `/app/papers` | 10 original practice tests (476 Qs) → Exam / Practice / Sprint; exam-paper shelf + official Bluebook link |
+| `/app/tests/:id/take` | Bluebook-style runner: module timer, mark for review, eliminator, navigator, Desmos calculator + reference sheet (Math), Humo hints in practice mode |
+| `/app/results/:id` | Score, skills weakest-first, answer map, Humo explanation above every question, save questions, Ask Humo drawer |
+| `/app/drills` | 5/10/20-question drills by section or by skill, instant Humo explanations |
+| `/app/vocab` | 120 SAT words + students' own words; Daily 20, 4-type quiz, Spell-it, SM-2 flashcards |
+| `/app/lessons` | Strategy lessons → drill the matching skill / ask Humo |
+| `/app/analytics` · `/app/results` · `/app/mistakes` · `/app/calculator` | Accuracy by section and skill, pacing, trend, heatmap; results history; saved & mistakes; score calculator |
+| Everywhere | Floating **Ask Humo** button that knows the page and the student's goals |
 
 Brand follows [jamals.uz](https://jamals.uz): ink `#0a0f0e`, pine `#1b2925`, green `#48ae4f` / `#62b968`, cream `#faf7f1`, Literata + Onest. Tokens live in `src/index.css`.
 
