@@ -12,8 +12,27 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3001
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-change-me'
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '1007781081540-u54cner78n5lvsq76ftp185a9825ec4a.apps.googleusercontent.com'
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
-const gemini = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
+// Free-tier models, tried in order: if one is rate-limited or retired, Humo falls back to the next.
+const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.8-flash,gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
+const genai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
+const gemini = genai && {
+  models: {
+    async generateContent(req) {
+      let last
+      for (const model of GEMINI_MODELS) {
+        try {
+          return await genai.models.generateContent({ ...req, model })
+        } catch (e) {
+          last = e
+          const code = e?.status || e?.code
+          if (![404, 429, 500, 503].includes(code)) throw e
+          console.warn(`Gemini ${model} unavailable (${code}), trying next model`)
+        }
+      }
+      throw last
+    },
+  },
+}
 
 if (JWT_SECRET === 'dev-only-change-me') console.warn('⚠  JWT_SECRET not set — using an insecure dev secret.')
 
@@ -115,7 +134,7 @@ app.post('/api/chat', async (req, res) => {
   try {
     const contents = messages.slice(-20).map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: String(m.text).slice(0, 8000) }] }))
     const system = context ? `${HUMO_SYSTEM}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 12000)}` : HUMO_SYSTEM
-    const out = await gemini.models.generateContent({ model: GEMINI_MODEL, contents, config: { systemInstruction: system, temperature: 0.6 } })
+    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.6 } })
     res.json({ reply: out.text, tutor: 'Humo' })
   } catch (e) {
     console.error(e)
@@ -146,7 +165,7 @@ ${options.length ? '3. One short line for each wrong choice saying exactly why i
       inflight.set(
         id,
         gemini.models
-          .generateContent({ model: GEMINI_MODEL, contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: HUMO_SYSTEM, temperature: 0.3 } })
+          .generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: HUMO_SYSTEM, temperature: 0.3 } })
           .then((o) => {
             explCache[id] = o.text.trim()
             writeFileSync(EXPL_FILE, JSON.stringify(explCache))
