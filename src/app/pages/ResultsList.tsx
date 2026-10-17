@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useStore } from '../store'
+import { EmptyState } from '../components/EmptyState'
 
 export default function ResultsList() {
   const s = useStore()
@@ -14,10 +16,15 @@ export default function ResultsList() {
         <section className="card mt-6 p-6">
           <p className="text-[14px] font-semibold">Score trend</p>
           <div className="mt-5 flex h-40 items-end gap-2">
-            {chart.map((a) => (
+            {chart.map((a, i) => (
               <Link key={a.id} to={`/app/results/${a.id}`} className="group flex h-full flex-1 flex-col items-center justify-end gap-1.5" title={`${a.testName}: ${a.scaled}`}>
                 <span className="text-[11px] tabular-nums text-moss opacity-0 group-hover:opacity-100">{a.scaled}</span>
-                <span className={`w-full max-w-10 rounded-t-lg ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`} style={{ height: `${((a.scaled - 200) / 600) * 100}%` }} />
+                <motion.span
+                  initial={{ height: 0 }}
+                  animate={{ height: `${((a.scaled - 200) / 600) * 100}%` }}
+                  transition={{ delay: 0.15 + i * 0.05, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className={`w-full max-w-10 rounded-t-lg ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`}
+                />
               </Link>
             ))}
           </div>
@@ -33,11 +40,8 @@ export default function ResultsList() {
       )}
 
       {list.length === 0 ? (
-        <div className="card mt-6 p-12 text-center">
-          <p className="text-[15px]">No results yet.</p>
-          <Link to="/app/tests" className="btn btn-dark mt-5 h-11 px-6 text-[14px]">
-            Take a practice test
-          </Link>
+        <div className="mt-6">
+          <EmptyState title="No results yet" body="Finish your first practice test and your score, skills and Humo's review will appear here." action={{ to: '/app/tests', label: 'Take a practice test' }} />
         </div>
       ) : (
         <ul className="mt-5 space-y-2.5">

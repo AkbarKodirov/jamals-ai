@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Confetti } from '../../components/motion'
+import { Confetti, Tilt } from '../../components/motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Brain, Check, Flame, Layers, ListChecks, PenLine, Plus, RotateCcw, Search, Sparkles, Trash2, X } from 'lucide-react'
 import { LEVELS, WORDS, type Word } from '../../data/vocab'
@@ -240,7 +240,11 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
         </button>
         <span className="text-[13px] tabular-nums text-moss">{queue.length} left</span>
       </div>
-      <button onClick={() => setFlip((f) => !f)} className="relative mt-5 block h-80 w-full [perspective:1200px]" aria-label="Flip card">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#ece6da]">
+        <motion.div className="h-full rounded-full bg-jg-500" animate={{ width: `${(doneN / Math.max(1, doneN + queue.length)) * 100}%` }} transition={{ duration: 0.4 }} />
+      </div>
+      <Tilt className="mt-5" max={5}>
+      <motion.button key={card.word + doneN} initial={{ opacity: 0, x: 40, rotate: 2 }} animate={{ opacity: 1, x: 0, rotate: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }} onClick={() => setFlip((f) => !f)} className="relative block h-80 w-full [perspective:1200px]" aria-label="Flip card">
         <motion.div animate={{ rotateY: flip ? 180 : 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="relative size-full [transform-style:preserve-3d]">
           <div className="card absolute inset-0 grid place-items-center p-8 [backface-visibility:hidden]">
             <div className="text-center">
@@ -257,7 +261,8 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
             </div>
           </div>
         </motion.div>
-      </button>
+      </motion.button>
+      </Tilt>
       <div className={`mt-5 grid grid-cols-4 gap-2 transition ${flip ? 'opacity-100' : 'pointer-events-none opacity-30'}`}>
         {(
           [

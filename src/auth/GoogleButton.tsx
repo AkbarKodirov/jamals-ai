@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
 import { GOOGLE_CLIENT_ID, useAuth } from '../lib/auth'
+import { exciteHumo } from '../three/humoMood'
 
 type Props = { size?: 'md' | 'lg'; className?: string; label?: string }
 
@@ -53,6 +54,8 @@ function LiveButton({ size = 'lg', className = '', label = 'Continue with Google
           setBusy(true)
           login()
         }}
+        onPointerEnter={() => exciteHumo(true)}
+        onPointerLeave={() => exciteHumo(false)}
         className={`${base} ${sizes[size]} ${className}`}
       >
         <GoogleG />
@@ -75,6 +78,8 @@ function DemoButton({ size = 'lg', className = '', label = 'Continue with Google
         signInDemo()
         nav('/app')
       }}
+      onPointerEnter={() => exciteHumo(true)}
+      onPointerLeave={() => exciteHumo(false)}
       className={`${base} ${sizes[size]} ${className}`}
     >
       <GoogleG />

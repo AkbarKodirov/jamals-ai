@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { WORDS } from '../../data/vocab'
 import { loadTest, skillBreakdown, useAsync, useStore, type Test } from '../store'
 import { SkillBars } from '../components/SkillBars'
+import { EmptyState } from '../components/EmptyState'
+import { motion } from 'framer-motion'
 
 function Bar({ label, value, sub, tone = 'from-jg-700 to-jg-400' }: { label: string; value: number | null; sub?: string; tone?: string }) {
   return (
@@ -63,16 +65,8 @@ export default function Analytics() {
     return (
       <div>
         <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Analytics</h1>
-        <div className="card mt-6 p-12 text-center">
-          <p className="text-[15px]">Your analytics appear after your first test or drill.</p>
-          <div className="mt-5 flex justify-center gap-2">
-            <Link to="/app/tests" className="btn btn-dark h-11 px-5 text-[14px]">
-              Take a practice test
-            </Link>
-            <Link to="/app/drills" className="btn btn-ghost h-11 px-5 text-[14px]">
-              Start a drill
-            </Link>
-          </div>
+        <div className="mt-6">
+          <EmptyState title="Your analytics start with one test" body="Accuracy by skill, pacing and your score trend appear after your first test or drill." action={{ to: '/app/tests', label: 'Take a practice test' }} />
         </div>
       </div>
     )
@@ -112,7 +106,7 @@ export default function Analytics() {
               {trend.map((a) => (
                 <Link key={a.id} to={`/app/results/${a.id}`} title={`${a.testName}: ${a.scaled}`} className="group flex h-full flex-1 flex-col items-center justify-end gap-1">
                   <span className="text-[10.5px] tabular-nums text-moss">{a.scaled}</span>
-                  <span className={`w-full max-w-9 rounded-t-md ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`} style={{ height: `${((a.scaled - 200) / 600) * 100}%` }} />
+                  <motion.span initial={{ height: 0 }} animate={{ height: `${((a.scaled - 200) / 600) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className={`w-full max-w-9 rounded-t-md ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`} />
                 </Link>
               ))}
             </div>

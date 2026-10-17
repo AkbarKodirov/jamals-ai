@@ -4,6 +4,7 @@ import { Environment, Lightformer, Sparkles } from '@react-three/drei'
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { HumoBird, introProgress } from './HumoBird'
+import { humoMood } from './humoMood'
 
 type Layout = 'hero' | 'compact'
 
@@ -109,6 +110,9 @@ function SettleFrames() {
 }
 
 export default function HumoScene({ layout = 'hero', bg = '#0a0f0e' }: { layout?: Layout; bg?: string }) {
+  useEffect(() => {
+    humoMood.target = 0 // a fresh scene always starts calm
+  }, [])
   const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   return (
     <Canvas

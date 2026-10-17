@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Check, X } from 'lucide-react'
 import { isCorrect, loadTest, markActive, setStore, useAsync, useStore } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
+import { EmptyState } from '../components/EmptyState'
 import { Passage, QuestionBody } from './TakeTest'
 
 function MistakeCard({ k, testId, module, index }: { k: string; testId: string; module: number; index: number }) {
@@ -100,12 +101,12 @@ export default function Mistakes() {
         Every question you miss lands here. Get it right once and it leaves the notebook. {cleared > 0 && `${cleared} fixed so far.`}
       </p>
       {open.length === 0 ? (
-        <div className="card mt-6 p-12 text-center">
-          <p className="text-[15px]">{tab === 'saved' ? 'No saved questions yet. Tap Save on any question in a test review.' : 'Your notebook is empty.'}</p>
-          <p className="mt-1 text-[13px] text-moss">Take a practice test — anything you miss will show up here.</p>
-          <Link to="/app/tests" className="btn btn-dark mt-5 h-11 px-6 text-[14px]">
-            Go to practice tests
-          </Link>
+        <div className="mt-6">
+          <EmptyState
+            title={tab === 'saved' ? 'No saved questions yet' : 'Your notebook is empty'}
+            body={tab === 'saved' ? 'Tap Save on any question in a test review to keep it here.' : 'Take a practice test — anything you miss will show up here until you get it right.'}
+            action={{ to: '/app/tests', label: 'Go to practice tests' }}
+          />
         </div>
       ) : (
         <div className="mt-6 space-y-4">

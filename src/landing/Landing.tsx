@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useSpring } from 'framer-motion'
+import { CountUp } from '../components/motion'
 import { GoogleButton } from '../auth/GoogleButton'
 import { useAuth } from '../lib/auth'
 import { TryHumo } from './TryHumo'
@@ -23,6 +24,8 @@ export function Logo({ compact = false }: { compact?: boolean }) {
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30 })
   const { user } = useAuth()
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 24)
@@ -38,6 +41,7 @@ function Nav() {
   ]
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${scrolled ? 'border-b border-white/[0.07] bg-ink/75 backdrop-blur-xl' : ''}`}>
+      <motion.div className="absolute inset-x-0 bottom-0 h-px origin-left bg-jg-400" style={{ scaleX: progress, opacity: scrolled ? 1 : 0 }} />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" aria-label="Jamals AI home">
           <Logo />
@@ -134,12 +138,14 @@ function Hero() {
 
           <motion.dl custom={5} initial="hidden" animate="show" variants={item} className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-6">
             {[
-              ['11 000+', 'students taught since 2020'],
-              ['5 000+', 'scored 1350+ on the SAT'],
-              ['1 000+', 'admitted to top universities'],
+              [11000, 'students taught since 2020'],
+              [5000, 'scored 1350+ on the SAT'],
+              [1000, 'admitted to top universities'],
             ].map(([v, l]) => (
               <div key={l}>
-                <dt className="font-serif text-[28px] tracking-tight">{v}</dt>
+                <dt className="font-serif text-[28px] tracking-tight">
+                  <CountUp to={v as number} duration={1.8} format={(n) => `${Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' ')}+`} />
+                </dt>
                 <dd className="mt-1 text-[12px] leading-snug text-white/45">{l}</dd>
               </div>
             ))}

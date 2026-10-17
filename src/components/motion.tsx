@@ -111,3 +111,27 @@ export function Spotlight({ children, className = '', color = 'rgba(98,185,104,0
     </div>
   )
 }
+
+/** Gentle 3D tilt toward the pointer. */
+export function Tilt({ children, className = '', max = 6 }: { children: React.ReactNode; className?: string; max?: number }) {
+  const reduce = useReducedMotion()
+  const [rot, setRot] = useState({ x: 0, y: 0 })
+  return (
+    <motion.div
+      className={className}
+      style={{ transformPerspective: 900 }}
+      animate={{ rotateX: rot.x, rotateY: rot.y }}
+      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+      onPointerMove={(e) => {
+        if (reduce || e.pointerType !== 'mouse') return
+        const r = e.currentTarget.getBoundingClientRect()
+        const px = (e.clientX - r.left) / r.width - 0.5
+        const py = (e.clientY - r.top) / r.height - 0.5
+        setRot({ x: -py * max, y: px * max })
+      }}
+      onPointerLeave={() => setRot({ x: 0, y: 0 })}
+    >
+      {children}
+    </motion.div>
+  )
+}

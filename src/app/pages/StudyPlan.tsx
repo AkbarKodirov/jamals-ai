@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CalendarDays, Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { setStore, today, useStore } from '../store'
 
 type Task = { id: string; title: string; to: string; min: number }
@@ -82,7 +83,7 @@ export default function StudyPlan() {
         {days.map(({ date, d, tasks }) => {
           const isToday = date === today()
           return (
-            <section key={date} className={`card p-4 ${isToday ? 'ring-2 ring-jg-500' : ''}`}>
+            <section key={date} className={`card p-4 transition-shadow ${isToday ? 'ring-2 ring-jg-500' : ''} ${tasks.every((t) => s.planDone[`${date}:${t.id}`]) ? 'bg-gradient-to-b from-jg-50 to-white' : ''}`}>
               <p className="flex items-center justify-between text-[13px]">
                 <span className="font-semibold">{d.toLocaleDateString(undefined, { weekday: 'long' })}</span>
                 <span className={isToday ? 'rounded-full bg-jg-500 px-2 py-0.5 text-[11px] font-semibold text-ink' : 'text-moss'}>{isToday ? 'Today' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
@@ -92,14 +93,19 @@ export default function StudyPlan() {
                   const k = `${date}:${t.id}`
                   const ok = !!s.planDone[k]
                   return (
-                    <li key={k} className="flex items-start gap-2.5 rounded-xl border border-[#efe9de] p-2.5">
-                      <button
+                    <li key={k} className={`flex items-start gap-2.5 rounded-xl border p-2.5 transition-colors duration-300 ${ok ? 'border-jg-500/30 bg-jg-50/60' : 'border-[#efe9de]'}`}>
+                      <motion.button
+                        whileTap={{ scale: 0.85 }}
                         aria-label={ok ? 'Mark not done' : 'Mark done'}
                         onClick={() => setStore((x) => ({ ...x, planDone: { ...x.planDone, [k]: !ok } }))}
-                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 ${ok ? 'border-jg-500 bg-jg-500 text-ink' : 'border-[#d6cdbb]'}`}
+                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${ok ? 'border-jg-500 bg-jg-500 text-ink' : 'border-[#d6cdbb] hover:border-jg-500'}`}
                       >
-                        {ok && <Check className="size-3.5" strokeWidth={3} />}
-                      </button>
+                        {ok && (
+                          <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 500, damping: 18 }}>
+                            <Check className="size-3.5" strokeWidth={3} />
+                          </motion.span>
+                        )}
+                      </motion.button>
                       <Link to={t.to} className={`min-w-0 flex-1 text-[13px] leading-snug hover:text-jg-700 ${ok ? 'text-moss line-through' : ''}`}>
                         {t.title}
                         <span className="block text-[11px] text-moss no-underline">{t.min} min</span>

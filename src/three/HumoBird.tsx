@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useFrame, type ThreeElements } from '@react-three/fiber'
 import * as THREE from 'three'
+import { humoMood } from './humoMood'
 
 /**
  * Procedural 3D Humo — the bird of fortune, shown in the heraldic
@@ -105,7 +106,8 @@ function Wing({ side, mats }: { side: 1 | -1; mats: ReturnType<typeof useGoldMat
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
-    const beat = Math.sin(t * 1.15)
+    humoMood.value += (humoMood.target - humoMood.value) * 0.04
+    const beat = Math.sin(t * (1.15 + humoMood.value * 2.4)) * (1 + humoMood.value * 0.6)
     const k = introProgress(t)
     if (pivot.current) {
       pivot.current.rotation.z = 0.06 + beat * 0.16 * k - (1 - k) * 0.9

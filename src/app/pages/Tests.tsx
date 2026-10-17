@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, BookOpen, Calculator, CheckCircle2, Clock, GraduationCap, ListChecks, Timer, X, Zap } from 'lucide-react'
 import { loadIndex, useAsync, useStore, type Mode, type TestMeta } from '../store'
+import { ScoreRing, Tilt } from '../../components/motion'
 
 export const MODES: { id: Mode; name: string; icon: typeof Timer; line: string; points: string[] }[] = [
   {
@@ -176,44 +177,54 @@ export default function Tests() {
           const Icon = t.type === 'MATH' ? Calculator : BookOpen
           const mins = t.minutesPerModule * t.modules
           return (
-            <motion.article
-              key={t.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.03, 0.3) }}
-              className={`card card-hover flex flex-col p-5 ${!b ? 'ring-1 ring-jg-500/0 hover:ring-jg-500/40' : ''}`}
-            >
-              <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${t.type === 'MATH' ? 'bg-sky-50 text-sky-700' : 'bg-jg-50 text-jg-700'}`}>
-                  <Icon className="size-3.5" /> {t.type === 'MATH' ? 'Math' : 'Reading & Writing'}
-                  {t.modules > 1 && <span className="opacity-70">· Full</span>}
-                </span>
-                {b ? <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">Done ×{b.n}</span> : <span className="rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-moss">New</span>}
-              </div>
-              <h3 className="mt-4 font-serif text-[22px] leading-tight">{t.name}</h3>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-cream px-3 py-2.5">
-                  <p className="flex items-center gap-1 text-[11px] text-moss">
-                    <Clock className="size-3" /> Duration
-                  </p>
-                  <p className="text-[15px] font-semibold tabular-nums">{mins} min</p>
-                </div>
-                <div className="rounded-xl bg-cream px-3 py-2.5">
-                  <p className="text-[11px] text-moss">Questions</p>
-                  <p className="text-[15px] font-semibold tabular-nums">{t.questions}</p>
-                </div>
-              </div>
-              <div className="mt-5 flex gap-2">
-                <button onClick={() => setOpen(t)} className="btn btn-dark h-11 flex-1 text-[14px]">
-                  {b ? 'Retake' : "Let's start"} <ArrowRight className="size-4" />
-                </button>
-                {b && (
-                  <Link to={`/app/results/${b.id}`} className="btn btn-ghost h-11 px-4 text-[13px]" title="Best attempt">
-                    {b.scaled}
-                  </Link>
-                )}
-              </div>
-            </motion.article>
+            <motion.div key={t.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.04, 0.35), ease: [0.22, 1, 0.36, 1] }}>
+              <Tilt className="h-full">
+                <article className="card card-hover flex h-full flex-col overflow-hidden">
+                  <div className={`relative h-24 overflow-hidden px-5 pt-4 ${t.type === 'MATH' ? 'bg-gradient-to-br from-sky-50 to-sky-100/70' : 'bg-gradient-to-br from-jg-50 to-[#dff1e1]'}`}>
+                    <Icon className={`absolute -bottom-5 -right-3 size-28 rotate-[-12deg] ${t.type === 'MATH' ? 'text-sky-200' : 'text-jg-200'}`} strokeWidth={1.2} />
+                    <div className="relative flex items-center justify-between">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[11.5px] font-semibold backdrop-blur ${t.type === 'MATH' ? 'text-sky-700' : 'text-jg-700'}`}>
+                        <Icon className="size-3.5" /> {t.type === 'MATH' ? 'Math' : 'Reading & Writing'}
+                        {t.modules > 1 && <span className="opacity-70">· Full</span>}
+                      </span>
+                      {!b && <span className="rounded-full bg-pine px-2.5 py-1 text-[11px] font-semibold text-cream">New</span>}
+                    </div>
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-serif text-[22px] leading-tight">{t.name}</h3>
+                      {b && (
+                        <ScoreRing value={b.scaled - 200} max={600} size={52} stroke={5} color={t.type === 'MATH' ? '#38bdf8' : '#48ae4f'} track="#efe9de">
+                          <span className="text-[12px] font-semibold tabular-nums">{b.scaled}</span>
+                        </ScoreRing>
+                      )}
+                    </div>
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      <div className="rounded-xl bg-cream px-3 py-2.5">
+                        <p className="flex items-center gap-1 text-[11px] text-moss">
+                          <Clock className="size-3" /> Duration
+                        </p>
+                        <p className="text-[15px] font-semibold tabular-nums">{mins} min</p>
+                      </div>
+                      <div className="rounded-xl bg-cream px-3 py-2.5">
+                        <p className="text-[11px] text-moss">{b ? `Taken ${b.n}×` : 'Questions'}</p>
+                        <p className="text-[15px] font-semibold tabular-nums">{t.questions}</p>
+                      </div>
+                    </div>
+                    <div className="mt-auto flex gap-2 pt-5">
+                      <button onClick={() => setOpen(t)} className="btn btn-dark group/btn h-11 flex-1 text-[14px]">
+                        {b ? 'Retake' : "Let's start"} <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
+                      </button>
+                      {b && (
+                        <Link to={`/app/results/${b.id}`} className="btn btn-ghost h-11 px-4 text-[13px]">
+                          Review
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              </Tilt>
+            </motion.div>
           )
         })}
       </div>
