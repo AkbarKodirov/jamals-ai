@@ -15,7 +15,7 @@ export default function ResultsList() {
           <p className="text-[14px] font-semibold">Score trend</p>
           <div className="mt-5 flex h-40 items-end gap-2">
             {chart.map((a) => (
-              <Link key={a.id} to={`/app/results/${a.id}`} className="group flex flex-1 flex-col items-center gap-1.5" title={`${a.testName}: ${a.scaled}`}>
+              <Link key={a.id} to={`/app/results/${a.id}`} className="group flex h-full flex-1 flex-col items-center justify-end gap-1.5" title={`${a.testName}: ${a.scaled}`}>
                 <span className="text-[11px] tabular-nums text-moss opacity-0 group-hover:opacity-100">{a.scaled}</span>
                 <span className={`w-full max-w-10 rounded-t-lg ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`} style={{ height: `${((a.scaled - 200) / 600) * 100}%` }} />
               </Link>

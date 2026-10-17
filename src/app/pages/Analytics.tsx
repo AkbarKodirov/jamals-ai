@@ -91,7 +91,7 @@ export default function Analytics() {
           ) : (
             <div className="mt-5 flex h-36 items-end gap-2">
               {trend.map((a) => (
-                <Link key={a.id} to={`/app/results/${a.id}`} title={`${a.testName}: ${a.scaled}`} className="group flex flex-1 flex-col items-center gap-1">
+                <Link key={a.id} to={`/app/results/${a.id}`} title={`${a.testName}: ${a.scaled}`} className="group flex h-full flex-1 flex-col items-center justify-end gap-1">
                   <span className="text-[10.5px] tabular-nums text-moss">{a.scaled}</span>
                   <span className={`w-full max-w-9 rounded-t-md ${a.type === 'MATH' ? 'bg-sky-400' : 'bg-jg-500'} group-hover:opacity-80`} style={{ height: `${((a.scaled - 200) / 600) * 100}%` }} />
                 </Link>
@@ -105,9 +105,9 @@ export default function Analytics() {
 
         <section className="card p-6">
           <h2 className="text-[15px] font-semibold">Activity, last 12 weeks</h2>
-          <div className="mt-4 grid grid-flow-col grid-rows-7 gap-1">
+          <div className="mt-4 grid w-fit grid-flow-col grid-rows-7 gap-1">
             {cells.map((c) => (
-              <span key={c.k} title={c.k} className={`aspect-square rounded-[4px] ${c.on ? 'bg-jg-500' : 'bg-cream'}`} />
+              <span key={c.k} title={c.k} className={`size-3.5 rounded-[3px] sm:size-4 ${c.on ? 'bg-jg-500' : 'bg-[#efe9de]'}`} />
             ))}
           </div>
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">

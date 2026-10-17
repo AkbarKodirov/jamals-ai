@@ -4,6 +4,7 @@ import { BookMarked, CalendarDays, CheckCircle2, Clock, NotebookPen, Pencil, Tar
 import { useAuth } from '../../lib/auth'
 import { setStore, today, useStore } from '../store'
 import { WORDS } from '../../data/vocab'
+import { DailyQuestion } from '../components/DailyQuestion'
 
 const HumoScene = lazy(() => import('../../three/HumoScene'))
 
@@ -70,8 +71,13 @@ export default function Home() {
   const accuracy = answered ? Math.round((correct / answered) * 100) : null
   const last30 = s.activeDays.filter((d) => Date.now() - new Date(d).getTime() < 30 * 86400000).length
   const hours = s.studySeconds / 3600
-  const current = s.profile.current ?? (s.attempts.length ? Math.max(...s.attempts.filter((a) => a.type === 'EBRW').map((a) => a.scaled), 0) * 2 || null : null)
-  const progress = current ? Math.min(100, Math.max(4, ((current - 400) / (s.profile.target - 400)) * 100)) : 4
+  const current: number | null = s.profile.current ?? null
+  const lastOf = (t: 'EBRW' | 'MATH') => [...s.attempts].reverse().find((a) => a.type === t && a.mode !== 'practice') ?? [...s.attempts].reverse().find((a) => a.type === t)
+  const lastRW = lastOf('EBRW')
+  const lastM = lastOf('MATH')
+  const predicted = lastRW && lastM ? lastRW.scaled + lastM.scaled : null
+  const shown = current ?? predicted
+  const progress = shown ? Math.min(100, Math.max(4, ((shown - 400) / (s.profile.target - 400)) * 100)) : 4
 
   const dueWords = WORDS.filter((w) => {
     const p = s.vocab[w.word]
@@ -124,10 +130,20 @@ export default function Home() {
             <Target className="size-4 text-jg-600" /> Score goal
           </div>
           <div className="mt-5 flex flex-wrap items-end gap-10">
-            <EditableScore label="Current score" value={current} onSave={(n) => setStore((x) => ({ ...x, profile: { ...x.profile, current: n } }))} />
+            <EditableScore label={current ? 'Current score' : predicted ? 'Predicted score' : 'Current score'} value={shown} onSave={(n) => setStore((x) => ({ ...x, profile: { ...x.profile, current: n } }))} />
             <EditableScore label="Target score" value={s.profile.target} accent onSave={(n) => setStore((x) => ({ ...x, profile: { ...x.profile, target: n } }))} />
           </div>
-          <div className="mt-6 h-2.5 overflow-hidden rounded-full bg-cream">
+          <p className="mt-5 rounded-2xl bg-cream px-4 py-3 text-[13px]">
+            {predicted ? (
+              <>
+                <span className="font-semibold">Predicted SAT: {predicted - 30}–{Math.min(1600, predicted + 30)}</span>
+                <span className="text-moss"> · from your latest R&W ({lastRW!.scaled}) and Math ({lastM!.scaled}) tests</span>
+              </>
+            ) : (
+              <span className="text-moss">Finish one Reading & Writing test and one Math test to unlock your predicted SAT score.</span>
+            )}
+          </p>
+          <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-cream">
             <div className="h-full rounded-full bg-gradient-to-r from-jg-700 to-jg-400 transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="mt-2 flex justify-between text-[11px] text-moss">
@@ -175,6 +191,8 @@ export default function Home() {
           </div>
         ))}
       </section>
+
+      <DailyQuestion />
 
       {/* Plan + recent */}
       <section className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
