@@ -107,18 +107,58 @@ You are an expert Digital SAT and IELTS tutor with a warm, precise, encouraging 
 - Keep answers short and scannable; use plain text, not markdown tables.
 - Never claim to be affiliated with the College Board or IELTS.`
 
+const NO_KEY = 'Humo needs a Gemini API key. Add GEMINI_API_KEY to .env (free at aistudio.google.com) and restart the server.'
+
 app.post('/api/chat', async (req, res) => {
-  const { messages = [] } = req.body || {}
-  if (!gemini) {
-    return res.json({ reply: 'Humo is running without a Gemini key. Add GEMINI_API_KEY to .env and restart the server to get live answers.', tutor: 'Humo' })
-  }
+  const { messages = [], context } = req.body || {}
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
   try {
     const contents = messages.slice(-20).map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: String(m.text).slice(0, 8000) }] }))
-    const out = await gemini.models.generateContent({ model: GEMINI_MODEL, contents, config: { systemInstruction: HUMO_SYSTEM, temperature: 0.6 } })
+    const system = context ? `${HUMO_SYSTEM}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 12000)}` : HUMO_SYSTEM
+    const out = await gemini.models.generateContent({ model: GEMINI_MODEL, contents, config: { systemInstruction: system, temperature: 0.6 } })
     res.json({ reply: out.text, tutor: 'Humo' })
   } catch (e) {
     console.error(e)
     res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+  }
+})
+
+/* ---------- per-question explanations, generated once and shared by every student ---------- */
+const EXPL_FILE = join(DATA_DIR, 'explanations.json')
+const explCache = existsSync(EXPL_FILE) ? JSON.parse(readFileSync(EXPL_FILE, 'utf8')) : {}
+const inflight = new Map()
+
+app.post('/api/explain', async (req, res) => {
+  const { id, passage, question, options = [], correct, format } = req.body || {}
+  if (!id || !question) return res.status(400).json({ error: 'Missing question.' })
+  if (explCache[id]) return res.json({ explanation: explCache[id], cached: true })
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
+  try {
+    if (!inflight.has(id)) {
+      const prompt = `Explain this ${format === 'sa' ? 'student-produced response' : 'multiple-choice'} Digital SAT question.
+${passage ? `Text:\n${passage}\n` : ''}Question: ${question}
+${options.length ? `Choices:\n${options.join('\n')}\n` : ''}Correct answer: ${correct}
+
+Write the explanation Humo shows above the question in review:
+1. One sentence naming the skill being tested.
+2. Why the correct answer is right, step by step (show the math if it is a math question).
+${options.length ? '3. One short line for each wrong choice saying exactly why it is wrong or what trap it sets.\n' : ''}Plain text, no markdown headings, under 170 words, English.`
+      inflight.set(
+        id,
+        gemini.models
+          .generateContent({ model: GEMINI_MODEL, contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: HUMO_SYSTEM, temperature: 0.3 } })
+          .then((o) => {
+            explCache[id] = o.text.trim()
+            writeFileSync(EXPL_FILE, JSON.stringify(explCache))
+            return explCache[id]
+          })
+          .finally(() => inflight.delete(id)),
+      )
+    }
+    res.json({ explanation: await inflight.get(id) })
+  } catch (e) {
+    console.error(e)
+    res.status(502).json({ error: 'Humo could not reach Gemini. Try again in a moment.' })
   }
 })
 

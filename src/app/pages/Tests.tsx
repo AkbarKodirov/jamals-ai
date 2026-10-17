@@ -1,0 +1,224 @@
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowRight, BookOpen, Calculator, CheckCircle2, Clock, GraduationCap, ListChecks, Timer, X, Zap } from 'lucide-react'
+import { loadIndex, useAsync, useStore, type Mode, type TestMeta } from '../store'
+
+export const MODES: { id: Mode; name: string; icon: typeof Timer; line: string; points: string[] }[] = [
+  {
+    id: 'exam',
+    name: 'Exam mode',
+    icon: GraduationCap,
+    line: 'Exactly like test day.',
+    points: ['Real timing per module', 'No answers until the end', 'No going back to a finished module', 'Score + full Humo review after'],
+  },
+  {
+    id: 'practice',
+    name: 'Practice mode',
+    icon: ListChecks,
+    line: 'Learn as you go.',
+    points: ['No time pressure', 'Check each answer instantly', 'Humo explains right after you answer', 'Move freely between modules'],
+  },
+  {
+    id: 'sprint',
+    name: 'Sprint mode',
+    icon: Zap,
+    line: 'Train your pacing.',
+    points: ['30% less time than the real test', 'Exam rules otherwise', 'Builds a buffer for test day', 'Great in the last two weeks'],
+  },
+]
+
+function ModeSheet({ test, onClose }: { test: TestMeta; onClose: () => void }) {
+  const nav = useNavigate()
+  const [mode, setMode] = useState<Mode>('exam')
+  const minutes = test.minutesPerModule * test.modules
+  return (
+    <motion.div className="fixed inset-0 z-50 grid place-items-end bg-pine/50 backdrop-blur-sm sm:place-items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+      <motion.div
+        role="dialog"
+        aria-label={`Start ${test.name}`}
+        onClick={(e) => e.stopPropagation()}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 40, opacity: 0 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+        className="w-full max-w-3xl rounded-t-[28px] bg-white p-6 sm:rounded-[28px] sm:p-8"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[13px] text-moss">{test.type === 'MATH' ? 'Math' : 'Reading & Writing'}</p>
+            <h2 className="display mt-1 text-[30px]">{test.name}</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-moss hover:bg-cream">
+            <X className="size-5" />
+          </button>
+        </div>
+        <p className="mt-4 text-[14px] text-moss">Choose how you want to take this test.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {MODES.map((m) => {
+            const on = m.id === mode
+            const Icon = m.icon
+            const mins = m.id === 'practice' ? null : m.id === 'sprint' ? Math.round(minutes * 0.7) : minutes
+            return (
+              <button
+                key={m.id}
+                onClick={() => setMode(m.id)}
+                aria-pressed={on}
+                className={`rounded-2xl border-2 p-4 text-left transition ${on ? 'border-jg-500 bg-jg-50' : 'border-[#ece6da] hover:border-[#d6cdbb]'}`}
+              >
+                <span className={`grid size-9 place-items-center rounded-xl ${on ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>
+                  <Icon className="size-[18px]" />
+                </span>
+                <p className="mt-3 text-[15px] font-semibold">{m.name}</p>
+                <p className="text-[12.5px] text-moss">{m.line}</p>
+                <ul className="mt-3 space-y-1.5 text-[12px] text-pine/80">
+                  {m.points.map((p) => (
+                    <li key={p} className="flex gap-1.5">
+                      <CheckCircle2 className={`mt-px size-3.5 shrink-0 ${on ? 'text-jg-600' : 'text-moss/60'}`} />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-[12px] font-semibold text-pine">{mins ? `${mins} min total` : 'Untimed'}</p>
+              </button>
+            )
+          })}
+        </div>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#efe9de] pt-5">
+          <p className="text-[12.5px] text-moss">
+            {test.questions} questions, {test.modules} module{test.modules > 1 ? 's' : ''}
+          </p>
+          <button onClick={() => nav(`/app/tests/${test.id}/take?mode=${mode}`)} className="btn btn-dark h-12 px-7 text-[15px]">
+            Let's start <ArrowRight className="size-4" />
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+export default function Tests() {
+  const { data, error } = useAsync(loadIndex, [])
+  const s = useStore()
+  const [filter, setFilter] = useState<'all' | 'EBRW' | 'MATH' | 'todo' | 'done'>('all')
+  const [open, setOpen] = useState<TestMeta | null>(null)
+
+  const best = useMemo(() => {
+    const m = new Map<string, { scaled: number; raw: number; total: number; id: string; n: number }>()
+    for (const a of s.attempts) {
+      const cur = m.get(a.testId)
+      if (!cur || a.scaled > cur.scaled) m.set(a.testId, { scaled: a.scaled, raw: a.raw, total: a.total, id: a.id, n: (cur?.n ?? 0) + 1 })
+      else cur.n++
+    }
+    return m
+  }, [s.attempts])
+
+  const list = (data ?? []).filter((t) => {
+    if (filter === 'EBRW' || filter === 'MATH') return t.type === filter
+    if (filter === 'todo') return !best.has(t.id)
+    if (filter === 'done') return best.has(t.id)
+    return true
+  })
+  const done = (data ?? []).filter((t) => best.has(t.id)).length
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Practice tests</h1>
+          <p className="mt-2 text-[15px] text-moss">Full Digital SAT sections written by Jamals Academy teachers. Pick a test, then pick a mode.</p>
+        </div>
+        {data && (
+          <div className="card flex items-center gap-5 px-5 py-3">
+            <div>
+              <p className="text-[11px] text-moss">Completed</p>
+              <p className="font-serif text-[22px] tabular-nums">
+                {done}/{data.length}
+              </p>
+            </div>
+            <div className="h-8 w-px bg-[#ece6da]" />
+            <div>
+              <p className="text-[11px] text-moss">Best R&W</p>
+              <p className="font-serif text-[22px] tabular-nums">{Math.max(0, ...[...best.entries()].filter(([id]) => data.find((t) => t.id === id)?.type === 'EBRW').map(([, b]) => b.scaled)) || '–'}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-7 flex flex-wrap gap-2">
+        {(
+          [
+            ['all', 'All'],
+            ['EBRW', 'Reading & Writing'],
+            ['MATH', 'Math'],
+            ['todo', 'Not started'],
+            ['done', 'Completed'],
+          ] as const
+        ).map(([k, l]) => (
+          <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-4 py-2 text-[13px] font-medium transition ${filter === k ? 'bg-pine text-cream' : 'bg-white text-pine ring-1 ring-[#e3dccf] hover:ring-[#cfc6b4]'}`}>
+            {l}
+          </button>
+        ))}
+      </div>
+
+      {error && <p className="mt-8 text-[14px] text-red-600">Couldn't load tests: {error}</p>}
+      {!data && !error && (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="card h-56 animate-pulse" />
+          ))}
+        </div>
+      )}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {list.map((t, i) => {
+          const b = best.get(t.id)
+          const Icon = t.type === 'MATH' ? Calculator : BookOpen
+          const mins = t.minutesPerModule * t.modules
+          return (
+            <motion.article
+              key={t.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: Math.min(i * 0.03, 0.3) }}
+              className={`card card-hover flex flex-col p-5 ${!b ? 'ring-1 ring-jg-500/0 hover:ring-jg-500/40' : ''}`}
+            >
+              <div className="flex items-center justify-between">
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${t.type === 'MATH' ? 'bg-sky-50 text-sky-700' : 'bg-jg-50 text-jg-700'}`}>
+                  <Icon className="size-3.5" /> {t.type === 'MATH' ? 'Math' : 'Reading & Writing'}
+                  {t.modules > 1 && <span className="opacity-70">· Full</span>}
+                </span>
+                {b ? <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">Done ×{b.n}</span> : <span className="rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-moss">New</span>}
+              </div>
+              <h3 className="mt-4 font-serif text-[22px] leading-tight">{t.name}</h3>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-cream px-3 py-2.5">
+                  <p className="flex items-center gap-1 text-[11px] text-moss">
+                    <Clock className="size-3" /> Duration
+                  </p>
+                  <p className="text-[15px] font-semibold tabular-nums">{mins} min</p>
+                </div>
+                <div className="rounded-xl bg-cream px-3 py-2.5">
+                  <p className="text-[11px] text-moss">Questions</p>
+                  <p className="text-[15px] font-semibold tabular-nums">{t.questions}</p>
+                </div>
+              </div>
+              <div className="mt-5 flex gap-2">
+                <button onClick={() => setOpen(t)} className="btn btn-dark h-11 flex-1 text-[14px]">
+                  {b ? 'Retake' : "Let's start"} <ArrowRight className="size-4" />
+                </button>
+                {b && (
+                  <Link to={`/app/results/${b.id}`} className="btn btn-ghost h-11 px-4 text-[13px]" title="Best attempt">
+                    {b.scaled}
+                  </Link>
+                )}
+              </div>
+            </motion.article>
+          )
+        })}
+      </div>
+
+      <AnimatePresence>{open && <ModeSheet test={open} onClose={() => setOpen(null)} />}</AnimatePresence>
+    </div>
+  )
+}

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { Component, lazy, Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Landing from './landing/Landing'
 import { useAuth } from './lib/auth'
@@ -20,8 +20,32 @@ function Loading() {
   )
 }
 
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null }
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+  render() {
+    if (!this.state.error) return this.props.children
+    return (
+      <div className="grid min-h-svh place-items-center bg-cream p-6 text-pine">
+        <div className="max-w-sm text-center">
+          <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
+          <h1 className="display mt-6 text-[30px]">Something went wrong</h1>
+          <p className="mt-2 text-[14px] text-moss">This page hit an error. Reloading usually fixes it; your progress is saved on this device.</p>
+          <p className="mt-3 rounded-xl bg-white px-3 py-2 font-mono text-[11px] text-moss">{this.state.error.message}</p>
+          <button onClick={() => location.reload()} className="btn btn-dark mt-6 h-11 px-6 text-[14px]">
+            Reload page
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
+
 export default function App() {
   return (
+    <ErrorBoundary>
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -40,5 +64,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
+    </ErrorBoundary>
   )
 }

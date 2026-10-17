@@ -1,0 +1,244 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { Bookmark, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
+import { isCorrect, loadTest, stripHtml, useAsync, useStore, type Attempt, type Test } from '../store'
+import { HumoExplain } from '../components/HumoExplain'
+import { HumoDrawer } from '../components/HumoDrawer'
+import { Passage, QuestionBody } from './TakeTest'
+
+const L = ['A', 'B', 'C', 'D']
+
+function useInView<T extends Element>() {
+  const ref = useRef<T>(null)
+  const [seen, setSeen] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || seen) return
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setSeen(true), { rootMargin: '400px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [seen])
+  return { ref, seen }
+}
+
+function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: Attempt; m: number; i: number; n: number; onAsk: (prefill: string) => void }) {
+  const q = test.modules[m].questions[i]
+  const a = attempt.answers.find((x) => x.module === m && x.index === i)!
+  const ok = isCorrect(q, a.value)
+  const blank = a.value == null || a.value === ''
+  const { ref, seen } = useInView<HTMLElement>()
+  const [showPassage, setShowPassage] = useState(!ok)
+
+  return (
+    <article ref={ref} id={`q-${m}-${i}`} className="card scroll-mt-24 overflow-hidden">
+      <div className={`flex items-center justify-between gap-3 border-b px-5 py-3 ${ok ? 'border-emerald-100 bg-emerald-50/60' : blank ? 'border-[#efe9de] bg-cream' : 'border-red-100 bg-red-50/60'}`}>
+        <span className="flex items-center gap-2.5">
+          <span className={`grid size-7 place-items-center rounded-full text-[12px] font-bold text-white ${ok ? 'bg-emerald-500' : blank ? 'bg-moss' : 'bg-red-500'}`}>{ok ? <Check className="size-4" /> : blank ? '–' : <X className="size-4" />}</span>
+          <span className="text-[14px] font-semibold">
+            Question {n}
+            <span className="ml-2 font-normal text-moss">Module {m + 1}</span>
+          </span>
+          {a.flagged && <Bookmark className="size-4 fill-red-500 text-red-500" />}
+        </span>
+        <span className="flex items-center gap-1 text-[12px] text-moss tabular-nums">
+          <Clock className="size-3.5" /> {a.seconds}s
+        </span>
+      </div>
+
+      <div className="space-y-5 p-5 sm:p-6">
+        {/* Humo first — above the question */}
+        {seen ? (
+          <HumoExplain testId={test.id} qKey={`${m}:${i}`} q={q} onAsk={() => onAsk(`About question ${n}: `)} />
+        ) : (
+          <div className="h-24 rounded-2xl bg-jg-50/60" />
+        )}
+
+        {q.passage && (
+          <div>
+            <button onClick={() => setShowPassage((v) => !v)} className="flex items-center gap-1 text-[13px] font-medium text-moss hover:text-pine">
+              <ChevronDown className={`size-4 transition ${showPassage ? 'rotate-180' : ''}`} /> {showPassage ? 'Hide text' : 'Show text'}
+            </button>
+            {showPassage && (
+              <div className="mt-3 rounded-2xl bg-cream p-4 sm:p-5">
+                <Passage html={q.passage} />
+              </div>
+            )}
+          </div>
+        )}
+
+        <QuestionBody q={q} />
+
+        {q.format === 'mc' ? (
+          <div className="grid gap-2">
+            {q.options.map((opt, oi) => {
+              const right = q.correct === oi
+              const mine = a.value === String(oi)
+              return (
+                <div key={oi} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50' : mine ? 'border-red-400 bg-red-50' : 'border-[#efe9de]'}`}>
+                  <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${right ? 'bg-emerald-500 text-white' : mine ? 'bg-red-500 text-white' : 'border border-pine/30'}`}>{L[oi]}</span>
+                  <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: opt }} />
+                  {mine && <span className="text-[11px] font-semibold text-moss">Your answer</span>}
+                  {right && !mine && <span className="text-[11px] font-semibold text-emerald-700">Correct</span>}
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-3 text-[14px]">
+            <span className={`rounded-xl px-4 py-2 ${ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>Your answer: {blank ? '—' : a.value}</span>
+            {!ok && <span className="rounded-xl bg-emerald-50 px-4 py-2 text-emerald-700">Correct: {q.answer}</span>}
+          </div>
+        )}
+      </div>
+    </article>
+  )
+}
+
+export default function Results() {
+  const { attemptId } = useParams()
+  const s = useStore()
+  const attempt = s.attempts.find((a) => a.id === attemptId)
+  const { data: test } = useAsync(() => (attempt ? loadTest(attempt.testId) : Promise.reject(new Error('none'))), [attempt?.testId])
+  const [filter, setFilter] = useState<'all' | 'wrong' | 'flagged' | 'right'>('wrong')
+  const [chat, setChat] = useState<{ open: boolean; prefill?: string }>({ open: false })
+
+  const context = useMemo(() => {
+    if (!attempt || !test) return ''
+    const wrong = attempt.answers
+      .map((a, n) => ({ a, n: n + 1 }))
+      .filter(({ a }) => !a.correct)
+      .slice(0, 30)
+      .map(({ a, n }) => {
+        const q = test.modules[a.module].questions[a.index]
+        const chosen = a.value == null || a.value === '' ? 'blank' : q.format === 'mc' ? L[Number(a.value)] : a.value
+        const correct = q.format === 'mc' ? L[q.correct ?? 0] : q.answer
+        return `Q${n} (module ${a.module + 1}): ${stripHtml(q.passage).slice(0, 350)} | ${q.question.slice(0, 200)} | choices: ${q.options.map((o, i) => `${L[i]}) ${stripHtml(o)}`).join('; ')} | student: ${chosen} | correct: ${correct}`
+      })
+      .join('\n')
+    return `The student just finished "${attempt.testName}" (${attempt.type === 'MATH' ? 'SAT Math' : 'SAT Reading & Writing'}) in ${attempt.mode} mode. Raw score ${attempt.raw}/${attempt.total}, estimated section score ${attempt.scaled}. Questions they missed or left blank:\n${wrong || 'none'}`
+  }, [attempt, test])
+
+  if (!attempt)
+    return (
+      <div className="card p-10 text-center">
+        <p className="text-[15px]">This result isn't saved on this device.</p>
+        <Link to="/app/results" className="btn btn-dark mt-5 h-11 px-6 text-[14px]">
+          See my results
+        </Link>
+      </div>
+    )
+
+  const acc = Math.round((attempt.raw / attempt.total) * 100)
+  const secs = attempt.answers.reduce((x, a) => x + a.seconds, 0)
+  const wrongN = attempt.answers.filter((a) => !a.correct).length
+  const flaggedN = attempt.answers.filter((a) => a.flagged).length
+  const items = attempt.answers.map((a, n) => ({ a, n: n + 1 })).filter(({ a }) => (filter === 'all' ? true : filter === 'wrong' ? !a.correct : filter === 'flagged' ? a.flagged : a.correct))
+
+  return (
+    <div>
+      {/* Score header */}
+      <section className="relative overflow-hidden rounded-[28px] bg-pine p-7 text-cream sm:p-9">
+        <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-jg-500/20 blur-3xl" />
+        <div className="relative flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-[13px] capitalize text-cream/55">
+              {attempt.testName} · {attempt.mode} mode
+            </p>
+            <p className="mt-3 flex items-baseline gap-3">
+              <span className="display text-[72px] leading-none tabular-nums">{attempt.scaled}</span>
+              <span className="text-[15px] text-cream/55">/ 800 estimated</span>
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-6 text-center">
+            {[
+              [`${attempt.raw}/${attempt.total}`, 'correct'],
+              [`${acc}%`, 'accuracy'],
+              [`${Math.round(secs / attempt.total)}s`, 'per question'],
+            ].map(([v, l]) => (
+              <div key={l}>
+                <p className="font-serif text-[26px] tabular-nums">{v}</p>
+                <p className="text-[12px] text-cream/50">{l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="relative mt-7 flex flex-wrap gap-2.5">
+          <button onClick={() => setChat({ open: true })} className="btn btn-green h-11 px-5 text-[14px]">
+            <img src="/humo-mark.svg" alt="" className="size-6 rounded-md" /> Talk it through with Humo
+          </button>
+          <Link to="/app/tests" className="btn h-11 border border-white/15 px-5 text-[14px] text-cream hover:bg-white/[0.06]">
+            <RotateCcw className="size-4" /> Another test
+          </Link>
+        </div>
+      </section>
+
+      {/* Answer map */}
+      <section className="card mt-5 p-5 sm:p-6">
+        <div className="flex items-center gap-2 text-[14px] font-semibold">
+          <Target className="size-4 text-jg-600" /> Answer map
+        </div>
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {attempt.answers.map((a, n) => (
+            <a
+              key={n}
+              href={`#q-${a.module}-${a.index}`}
+              onClick={() => setFilter('all')}
+              className={`grid size-8 place-items-center rounded-lg text-[11.5px] font-semibold tabular-nums ${a.correct ? 'bg-emerald-500 text-white' : a.value == null || a.value === '' ? 'bg-[#e9e3d7] text-moss' : 'bg-red-500 text-white'}`}
+            >
+              {n + 1}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Review */}
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="display text-[28px]">Review</h2>
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              ['wrong', `Wrong & blank (${wrongN})`],
+              ['flagged', `Flagged (${flaggedN})`],
+              ['right', `Correct (${attempt.raw})`],
+              ['all', 'All'],
+            ] as const
+          ).map(([k, l]) => (
+            <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ${filter === k ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf]'}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-4">
+        {!test ? (
+          <div className="card h-40 animate-pulse" />
+        ) : items.length === 0 ? (
+          <div className="card p-10 text-center text-[14px] text-moss">Nothing here.</div>
+        ) : (
+          items.map(({ a, n }) => <ReviewItem key={n} test={test} attempt={attempt} m={a.module} i={a.index} n={n} onAsk={(p) => setChat({ open: true, prefill: p })} />)
+        )}
+      </div>
+
+      {/* Floating Humo button */}
+      <button
+        onClick={() => setChat({ open: true })}
+        className="fixed bottom-24 right-5 z-30 flex items-center gap-2 rounded-full bg-pine py-2 pl-2 pr-4 text-[14px] font-semibold text-cream shadow-xl shadow-pine/30 transition hover:scale-[1.03] md:bottom-8"
+        aria-label="Chat with Humo about this test"
+      >
+        <img src="/humo-mark.svg" alt="" className="size-9 rounded-full ring-2 ring-jg-500" />
+        Ask Humo
+        <MessageCircle className="size-4 opacity-70" />
+      </button>
+
+      <HumoDrawer
+        open={chat.open}
+        prefill={chat.prefill}
+        onClose={() => setChat({ open: false })}
+        context={context}
+        greeting={`I've looked at your ${attempt.testName}. You got ${attempt.raw} of ${attempt.total}${wrongN ? ` — ${wrongN} to learn from` : '. Perfect!'}. What do you want to go through first?`}
+        suggestions={['What should I study first?', 'Explain my hardest mistake', 'Was it a timing problem?', 'Make me a 1-week plan from this test']}
+      />
+    </div>
+  )
+}

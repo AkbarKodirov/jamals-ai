@@ -1,0 +1,465 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Bookmark, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, X } from 'lucide-react'
+import { isCorrect, loadTest, markActive, scaleSection, setStore, useAsync, type Attempt, type Mode, type Test, type TestQuestion } from '../store'
+import { HumoExplain } from '../components/HumoExplain'
+
+const LETTERS = ['A', 'B', 'C', 'D']
+
+export function QuestionBody({ q, className = '' }: { q: TestQuestion; className?: string }) {
+  return <p className={`whitespace-pre-wrap text-[16.5px] font-medium leading-relaxed ${className}`}>{q.question}</p>
+}
+
+export function Passage({ html }: { html: string }) {
+  // Content is authored by Jamals Academy and bundled with the app.
+  return <div className="prose-q font-serif text-[17px] leading-[1.75] text-pine" dangerouslySetInnerHTML={{ __html: html }} />
+}
+
+type Ans = { value: string | null; flagged: boolean; seconds: number; checked: boolean; struck: number[] }
+
+export default function TakeTest() {
+  const { id = '' } = useParams()
+  const [params] = useSearchParams()
+  const mode = (params.get('mode') as Mode) || 'exam'
+  const { data: test, error } = useAsync(() => loadTest(id), [id])
+  if (error) return <p className="p-10 text-center text-red-600">{error}</p>
+  if (!test)
+    return (
+      <div className="grid min-h-svh place-items-center">
+        <span className="size-7 animate-spin rounded-full border-2 border-jg-500 border-t-transparent" />
+      </div>
+    )
+  return <Runner test={test} mode={mode} />
+}
+
+function Runner({ test, mode }: { test: Test; mode: Mode }) {
+  const nav = useNavigate()
+  const timed = mode !== 'practice'
+  const perModule = (test.type === 'MATH' ? 35 : 32) * 60 * (mode === 'sprint' ? 0.7 : 1)
+
+  const [mod, setMod] = useState(0)
+  const [idx, setIdx] = useState(0)
+  const [answers, setAnswers] = useState<Ans[][]>(() => test.modules.map((m) => m.questions.map(() => ({ value: null, flagged: false, seconds: 0, checked: false, struck: [] }))))
+  const [left, setLeft] = useState(Math.round(perModule))
+  const [hideTimer, setHideTimer] = useState(false)
+  const [eliminate, setEliminate] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
+  const [phase, setPhase] = useState<'question' | 'review' | 'break'>('question')
+  const [confirmExit, setConfirmExit] = useState(false)
+  const started = useRef(Date.now())
+  const qStart = useRef(Date.now())
+
+  const questions = test.modules[mod].questions
+  const q = questions[idx]
+  const a = answers[mod][idx]
+
+  const patch = useCallback(
+    (p: Partial<Ans>, m = mod, i = idx) => setAnswers((all) => all.map((row, mi) => (mi !== m ? row : row.map((x, qi) => (qi !== i ? x : { ...x, ...p }))))),
+    [mod, idx],
+  )
+
+  // time spent per question
+  const commitTime = useCallback(() => {
+    const now = Date.now()
+    const dt = Math.round((now - qStart.current) / 1000)
+    qStart.current = now
+    if (phase === 'question') setAnswers((all) => all.map((row, mi) => (mi !== mod ? row : row.map((x, qi) => (qi !== idx ? x : { ...x, seconds: x.seconds + dt })))))
+  }, [mod, idx, phase])
+
+  const go = (i: number) => {
+    commitTime()
+    setIdx(i)
+    setNavOpen(false)
+    setPhase('question')
+  }
+
+  const finish = useCallback(
+    (final: Ans[][]) => {
+      const flat = test.modules.flatMap((m, mi) =>
+        m.questions.map((qq, qi) => {
+          const x = final[mi][qi]
+          return { module: mi, index: qi, value: x.value, correct: isCorrect(qq, x.value), seconds: x.seconds, flagged: x.flagged }
+        }),
+      )
+      const raw = flat.filter((x) => x.correct).length
+      const attempt: Attempt = {
+        id: Math.random().toString(36).slice(2, 10),
+        testId: test.id,
+        testName: test.name,
+        type: test.type,
+        mode,
+        startedAt: started.current,
+        finishedAt: Date.now(),
+        answers: flat,
+        raw,
+        total: flat.length,
+        scaled: scaleSection(raw, flat.length),
+      }
+      setStore((s) => ({
+        ...s,
+        attempts: [...s.attempts, attempt],
+        mistakes: [
+          ...s.mistakes.filter((m) => !flat.some((f) => f.correct && m.key === `${test.id}:${f.module}:${f.index}`)),
+          ...flat
+            .filter((f) => !f.correct && !s.mistakes.some((m) => m.key === `${test.id}:${f.module}:${f.index}` && !m.cleared))
+            .map((f) => ({ key: `${test.id}:${f.module}:${f.index}`, testId: test.id, module: f.module, index: f.index, addedAt: Date.now(), cleared: false })),
+        ],
+      }))
+      markActive(Math.round((Date.now() - started.current) / 1000))
+      nav(`/app/results/${attempt.id}`, { replace: true })
+    },
+    [mode, nav, test],
+  )
+
+  const endModule = useCallback(() => {
+    commitTime()
+    if (mod < test.modules.length - 1) {
+      setPhase('break')
+    } else {
+      setAnswers((final) => {
+        queueMicrotask(() => finish(final))
+        return final
+      })
+    }
+  }, [commitTime, finish, mod, test.modules.length])
+
+  const startNextModule = () => {
+    setMod((m) => m + 1)
+    setIdx(0)
+    setLeft(Math.round(perModule))
+    setPhase('question')
+    qStart.current = Date.now()
+  }
+
+  // timer
+  useEffect(() => {
+    if (!timed || phase === 'break') return
+    const t = setInterval(() => setLeft((s) => s - 1), 1000)
+    return () => clearInterval(t)
+  }, [timed, phase, mod])
+  useEffect(() => {
+    if (timed && left <= 0 && phase !== 'break') endModule()
+  }, [left, timed, phase, endModule])
+
+  // keyboard: arrows to move, A–D to answer
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (phase !== 'question' || (e.target as HTMLElement).tagName === 'INPUT') return
+      if (e.key === 'ArrowRight' && idx < questions.length - 1) go(idx + 1)
+      if (e.key === 'ArrowLeft' && idx > 0) go(idx - 1)
+      const k = 'abcd'.indexOf(e.key.toLowerCase())
+      if (k >= 0 && q.format === 'mc' && !(mode === 'practice' && a.checked)) patch({ value: String(k) })
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  // leaving mid-test loses progress
+  useEffect(() => {
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault()
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [])
+
+  const mm = String(Math.max(0, Math.floor(left / 60))).padStart(2, '0')
+  const ss = String(Math.max(0, left % 60)).padStart(2, '0')
+  const answeredCount = answers[mod].filter((x) => x.value != null && x.value !== '').length
+  const hasPassage = !!q.passage
+
+  const locked = mode === 'practice' && a.checked
+  const sectionLabel = test.type === 'MATH' ? 'Math' : 'Reading and Writing'
+
+  const body = (() => {
+    if (phase === 'break')
+      return (
+        <div className="mx-auto max-w-lg px-6 py-20 text-center">
+          <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
+          <h2 className="display mt-6 text-[34px]">Module {mod + 1} done</h2>
+          <p className="mt-3 text-[15px] text-moss">
+            {mode === 'practice' ? 'Take a breath, then continue to the next module.' : `Module ${mod + 2} starts with a fresh ${Math.round(perModule / 60)}-minute timer. On test day you get a 10-minute break between sections, not between modules — so keep going while you're warm.`}
+          </p>
+          <button onClick={startNextModule} className="btn btn-dark mt-8 h-12 px-8 text-[15px]">
+            Start module {mod + 2}
+          </button>
+        </div>
+      )
+    if (phase === 'review')
+      return (
+        <div className="mx-auto max-w-3xl px-6 py-12">
+          <h2 className="display text-center text-[32px]">Check your work</h2>
+          <p className="mt-2 text-center text-[14px] text-moss">
+            {answeredCount} of {questions.length} answered. Click a question to go back to it.
+          </p>
+          <div className="card mt-8 p-6">
+            <div className="flex flex-wrap items-center justify-center gap-5 text-[12px] text-moss">
+              <span className="flex items-center gap-1.5">
+                <span className="size-3 rounded border border-dashed border-moss" /> Unanswered
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="size-3 rounded bg-pine" /> Answered
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Bookmark className="size-3 fill-red-500 text-red-500" /> For review
+              </span>
+            </div>
+            <div className="mt-6 grid grid-cols-6 gap-2 sm:grid-cols-9">
+              {answers[mod].map((x, i) => (
+                <button key={i} onClick={() => go(i)} className={`relative grid aspect-square place-items-center rounded-lg text-[14px] font-semibold tabular-nums ${x.value != null && x.value !== '' ? 'bg-pine text-cream' : 'border border-dashed border-moss/60 text-pine'}`}>
+                  {i + 1}
+                  {x.flagged && <Bookmark className="absolute -right-1 -top-1.5 size-4 fill-red-500 text-red-500" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-8 flex justify-center gap-3">
+            <button onClick={() => setPhase('question')} className="btn btn-ghost h-11 px-6 text-[14px]">
+              Back to questions
+            </button>
+            <button onClick={endModule} className="btn btn-dark h-11 px-6 text-[14px]">
+              {mod < test.modules.length - 1 ? `Submit module ${mod + 1}` : 'Submit test'}
+            </button>
+          </div>
+        </div>
+      )
+    return null
+  })()
+
+  return (
+    <div className="flex min-h-svh flex-col" onCopy={(e) => e.preventDefault()} onContextMenu={(e) => e.preventDefault()}>
+      {/* Header */}
+      <header className="sticky top-0 z-20 border-b border-[#e8e2d6] bg-white">
+        <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
+          <div className="min-w-0">
+            <p className="truncate text-[14px] font-semibold">
+              Section {test.type === 'MATH' ? 2 : 1}, Module {mod + 1}: {sectionLabel}
+            </p>
+            <p className="truncate text-[12px] capitalize text-moss">
+              {test.name} · {mode} mode
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            {timed ? (
+              <>
+                <span className={`font-mono text-[20px] font-semibold tabular-nums ${hideTimer ? 'invisible' : ''} ${left < 300 ? 'text-red-600' : ''}`}>
+                  {mm}:{ss}
+                </span>
+                <button onClick={() => setHideTimer((h) => !h)} className="flex items-center gap-1 rounded-full border border-[#e3dccf] px-2.5 py-0.5 text-[11px] text-moss hover:bg-cream">
+                  {hideTimer ? <Eye className="size-3" /> : <EyeOff className="size-3" />} {hideTimer ? 'Show' : 'Hide'}
+                </button>
+              </>
+            ) : (
+              <span className="rounded-full bg-jg-50 px-3 py-1 text-[12px] font-semibold text-jg-700">Practice · untimed</span>
+            )}
+          </div>
+          <div className="flex justify-end gap-1.5">
+            <button
+              onClick={() => setEliminate((v) => !v)}
+              aria-pressed={eliminate}
+              title="Answer eliminator"
+              className={`hidden h-9 items-center rounded-lg border px-2.5 text-[12px] font-semibold line-through sm:flex ${eliminate ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}
+            >
+              ABC
+            </button>
+            <button onClick={() => setConfirmExit(true)} className="flex h-9 items-center gap-1.5 rounded-lg border border-[#e3dccf] px-3 text-[13px] text-moss hover:bg-cream">
+              <LogOut className="size-4" /> <span className="hidden sm:inline">Exit</span>
+            </button>
+          </div>
+        </div>
+        {timed && <div className="h-0.5 bg-jg-500 transition-[width] duration-1000" style={{ width: `${Math.max(0, (left / perModule) * 100)}%` }} />}
+      </header>
+
+      {/* Main */}
+      <main className="flex-1">
+        {body ?? (
+          <div className={`mx-auto grid h-full ${hasPassage ? 'max-w-7xl lg:grid-cols-2' : 'max-w-3xl'}`}>
+            {hasPassage && (
+              <section className="border-b border-[#efe9de] px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
+                <Passage html={q.passage!} />
+              </section>
+            )}
+            <section className="px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto">
+              <div className="flex items-center justify-between rounded-lg bg-cream px-3 py-2">
+                <span className="grid size-7 place-items-center rounded-md bg-pine text-[13px] font-semibold text-cream tabular-nums">{idx + 1}</span>
+                <button onClick={() => patch({ flagged: !a.flagged })} className={`flex items-center gap-1.5 text-[13px] ${a.flagged ? 'font-semibold text-red-600' : 'text-moss hover:text-pine'}`}>
+                  <Bookmark className={`size-4 ${a.flagged ? 'fill-red-500 text-red-500' : ''}`} /> Mark for review
+                </button>
+              </div>
+              <QuestionBody q={q} className="mt-5" />
+
+              {q.format === 'mc' ? (
+                <div className="mt-6 space-y-2.5">
+                  {q.options.map((opt, i) => {
+                    const picked = a.value === String(i)
+                    const struck = a.struck.includes(i)
+                    const showRight = locked && q.correct === i
+                    const showWrong = locked && picked && q.correct !== i
+                    return (
+                      <div key={i} className="flex items-center gap-2">
+                        <button
+                          disabled={locked}
+                          onClick={() => patch({ value: String(i), struck: a.struck.filter((s) => s !== i) })}
+                          className={`flex flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${
+                            showRight ? 'border-emerald-500 bg-emerald-50' : showWrong ? 'border-red-400 bg-red-50' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
+                          } ${struck ? 'opacity-45' : ''}`}
+                        >
+                          <span className={`grid size-7 shrink-0 place-items-center rounded-full border-2 text-[12px] font-bold ${picked ? 'border-pine bg-pine text-cream' : 'border-pine/40'}`}>{LETTERS[i]}</span>
+                          <span className={`prose-q ${struck ? 'line-through' : ''}`} dangerouslySetInnerHTML={{ __html: opt }} />
+                          {showRight && <Check className="ml-auto size-5 text-emerald-600" />}
+                          {showWrong && <X className="ml-auto size-5 text-red-500" />}
+                        </button>
+                        {eliminate && !locked && (
+                          <button
+                            onClick={() => patch({ struck: struck ? a.struck.filter((s) => s !== i) : [...a.struck, i], value: picked && !struck ? null : a.value })}
+                            aria-label={`${struck ? 'Undo eliminate' : 'Eliminate'} ${LETTERS[i]}`}
+                            className="grid size-8 shrink-0 place-items-center rounded-full border border-[#d8d0bf] text-[11px] font-bold text-moss line-through hover:bg-cream"
+                          >
+                            {struck ? '↺' : LETTERS[i]}
+                          </button>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="mt-6">
+                  <label className="text-[13px] text-moss" htmlFor="sa">
+                    Your answer (number, fraction like 3/4, or decimal)
+                  </label>
+                  <input
+                    id="sa"
+                    disabled={locked}
+                    inputMode="decimal"
+                    value={a.value ?? ''}
+                    onChange={(e) => patch({ value: e.target.value.replace(/[^0-9./-]/g, '').slice(0, 6) })}
+                    className="mt-2 block w-48 rounded-xl border-2 border-[#e6e0d3] px-4 py-3 font-mono text-[20px] focus:border-pine focus:outline-none"
+                  />
+                  {locked && (
+                    <p className={`mt-3 text-[14px] font-semibold ${isCorrect(q, a.value) ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {isCorrect(q, a.value) ? 'Correct' : `Correct answer: ${q.answer}`}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {mode === 'practice' && (
+                <div className="mt-6">
+                  {!a.checked ? (
+                    <button disabled={a.value == null || a.value === ''} onClick={() => patch({ checked: true })} className="btn btn-green h-10 px-5 text-[14px] disabled:opacity-40">
+                      Check answer
+                    </button>
+                  ) : (
+                    <HumoExplain testId={test.id} qKey={`${mod}:${idx}`} q={q} />
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
+      </main>
+
+      {/* Footer nav */}
+      {phase === 'question' && (
+        <footer className="sticky bottom-0 z-20 border-t border-[#e8e2d6] bg-white">
+          <div className="relative grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
+            <span className="hidden truncate text-[13px] text-moss sm:block">{answeredCount} answered</span>
+            <span className="sm:hidden" />
+            <button onClick={() => setNavOpen((o) => !o)} className="flex items-center gap-1.5 rounded-lg bg-pine px-4 py-2 text-[13px] font-semibold text-cream">
+              Question {idx + 1} of {questions.length} <ChevronDown className={`size-4 transition ${navOpen ? 'rotate-180' : ''}`} />
+            </button>
+            <div className="flex justify-end gap-2">
+              <button disabled={idx === 0} onClick={() => go(idx - 1)} className="btn btn-ghost h-10 px-4 text-[13px] disabled:opacity-30">
+                <ChevronLeft className="size-4" /> <span className="hidden sm:inline">Back</span>
+              </button>
+              {idx < questions.length - 1 ? (
+                <button onClick={() => go(idx + 1)} className="btn btn-dark h-10 px-5 text-[13px]">
+                  Next <ChevronRight className="size-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    commitTime()
+                    setPhase('review')
+                  }}
+                  className="btn btn-dark h-10 px-5 text-[13px]"
+                >
+                  Review
+                </button>
+              )}
+            </div>
+
+            <AnimatePresence>
+              {navOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  className="absolute bottom-[4.5rem] left-1/2 w-[min(92vw,30rem)] -translate-x-1/2 rounded-2xl border border-[#e8e2d6] bg-white p-5 shadow-2xl"
+                >
+                  <p className="text-center text-[14px] font-semibold">
+                    Module {mod + 1} questions
+                  </p>
+                  <div className="mt-4 grid grid-cols-7 gap-2 sm:grid-cols-9">
+                    {answers[mod].map((x, i) => (
+                      <button
+                        key={i}
+                        onClick={() => go(i)}
+                        className={`relative grid aspect-square place-items-center rounded-lg text-[13px] font-semibold tabular-nums ${i === idx ? 'ring-2 ring-jg-500 ring-offset-1' : ''} ${
+                          mode === 'practice' && x.checked ? (isCorrect(questions[i], x.value) ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white') : x.value != null && x.value !== '' ? 'bg-pine text-cream' : 'border border-dashed border-moss/60'
+                        }`}
+                      >
+                        {i + 1}
+                        {x.flagged && <Bookmark className="absolute -right-1 -top-1.5 size-3.5 fill-red-500 text-red-500" />}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => {
+                      commitTime()
+                      setNavOpen(false)
+                      setPhase('review')
+                    }}
+                    className="mt-4 w-full rounded-xl border border-[#e3dccf] py-2 text-[13px] font-medium hover:bg-cream"
+                  >
+                    Go to review page
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </footer>
+      )}
+
+      {/* Exit confirm */}
+      <AnimatePresence>
+        {confirmExit && (
+          <motion.div className="fixed inset-0 z-50 grid place-items-center bg-pine/50 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div role="alertdialog" className="w-full max-w-sm rounded-3xl bg-white p-6 text-center">
+              <h3 className="font-serif text-[24px]">Leave this test?</h3>
+              <p className="mt-2 text-[14px] text-moss">You can submit now and see your score for what you answered, or quit without saving.</p>
+              <div className="mt-6 grid gap-2">
+                <button
+                  onClick={() =>
+                    setAnswers((final) => {
+                      queueMicrotask(() => finish(final))
+                      return final
+                    })
+                  }
+                  className="btn btn-dark h-11 text-[14px]"
+                >
+                  Submit and see results
+                </button>
+                <button onClick={() => nav('/app/tests')} className="btn h-11 text-[14px] text-red-600 hover:bg-red-50">
+                  Quit without saving
+                </button>
+                <button onClick={() => setConfirmExit(false)} className="btn btn-ghost h-11 text-[14px]">
+                  Keep going
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}

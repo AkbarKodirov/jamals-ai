@@ -31,7 +31,16 @@
   html { scroll-behavior: smooth; }
   body {
     @apply bg-ink text-cream antialiased;
+    /* no text selection anywhere except form fields */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
+  input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  img { -webkit-user-drag: none; }
   ::selection { background: #62b968; color: #0a0f0e; }
   :focus-visible { outline: 2px solid #62b968; outline-offset: 3px; border-radius: 8px; }
 }
@@ -59,6 +68,28 @@
     background-clip: text;
     color: transparent;
   }
+  /* light app surfaces (dashboard) */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e9e3d7;
+    border-radius: 24px;
+  }
+  .card-hover { transition: border-color .2s, transform .2s, box-shadow .2s; }
+  .card-hover:hover { border-color: #cfc6b4; transform: translateY(-2px); box-shadow: 0 10px 30px -18px rgb(27 41 37 / .35); }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; border-radius:9999px; font-weight:600; transition: background-color .15s, transform .1s, opacity .15s; }
+  .btn:active { transform: scale(.98); }
+  .btn-dark { background:#1b2925; color:#faf7f1; }
+  .btn-dark:hover { background:#253731; }
+  .btn-green { background:#48ae4f; color:#0a0f0e; }
+  .btn-green:hover { background:#62b968; }
+  .btn-ghost { border:1px solid #e3dccf; color:#1b2925; background:#fff; }
+  .btn-ghost:hover { border-color:#c9c0ad; }
+  .prose-q p { margin: 0 0 .75em; }
+  .prose-q ul { margin: .25em 0 .75em 1.1em; list-style: disc; }
+  .prose-q li { margin: .2em 0; }
+  .prose-q table { border-collapse: collapse; margin: .5em 0; font-size: .92em; }
+  .prose-q th, .prose-q td { border: 1px solid #d8d0bf; padding: .35em .6em; }
+  .prose-q u { text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .panel {
     background: linear-gradient(180deg, rgb(37 55 49 / 0.55), rgb(27 41 37 / 0.25));
     border: 1px solid rgb(250 247 241 / 0.08);
