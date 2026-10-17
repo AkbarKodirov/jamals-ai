@@ -36,7 +36,7 @@ export function Proof() {
 
 export function HowItWorks() {
   const steps = [
-    ['Take a 40-minute diagnostic', 'A short, timed mix of every SAT domain or IELTS skill. You get an estimated score right away.'],
+    ['Take a 40-minute diagnostic', 'A short, timed mix of every Digital SAT domain. You get an estimated score right away.'],
     ['Humo builds your plan', 'Your test date, target score and weak spots become a week-by-week schedule.'],
     ['Practice and review daily', 'Short sets from the question bank. Every mistake goes to your notebook with an explanation.'],
     ['Sit full mocks before test day', 'Timed, adaptive mocks show whether you are on track — and what to fix in the last weeks.'],
@@ -75,7 +75,7 @@ const PLANS = [
     note: 'For students with a test date',
     cta: 'Start with Pro',
     featured: true,
-    features: ['Full question bank', 'Unlimited SAT and IELTS mocks', 'Unlimited Humo', 'Personal study plan', 'IELTS Writing band estimates'],
+    features: ['Full question bank', 'Unlimited full SAT mocks', 'Unlimited Humo', 'Personal study plan', 'Detailed analytics by skill'],
   },
   {
     name: 'Academy',
@@ -135,7 +135,7 @@ export function Pricing() {
 }
 
 const FAQ = [
-  ['Is Jamals AI the same as the official SAT or IELTS?', 'No. Our questions and mocks follow the official formats and timing closely, but they are written by Jamals Academy teachers. Use the official Bluebook practice tests as well before test day.'],
+  ['Is Jamals AI the same as the official SAT?', 'No. Our questions and mocks follow the official formats and timing closely, but they are written by Jamals Academy teachers. Use the official Bluebook practice tests as well before test day.'],
   ['How accurate are the score estimates?', 'Estimates are most reliable after a full mock. A single practice set gives a rough range; Humo tells you how confident the estimate is.'],
   ['Can Humo explain in Uzbek or Russian?', "Yes. Ask in O'zbekcha or Русский and Humo will answer in that language, while keeping exam terms in English so they match the real test."],
   ['Does Humo just give me the answers?', 'When you are practising, Humo starts with a hint and only shows the full solution if you ask. In review mode it explains the full reasoning.'],
@@ -196,7 +196,7 @@ export function Footer() {
             <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full" />
             <span className="text-[15px] font-semibold tracking-tight">Jamals AI</span>
           </span>
-          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">The exam platform of Jamals International Academy — teaching SAT in Tashkent since 2020. Digital SAT and IELTS preparation with Humo.</p>
+          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">The exam platform of Jamals International Academy — teaching SAT in Tashkent since 2020. Digital SAT preparation with Humo.</p>
         </div>
         {[
           ['Product', [['Try Humo', '#try'], ['Features', '#features'], ['Pricing', '#pricing']]],
@@ -219,8 +219,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/[0.07]">
         <p className="mx-auto max-w-7xl px-4 py-6 text-[11px] leading-relaxed text-white/30 sm:px-6">
-          © {new Date().getFullYear()} Jamals International Academy. SAT® is a trademark of the College Board, and IELTS™ is jointly owned by the British Council, IDP and Cambridge University Press &
-          Assessment; neither is affiliated with or endorses this product.
+          © {new Date().getFullYear()} Jamals International Academy. SAT® is a trademark of the College Board, which is not affiliated with and does not endorse this product.
         </p>
       </div>
     </footer>

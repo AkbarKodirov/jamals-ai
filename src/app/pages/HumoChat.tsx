@@ -11,7 +11,7 @@ export default function HumoChat() {
     last ? `Last test: ${last.testName}, ${last.raw}/${last.total} (${last.scaled}) in ${last.mode} mode.` : 'No tests taken yet.',
     `${s.mistakes.filter((m) => !m.cleared).length} open mistakes in their notebook.`,
   ].join(' ')
-  const { msgs, busy, send } = useHumoChat("Salom! I'm Humo. Ask me about any SAT or IELTS question, or tell me your test date and target and I'll build a study plan.", context)
+  const { msgs, busy, send } = useHumoChat("Salom! I'm Humo. Ask me about any SAT question, or tell me your test date and target and I'll build a study plan.", context)
   const [input, setInput] = useState('')
 
   return (
@@ -20,7 +20,7 @@ export default function HumoChat() {
         <img src="/humo-mark.svg" alt="" className="size-12 rounded-2xl" />
         <div>
           <h1 className="display text-[28px] leading-none">Humo</h1>
-          <p className="mt-1 text-[13px] text-moss">Your SAT and IELTS tutor · English, O'zbekcha, Русский</p>
+          <p className="mt-1 text-[13px] text-moss">Your Digital SAT tutor · English, O'zbekcha, Русский</p>
         </div>
       </div>
       <div className="card flex-1 overflow-y-auto bg-cream/40 p-5">
@@ -28,7 +28,7 @@ export default function HumoChat() {
       </div>
       {msgs.length === 1 && (
         <div className="mt-3 flex flex-wrap gap-2">
-          {['Build me a 6-week SAT plan', 'Ikkinchi darajali tenglamalarni tushuntir', 'How is IELTS Writing scored?', 'What should I study after my last test?'].map((t) => (
+          {['Build me a 6-week SAT plan', 'Ikkinchi darajali tenglamalarni tushuntir', 'How is the Digital SAT scored?', 'What should I study after my last test?'].map((t) => (
             <button key={t} onClick={() => send(t)} className="rounded-full border border-[#e3dccf] bg-white px-3.5 py-1.5 text-[13px] hover:border-jg-500">
               {t}
             </button>

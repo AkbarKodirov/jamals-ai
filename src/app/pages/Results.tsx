@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bookmark, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
-import { isCorrect, loadTest, stripHtml, useAsync, useStore, type Attempt, type Test } from '../store'
+import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
+import { isCorrect, loadTest, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
 import { HumoDrawer } from '../components/HumoDrawer'
 import { Passage, QuestionBody } from './TakeTest'
@@ -28,6 +28,7 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
   const blank = a.value == null || a.value === ''
   const { ref, seen } = useInView<HTMLElement>()
   const [showPassage, setShowPassage] = useState(!ok)
+  const isSaved = useStore().saved.some((x) => x.key === `${test.id}:${m}:${i}`)
 
   return (
     <article ref={ref} id={`q-${m}-${i}`} className="card scroll-mt-24 overflow-hidden">
@@ -40,8 +41,13 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
           </span>
           {a.flagged && <Bookmark className="size-4 fill-red-500 text-red-500" />}
         </span>
-        <span className="flex items-center gap-1 text-[12px] text-moss tabular-nums">
-          <Clock className="size-3.5" /> {a.seconds}s
+        <span className="flex items-center gap-3 text-[12px] text-moss tabular-nums">
+          <button onClick={() => toggleSaved(test.id, m, i)} className={`flex items-center gap-1 rounded-full px-2 py-1 font-medium ${isSaved ? 'bg-pine text-cream' : 'hover:bg-white'}`}>
+            <BookmarkPlus className="size-3.5" /> {isSaved ? 'Saved' : 'Save'}
+          </button>
+          <span className="flex items-center gap-1">
+            <Clock className="size-3.5" /> {a.seconds}s
+          </span>
         </span>
       </div>
 
@@ -234,6 +240,7 @@ export default function Results() {
       <HumoDrawer
         open={chat.open}
         prefill={chat.prefill}
+        subtitle="Knows your answers on this test"
         onClose={() => setChat({ open: false })}
         context={context}
         greeting={`I've looked at your ${attempt.testName}. You got ${attempt.raw} of ${attempt.total}${wrongN ? ` — ${wrongN} to learn from` : '. Perfect!'}. What do you want to go through first?`}

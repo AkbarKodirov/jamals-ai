@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bookmark, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, X } from 'lucide-react'
+import { Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, Sigma, X } from 'lucide-react'
 import { isCorrect, loadTest, markActive, scaleSection, setStore, useAsync, type Attempt, type Mode, type Test, type TestQuestion } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
 
@@ -47,6 +47,8 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
   const [navOpen, setNavOpen] = useState(false)
   const [phase, setPhase] = useState<'question' | 'review' | 'break'>('question')
   const [confirmExit, setConfirmExit] = useState(false)
+  const [calc, setCalc] = useState(false)
+  const [refSheet, setRefSheet] = useState(false)
   const started = useRef(Date.now())
   const qStart = useRef(Date.now())
 
@@ -253,6 +255,16 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
             )}
           </div>
           <div className="flex justify-end gap-1.5">
+            {test.type === 'MATH' && (
+              <>
+                <button onClick={() => setCalc((v) => !v)} aria-pressed={calc} title="Desmos calculator" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${calc ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+                  <Calculator className="size-4" /> <span className="hidden lg:inline">Calculator</span>
+                </button>
+                <button onClick={() => setRefSheet((v) => !v)} aria-pressed={refSheet} title="Reference sheet" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${refSheet ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+                  <Sigma className="size-4" /> <span className="hidden lg:inline">Reference</span>
+                </button>
+              </>
+            )}
             <button
               onClick={() => setEliminate((v) => !v)}
               aria-pressed={eliminate}
@@ -270,7 +282,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
       </header>
 
       {/* Main */}
-      <main className="flex-1">
+      <main className={`flex-1 transition-[padding] ${calc ? 'lg:pl-[27rem]' : ''}`}>
         {body ?? (
           <div className={`mx-auto grid h-full ${hasPassage ? 'max-w-7xl lg:grid-cols-2' : 'max-w-3xl'}`}>
             {hasPassage && (
@@ -428,6 +440,51 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
             </AnimatePresence>
           </div>
         </footer>
+      )}
+
+      {/* Desmos calculator — the same graphing calculator built into Bluebook */}
+      {calc && (
+        <div className="fixed bottom-20 left-3 top-20 z-30 flex w-[min(94vw,26rem)] flex-col overflow-hidden rounded-2xl border border-[#e3dccf] bg-white shadow-2xl">
+          <div className="flex items-center justify-between border-b border-[#efe9de] px-4 py-2.5">
+            <span className="text-[13px] font-semibold">Desmos calculator</span>
+            <button onClick={() => setCalc(false)} aria-label="Close calculator" className="rounded-md p-1 text-moss hover:bg-cream">
+              <X className="size-4" />
+            </button>
+          </div>
+          <iframe title="Desmos graphing calculator" src="https://www.desmos.com/calculator" className="flex-1" />
+        </div>
+      )}
+      {refSheet && (
+        <div className="fixed right-3 top-20 z-30 w-[min(94vw,24rem)] rounded-2xl border border-[#e3dccf] bg-white p-5 shadow-2xl">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold">Reference sheet</span>
+            <button onClick={() => setRefSheet(false)} aria-label="Close reference sheet" className="rounded-md p-1 text-moss hover:bg-cream">
+              <X className="size-4" />
+            </button>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 font-mono text-[12.5px]">
+            {[
+              ['Circle', 'A = πr², C = 2πr'],
+              ['Rectangle', 'A = lw'],
+              ['Triangle', 'A = ½bh'],
+              ['Pythagoras', 'c² = a² + b²'],
+              ['30-60-90', 'x, x√3, 2x'],
+              ['45-45-90', 's, s, s√2'],
+              ['Box', 'V = lwh'],
+              ['Cylinder', 'V = πr²h'],
+              ['Sphere', 'V = 4⁄3 πr³'],
+              ['Cone', 'V = 1⁄3 πr²h'],
+              ['Pyramid', 'V = 1⁄3 lwh'],
+              ['Circle', '360° = 2π rad'],
+            ].map(([k, v], i) => (
+              <li key={i} className="rounded-lg bg-cream px-2.5 py-1.5">
+                <span className="block font-sans text-[10.5px] text-moss">{k}</span>
+                {v}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[11.5px] text-moss">The sum of the angles in a triangle is 180°.</p>
+        </div>
       )}
 
       {/* Exit confirm */}

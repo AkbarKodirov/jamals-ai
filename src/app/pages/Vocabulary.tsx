@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Brain, Check, Flame, Layers, ListChecks, RotateCcw, Search, Sparkles, X } from 'lucide-react'
+import { Brain, Check, Flame, Layers, ListChecks, PenLine, Plus, RotateCcw, Search, Sparkles, Trash2, X } from 'lucide-react'
 import { LEVELS, WORDS, type Word } from '../../data/vocab'
-import { markActive, setStore, useStore, type VocabProgress } from '../store'
+import { markActive, setStore, useStore, type CustomWord, type VocabProgress } from '../store'
+
+type AnyWord = Word | CustomWord
+let POOL: AnyWord[] = WORDS
 
 /* ---------- spaced repetition (SM-2 lite) ---------- */
 // rating: 0 again, 1 hard, 2 good, 3 easy
@@ -31,16 +34,17 @@ const status = (p?: VocabProgress) => (!p ? 'new' : p.reps >= 3 ? 'mastered' : '
 const shuffle = <T,>(a: T[]) => [...a].sort(() => Math.random() - 0.5)
 
 /* ---------- quiz ---------- */
-type QType = 'meaning' | 'word' | 'context' | 'synonym'
-type QItem = { type: QType; word: Word; prompt: string; options: string[]; answer: string }
+type QType = 'meaning' | 'word' | 'context' | 'synonym' | 'spell'
+type QItem = { type: QType; word: AnyWord; prompt: string; options: string[]; answer: string }
 
-function buildQuestion(word: Word, type: QType): QItem {
-  const pool = WORDS.filter((x) => x.word !== word.word)
+function buildQuestion(word: AnyWord, type: QType): QItem {
+  if (type === 'spell') return { type, word, prompt: word.def, options: [], answer: word.word }
+  const pool = POOL.filter((x) => x.word !== word.word)
   const samePos = pool.filter((x) => x.pos === word.pos)
   const others = shuffle(samePos.length >= 3 ? samePos : pool).slice(0, 3)
   if (type === 'meaning') return { type, word, prompt: word.word, options: shuffle([word.def, ...others.map((o) => o.def)]), answer: word.def }
   if (type === 'word') return { type, word, prompt: word.def, options: shuffle([word.word, ...others.map((o) => o.word)]), answer: word.word }
-  if (type === 'synonym') return { type, word, prompt: word.word, options: shuffle([word.syn[0], ...others.map((o) => o.syn[0])]), answer: word.syn[0] }
+  if (type === 'synonym' && word.syn[0]) return { type, word, prompt: word.word, options: shuffle([word.syn[0], ...others.map((o) => o.syn[0])]), answer: word.syn[0] }
   const re = new RegExp(`\\b${word.word.slice(0, Math.max(4, word.word.length - 3))}\\w*`, 'i')
   const blanked = word.ex.replace(re, '______')
   if (blanked === word.ex) return buildQuestion(word, 'word')
@@ -52,16 +56,18 @@ const QLABEL: Record<QType, string> = {
   word: 'Which word matches this meaning?',
   context: 'Which word completes the sentence?',
   synonym: 'Pick the closest synonym.',
+  spell: 'Type the word that matches this meaning.',
 }
 
-function Quiz({ words, types, onExit, title }: { words: Word[]; types: QType[]; onExit: () => void; title: string }) {
+function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[]; onExit: () => void; title: string }) {
   const items = useMemo(() => words.map((w, i) => buildQuestion(w, types[i % types.length])), [words, types])
   const [i, setI] = useState(0)
   const [picked, setPicked] = useState<string | null>(null)
   const [score, setScore] = useState(0)
   const [combo, setCombo] = useState(0)
   const [best, setBest] = useState(0)
-  const [misses, setMisses] = useState<Word[]>([])
+  const [misses, setMisses] = useState<AnyWord[]>([])
+  const [typed, setTyped] = useState('')
   const done = i >= items.length
   const q = items[i]
 
@@ -83,6 +89,7 @@ function Quiz({ words, types, onExit, title }: { words: Word[]; types: QType[]; 
   }
   function next() {
     setPicked(null)
+    setTyped('')
     setI((x) => x + 1)
     if (i + 1 >= items.length) markActive(items.length * 12)
   }
@@ -140,6 +147,27 @@ function Quiz({ words, types, onExit, title }: { words: Word[]; types: QType[]; 
         <motion.div key={i} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.2 }} className="card mt-6 p-6 sm:p-8">
           <p className="text-[13px] font-medium text-moss">{QLABEL[q.type]}</p>
           <p className={`mt-3 ${q.type === 'meaning' || q.type === 'synonym' ? 'display text-[40px]' : 'text-[19px] font-medium leading-relaxed'}`}>{q.prompt}</p>
+          {picked && q.type === 'spell' && picked !== q.answer && <p className="mt-2 text-[14px] text-red-600">Correct spelling: <span className="font-semibold">{q.answer}</span></p>}
+          {q.type === 'spell' && (
+            <form
+              className="mt-6 flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (!picked && typed.trim()) choose(typed.trim().toLowerCase() === q.answer.toLowerCase() ? q.answer : typed.trim())
+              }}
+            >
+              <input
+                autoFocus
+                disabled={!!picked}
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                placeholder={`${q.answer[0]}${'_ '.repeat(q.answer.length - 1)}`}
+                className={`h-12 flex-1 rounded-xl border-2 px-4 font-serif text-[20px] focus:outline-none ${picked ? (picked === q.answer ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50') : 'border-[#e6e0d3] focus:border-pine'}`}
+                aria-label="Type the word"
+              />
+              {!picked && <button className="btn btn-dark h-12 px-5 text-[14px]">Check</button>}
+            </form>
+          )}
           <div className="mt-6 grid gap-2.5">
             {q.options.map((o, k) => {
               const right = picked && o === q.answer
@@ -163,7 +191,7 @@ function Quiz({ words, types, onExit, title }: { words: Word[]; types: QType[]; 
                 <span className="font-semibold">{q.word.word}</span> <span className="text-moss">({q.word.pos})</span> — {q.word.def}
               </p>
               <p className="mt-1.5 font-serif text-[14.5px] italic text-pine/75">"{q.word.ex}"</p>
-              <p className="mt-1.5 text-[12.5px] text-moss">Synonyms: {q.word.syn.join(', ')}</p>
+              {q.word.syn.length > 0 && <p className="mt-1.5 text-[12.5px] text-moss">Synonyms: {q.word.syn.join(', ')}</p>}
               <button onClick={next} className="btn btn-dark mt-4 h-10 px-5 text-[13px]">
                 {i + 1 < items.length ? 'Next' : 'See results'}
               </button>
@@ -176,7 +204,7 @@ function Quiz({ words, types, onExit, title }: { words: Word[]; types: QType[]; 
 }
 
 /* ---------- flashcards ---------- */
-function Flashcards({ words, onExit }: { words: Word[]; onExit: () => void }) {
+function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void }) {
   const [queue, setQueue] = useState(words)
   const [flip, setFlip] = useState(false)
   const [doneN, setDoneN] = useState(0)
@@ -214,7 +242,7 @@ function Flashcards({ words, onExit }: { words: Word[]; onExit: () => void }) {
         <motion.div animate={{ rotateY: flip ? 180 : 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="relative size-full [transform-style:preserve-3d]">
           <div className="card absolute inset-0 grid place-items-center p-8 [backface-visibility:hidden]">
             <div className="text-center">
-              <span className="rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold capitalize text-moss">{card.level}</span>
+              <span className="rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold capitalize text-moss">{card.level === 'mine' ? 'My word' : card.level}</span>
               <p className="display mt-5 text-[46px]">{card.word}</p>
               <p className="mt-2 text-[13px] text-moss">{card.pos} · tap to flip</p>
             </div>
@@ -223,7 +251,7 @@ function Flashcards({ words, onExit }: { words: Word[]; onExit: () => void }) {
             <div className="text-center">
               <p className="text-[19px] font-medium leading-snug">{card.def}</p>
               <p className="mt-4 font-serif text-[15.5px] italic text-cream/75">"{card.ex}"</p>
-              <p className="mt-4 text-[12.5px] text-cream/55">Synonyms: {card.syn.join(', ')}</p>
+              {card.syn.length > 0 && <p className="mt-4 text-[12.5px] text-cream/55">Synonyms: {card.syn.join(', ')}</p>}
             </div>
           </div>
         </motion.div>
@@ -249,13 +277,15 @@ function Flashcards({ words, onExit }: { words: Word[]; onExit: () => void }) {
 /* ---------- page ---------- */
 export default function Vocabulary() {
   const s = useStore()
-  const [level, setLevel] = useState<Word['level'] | 'all'>('all')
-  const [session, setSession] = useState<null | { kind: 'quiz' | 'cards'; words: Word[]; types: QType[]; title: string }>(null)
+  const [level, setLevel] = useState<Word['level'] | 'mine' | 'all'>('all')
+  const [session, setSession] = useState<null | { kind: 'quiz' | 'cards'; words: AnyWord[]; types: QType[]; title: string }>(null)
   const [q, setQ] = useState('')
+  const ALL: AnyWord[] = [...s.customWords, ...WORDS]
+  POOL = ALL
 
-  const scoped = WORDS.filter((w) => level === 'all' || w.level === level)
+  const scoped = ALL.filter((w) => level === 'all' || w.level === level)
   const counts = { new: 0, learning: 0, mastered: 0 }
-  WORDS.forEach((w) => counts[status(s.vocab[w.word])]++)
+  ALL.forEach((w) => counts[status(s.vocab[w.word])]++)
   const due = scoped.filter((w) => s.vocab[w.word] && s.vocab[w.word].due <= Date.now())
   const fresh = scoped.filter((w) => !s.vocab[w.word])
   const daily = [...shuffle(due), ...fresh].slice(0, 20)
@@ -265,16 +295,16 @@ export default function Vocabulary() {
   if (session)
     return session.kind === 'quiz' ? <Quiz words={session.words} types={session.types} title={session.title} onExit={() => setSession(null)} /> : <Flashcards words={session.words} onExit={() => setSession(null)} />
 
-  const pick = (n: number) => shuffle(scoped).slice(0, n)
+  const pick = (n: number) => shuffle(scoped.length >= 4 ? scoped : ALL).slice(0, n)
   const list = scoped.filter((w) => !q || w.word.includes(q.toLowerCase()) || w.def.includes(q.toLowerCase()))
 
   return (
     <div>
       <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Vocabulary</h1>
-      <p className="mt-2 text-[15px] text-moss">{WORDS.length} SAT words with spaced repetition — words you miss come back sooner, words you know fade out.</p>
+      <p className="mt-2 text-[15px] text-moss">{ALL.length} words ({s.customWords.length} of your own) with spaced repetition — words you miss come back sooner, words you know fade out.</p>
 
       <div className="mt-6 flex flex-wrap gap-2">
-        {[{ id: 'all' as const, name: 'All levels' }, ...LEVELS].map((l) => (
+        {[{ id: 'all' as const, name: 'All levels' }, ...LEVELS, { id: 'mine' as const, name: `My words (${s.customWords.length})` }].map((l) => (
           <button key={l.id} onClick={() => setLevel(l.id)} className={`rounded-full px-4 py-2 text-[13px] font-medium ${level === l.id ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf]'}`}>
             {l.name}
           </button>
@@ -296,11 +326,12 @@ export default function Vocabulary() {
       </section>
 
       {/* Modes */}
-      <section className="mt-4 grid gap-3 sm:grid-cols-3">
+      <section className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { icon: ListChecks, color: 'bg-emerald-50 text-emerald-700', name: 'Quiz', line: 'Four question types, 15 words, combo streaks.', run: () => setSession({ kind: 'quiz', words: pick(15), types: ['meaning', 'word', 'context', 'synonym'], title: 'Quiz' }) },
+          { icon: ListChecks, color: 'bg-emerald-50 text-emerald-700', name: 'Quiz', line: 'Four question types, 15 words, combo streaks.', run: () => setSession({ kind: 'quiz', words: pick(15), types: ['meaning', 'word', 'context', 'spell', 'synonym'], title: 'Quiz' }) },
           { icon: Layers, color: 'bg-orange-50 text-orange-700', name: 'Flashcards', line: 'Flip, then rate how well you knew it.', run: () => setSession({ kind: 'cards', words: due.length ? due.slice(0, 20) : pick(20), types: [], title: 'Flashcards' }) },
           { icon: Brain, color: 'bg-sky-50 text-sky-700', name: 'In context', line: 'SAT-style: fill the blank in a real sentence.', run: () => setSession({ kind: 'quiz', words: pick(15), types: ['context'], title: 'In context' }) },
+          { icon: PenLine, color: 'bg-fuchsia-50 text-fuchsia-700', name: 'Spell it', line: 'See the meaning, type the word. Hardest mode.', run: () => setSession({ kind: 'quiz', words: pick(12), types: ['spell'], title: 'Spell it' }) },
         ].map(({ icon: Icon, color, name, line, run }) => (
           <button key={name} onClick={run} className="card card-hover p-5 text-left">
             <span className={`grid size-10 place-items-center rounded-xl ${color}`}>
@@ -328,6 +359,8 @@ export default function Vocabulary() {
         ))}
       </section>
 
+      <MyWords />
+
       {/* Word list */}
       <section className="card mt-4 p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -346,7 +379,10 @@ export default function Vocabulary() {
                   <span className="text-[15px] font-semibold">
                     {w.word} <span className="text-[12px] font-normal text-moss">{w.pos}</span>
                   </span>
+                  <span className="flex items-center gap-1.5">
+                  {w.level === 'mine' && <span className="rounded-full bg-pine px-2 py-0.5 text-[10.5px] font-semibold text-cream">mine</span>}
                   <span className={`rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${st === 'mastered' ? 'bg-jg-50 text-jg-700' : st === 'learning' ? 'bg-orange-50 text-orange-700' : 'bg-cream text-moss'}`}>{st}</span>
+                  </span>
                 </div>
                 <p className="mt-1 text-[13px] text-pine/75">{w.def}</p>
               </li>
@@ -360,5 +396,70 @@ export default function Vocabulary() {
         )}
       </section>
     </div>
+  )
+}
+
+/* ---------- my words (student's own deck, like Shakhna Academy) ---------- */
+function MyWords() {
+  const s = useStore()
+  const empty = { word: '', pos: 'adj' as CustomWord['pos'], def: '', ex: '', syn: '' }
+  const [d, setD] = useState(empty)
+  const [err, setErr] = useState<string | null>(null)
+  const input = 'h-11 w-full rounded-xl border border-[#e3dccf] bg-white px-3.5 text-[14px] focus:border-jg-500 focus:outline-none'
+
+  function add(e: React.FormEvent) {
+    e.preventDefault()
+    const word = d.word.trim().toLowerCase()
+    if (!word || !d.def.trim()) return setErr('Add the word and its meaning.')
+    if ([...WORDS, ...s.customWords].some((w) => w.word === word)) return setErr(`"${word}" is already in your list.`)
+    const ex = d.ex.trim() || `Use "${word}" in a sentence of your own.`
+    setStore((x) => ({ ...x, customWords: [{ word, pos: d.pos, def: d.def.trim(), ex, syn: d.syn.split(',').map((t) => t.trim()).filter(Boolean), level: 'mine', addedAt: Date.now() }, ...x.customWords] }))
+    setD(empty)
+    setErr(null)
+  }
+
+  return (
+    <section className="card mt-4 grid gap-6 p-5 sm:p-6 lg:grid-cols-[1fr_1.1fr]">
+      <form onSubmit={add} className="space-y-2.5">
+        <h2 className="text-[16px] font-semibold">Add your own word</h2>
+        <p className="text-[13px] text-moss">Found a word in a passage you didn't know? Save it — it joins your quizzes, flashcards and Daily 20.</p>
+        <div className="grid grid-cols-[1fr_auto] gap-2">
+          <input className={input} placeholder="Word, e.g. meticulous" value={d.word} onChange={(e) => setD({ ...d, word: e.target.value })} aria-label="Word" />
+          <select className={`${input} w-28`} value={d.pos} onChange={(e) => setD({ ...d, pos: e.target.value as CustomWord['pos'] })} aria-label="Part of speech">
+            <option value="adj">adjective</option>
+            <option value="verb">verb</option>
+            <option value="noun">noun</option>
+            <option value="adv">adverb</option>
+          </select>
+        </div>
+        <input className={input} placeholder="Meaning" value={d.def} onChange={(e) => setD({ ...d, def: e.target.value })} aria-label="Meaning" />
+        <input className={input} placeholder="Example sentence (optional)" value={d.ex} onChange={(e) => setD({ ...d, ex: e.target.value })} aria-label="Example sentence" />
+        <input className={input} placeholder="Synonyms, comma separated (optional)" value={d.syn} onChange={(e) => setD({ ...d, syn: e.target.value })} aria-label="Synonyms" />
+        {err && <p className="text-[13px] text-red-600">{err}</p>}
+        <button className="btn btn-dark h-11 w-full text-[14px]">
+          <Plus className="size-4" /> Add word
+        </button>
+      </form>
+      <div>
+        <h3 className="text-[14px] font-semibold">My words ({s.customWords.length})</h3>
+        {s.customWords.length === 0 ? (
+          <p className="mt-3 rounded-2xl border border-dashed border-[#e3dccf] p-6 text-center text-[13px] text-moss">No words yet. Add the first one on the left.</p>
+        ) : (
+          <ul className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
+            {s.customWords.map((w) => (
+              <li key={w.word} className="flex items-start justify-between gap-3 rounded-2xl border border-[#efe9de] p-3">
+                <span className="min-w-0">
+                  <span className="text-[14.5px] font-semibold">{w.word}</span> <span className="text-[12px] text-moss">{w.pos}</span>
+                  <span className="block text-[13px] text-pine/75">{w.def}</span>
+                </span>
+                <button aria-label={`Remove ${w.word}`} onClick={() => setStore((x) => ({ ...x, customWords: x.customWords.filter((c) => c.word !== w.word) }))} className="rounded-lg p-1.5 text-moss hover:bg-red-50 hover:text-red-600">
+                  <Trash2 className="size-4" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
   )
 }

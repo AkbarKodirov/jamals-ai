@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { BookMarked, BookOpen, ClipboardList, Flame, Home, LogOut, MessageCircle, NotebookPen, Trophy, Zap } from 'lucide-react'
+import { BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
+import { HumoFab } from './components/HumoFab'
 import { useAuth } from '../lib/auth'
 import { streak, useBindStore, useStore } from './store'
 
@@ -14,6 +15,11 @@ const QuestionBank = lazy(() => import('./pages/QuestionBank'))
 const Vocabulary = lazy(() => import('./pages/Vocabulary'))
 const Blitz = lazy(() => import('./pages/Blitz'))
 const Mistakes = lazy(() => import('./pages/Mistakes'))
+const StudyPlan = lazy(() => import('./pages/StudyPlan'))
+const Drills = lazy(() => import('./pages/Drills'))
+const ExamPapers = lazy(() => import('./pages/ExamPapers'))
+const Lessons = lazy(() => import('./pages/Lessons'))
+const Analytics = lazy(() => import('./pages/Analytics'))
 
 type Item = { to: string; label: string; icon: typeof Home; end?: boolean }
 const GROUPS: { label: string | null; items: Item[] }[] = [
@@ -22,22 +28,30 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
     items: [
       { to: '/app', label: 'Home', icon: Home, end: true },
       { to: '/app/humo', label: 'Ask Humo', icon: MessageCircle },
+      { to: '/app/plan', label: 'Study plan', icon: CalendarCheck },
     ],
   },
   {
     label: 'Practice',
     items: [
       { to: '/app/tests', label: 'Practice tests', icon: ClipboardList },
+      { to: '/app/papers', label: 'Exam papers', icon: FileText },
+      { to: '/app/drills', label: 'Drills', icon: Target },
       { to: '/app/practice', label: 'Question bank', icon: BookOpen },
-      { to: '/app/blitz', label: 'Blitz', icon: Zap },
       { to: '/app/vocab', label: 'Vocabulary', icon: BookMarked },
+      { to: '/app/blitz', label: 'Blitz', icon: Zap },
     ],
+  },
+  {
+    label: 'Learn',
+    items: [{ to: '/app/lessons', label: 'Lessons', icon: GraduationCap }],
   },
   {
     label: 'Progress',
     items: [
+      { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
+      { to: '/app/mistakes', label: 'Saved & mistakes', icon: NotebookPen },
       { to: '/app/results', label: 'My results', icon: Trophy },
-      { to: '/app/mistakes', label: 'Mistakes', icon: NotebookPen },
     ],
   },
 ]
@@ -91,10 +105,10 @@ export default function AppShell() {
           <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full ring-1 ring-white/15" />
           <span className="flex flex-col leading-none">
             <span className="text-[16px] font-semibold tracking-tight">Jamals AI</span>
-            <span className="mt-1 text-[11px] text-cream/45">SAT & IELTS</span>
+            <span className="mt-1 text-[11px] text-cream/45">Digital SAT</span>
           </span>
         </Link>
-        <nav className="mt-6 flex-1 space-y-5 overflow-y-auto">
+        <nav className="mt-5 flex-1 space-y-4 overflow-y-auto pr-1">
           {GROUPS.map((g, i) => (
             <div key={i}>
               {g.label && <p className="mb-1.5 px-3 text-[11px] font-semibold text-cream/35">{g.label}</p>}
@@ -105,7 +119,7 @@ export default function AppShell() {
                     to={to}
                     end={end}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition ${isActive ? 'bg-white/[0.1] text-cream' : 'text-cream/60 hover:bg-white/[0.05] hover:text-cream'}`
+                      `flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-medium transition ${isActive ? 'bg-white/[0.1] text-cream' : 'text-cream/60 hover:bg-white/[0.05] hover:text-cream'}`
                     }
                   >
                     <Icon className="size-[18px]" />
@@ -167,10 +181,17 @@ export default function AppShell() {
             <Route path="vocab" element={<Vocabulary />} />
             <Route path="blitz" element={<Blitz />} />
             <Route path="mistakes" element={<Mistakes />} />
+            <Route path="plan" element={<StudyPlan />} />
+            <Route path="drills" element={<Drills />} />
+            <Route path="papers" element={<ExamPapers />} />
+            <Route path="lessons" element={<Lessons />} />
+            <Route path="analytics" element={<Analytics />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
         </Suspense>
       </main>
+
+      {!pathname.startsWith('/app/results/') && pathname !== '/app/humo' && <HumoFab />}
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/10 bg-pine pb-[env(safe-area-inset-bottom)] md:hidden">

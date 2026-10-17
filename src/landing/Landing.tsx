@@ -77,7 +77,7 @@ function Hero() {
     show: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.25 + i * 0.09, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } }),
   }
   return (
-    <section className="relative isolate flex min-h-[720px] items-end overflow-hidden md:h-svh md:items-center">
+    <section className="relative isolate flex min-h-svh items-end overflow-hidden md:items-center">
       {/* 3D stage */}
       <div className={`absolute inset-0 -z-10 transition-opacity duration-[1600ms] ${ready ? 'opacity-100' : 'opacity-0'}`}>
         <Suspense fallback={null}>
@@ -89,7 +89,7 @@ function Hero() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-56 bg-gradient-to-t from-ink to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 hidden w-1/2 bg-gradient-to-r from-ink/80 to-transparent md:block" />
 
-      <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-[52vh] sm:px-6 md:pb-0 md:pt-16">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-[52vh] sm:px-6 md:pb-20 md:pt-32">
         <div className="max-w-[38rem]">
           <motion.a
             href="#try"
@@ -103,12 +103,12 @@ function Hero() {
             Meet Humo, the AI tutor from Jamals Academy
           </motion.a>
 
-          <motion.h1 custom={1} initial="hidden" animate="show" variants={item} className="display text-[clamp(2.75rem,7.2vw,5.9rem)]">
+          <motion.h1 custom={1} initial="hidden" animate="show" variants={item} className="display text-[clamp(2.75rem,min(7.2vw,11vh),5.9rem)]">
             Your SAT score, raised by <span className="brush">Humo</span>.
           </motion.h1>
 
           <motion.p custom={2} initial="hidden" animate="show" variants={item} className="mt-6 max-w-[31rem] text-[17px] leading-relaxed text-white/60">
-            Six years of Jamals Academy teaching, now in one platform: real Digital SAT and IELTS practice, timed mocks, and Humo — an AI tutor that shows you why you missed a question, in English, O'zbekcha or Русский.
+            Six years of Jamals Academy teaching, now in one platform: real Digital SAT practice, timed mocks, and Humo — an AI tutor that shows you why you missed a question, in English, O'zbekcha or Русский.
           </motion.p>
 
           <motion.div custom={3} initial="hidden" animate="show" variants={item} className="mt-9 flex flex-wrap items-center gap-3">

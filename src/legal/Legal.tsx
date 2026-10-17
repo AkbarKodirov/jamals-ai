@@ -93,7 +93,7 @@ const TERMS: Section[] = [
   {
     h: 'Scores and results',
     p: [
-      'Score estimates are for practice only. They are not official SAT or IELTS scores, and we do not guarantee any particular result on a real exam or in university admissions.',
+      'Score estimates are for practice only. They are not official SAT scores, and we do not guarantee any particular result on a real exam or in university admissions.',
     ],
   },
   {
@@ -111,7 +111,7 @@ const TERMS: Section[] = [
   {
     h: 'Trademarks',
     p: [
-      'SAT® is a trademark of the College Board. IELTS™ is jointly owned by the British Council, IDP and Cambridge University Press & Assessment. Neither is affiliated with or endorses Jamals AI.',
+      'SAT® is a trademark of the College Board. The College Board is not affiliated with and does not endorse Jamals AI.',
     ],
   },
   {

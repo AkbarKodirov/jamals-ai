@@ -179,7 +179,12 @@ export default function Home() {
       {/* Plan + recent */}
       <section className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
         <div className="card p-6 sm:p-7">
-          <h2 className="text-[16px] font-semibold">Today's plan</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-[16px] font-semibold">Today's plan</h2>
+            <Link to="/app/plan" className="text-[13px] text-jg-600 hover:text-jg-700">
+              Weekly plan
+            </Link>
+          </div>
           <ul className="mt-4 space-y-2.5">
             {plan.map(({ icon: Icon, title, sub, to, done }) => (
               <li key={title}>

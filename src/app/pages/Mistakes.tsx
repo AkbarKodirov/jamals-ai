@@ -78,17 +78,30 @@ function MistakeCard({ k, testId, module, index }: { k: string; testId: string; 
 
 export default function Mistakes() {
   const s = useStore()
-  const open = s.mistakes.filter((m) => !m.cleared).slice(-40).reverse()
+  const [tab, setTab] = useState<'mistakes' | 'saved'>('mistakes')
+  const open = (tab === 'saved' ? s.saved.map((x) => ({ ...x, cleared: false })) : s.mistakes.filter((m) => !m.cleared).slice(-40).reverse())
   const cleared = s.mistakes.filter((m) => m.cleared).length
   return (
     <div>
-      <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Mistakes</h1>
+      <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Saved & mistakes</h1>
+      <div className="mt-5 flex gap-2">
+        {(
+          [
+            ['mistakes', `Mistakes (${s.mistakes.filter((m) => !m.cleared).length})`],
+            ['saved', `Saved (${s.saved.length})`],
+          ] as const
+        ).map(([k, l]) => (
+          <button key={k} onClick={() => setTab(k)} className={`rounded-full px-4 py-2 text-[13px] font-medium ${tab === k ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf]'}`}>
+            {l}
+          </button>
+        ))}
+      </div>
       <p className="mt-2 text-[15px] text-moss">
         Every question you miss lands here. Get it right once and it leaves the notebook. {cleared > 0 && `${cleared} fixed so far.`}
       </p>
       {open.length === 0 ? (
         <div className="card mt-6 p-12 text-center">
-          <p className="text-[15px]">Your notebook is empty.</p>
+          <p className="text-[15px]">{tab === 'saved' ? 'No saved questions yet. Tap Save on any question in a test review.' : 'Your notebook is empty.'}</p>
           <p className="mt-1 text-[13px] text-moss">Take a practice test — anything you miss will show up here.</p>
           <Link to="/app/tests" className="btn btn-dark mt-5 h-11 px-6 text-[14px]">
             Go to practice tests

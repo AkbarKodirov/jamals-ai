@@ -63,9 +63,9 @@ export function Features() {
             <MockPreview />
           </Card>
 
-          <Card className="md:col-span-2" title="Question bank by skill" body="Drill the exact SAT domain or IELTS question type you're weakest in.">
+          <Card className="md:col-span-2" title="Question bank by skill" body="Drill the exact SAT domain you're weakest in.">
             <div className="flex flex-wrap gap-1.5">
-              {['Algebra', 'Advanced math', 'Geometry & trig', 'Craft & structure', 'Standard English', 'T/F/Not Given'].map((t, i) => (
+              {['Algebra', 'Advanced math', 'Geometry & trig', 'Craft & structure', 'Standard English', 'Problem solving'].map((t, i) => (
                 <span key={t} className={`rounded-full border px-2.5 py-1 text-[12px] ${i === 1 ? 'border-jg-500/50 bg-jg-500/10 text-jg-200' : 'border-white/10 text-white/55'}`}>
                   {t}
                 </span>
@@ -100,23 +100,23 @@ export function Features() {
             </div>
           </Card>
 
-          <Card className="md:col-span-3" title="IELTS Writing feedback" body="Paste a Task 1 or Task 2 essay and get a band estimate for each criterion, with the sentences to fix first.">
+          <Card className="md:col-span-3" title="Analytics that tell you what to fix" body="Accuracy and time per question for every test, your score trend, and the skills costing you the most points.">
             <div className="space-y-2.5">
               {[
-                ['Task response', 6.5],
-                ['Coherence & cohesion', 7],
-                ['Lexical resource', 6],
-                ['Grammatical range', 6.5],
+                ['Words in context', 82],
+                ['Command of evidence', 64],
+                ['Transitions', 71],
+                ['Algebra', 88],
               ].map(([k, v]) => (
                 <div key={k as string} className="flex items-center gap-3 text-[12.5px]">
                   <span className="w-40 shrink-0 text-white/55">{k}</span>
                   <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.07]">
-                    <span className="block h-full rounded-full bg-gradient-to-r from-jg-700 to-jg-300" style={{ width: `${((v as number) / 9) * 100}%` }} />
+                    <span className="block h-full rounded-full bg-gradient-to-r from-jg-700 to-jg-300" style={{ width: `${v}%` }} />
                   </span>
-                  <span className="w-7 text-right tabular-nums text-white/80">{(v as number).toFixed(1)}</span>
+                  <span className="w-9 text-right tabular-nums text-white/80">{v}%</span>
                 </div>
               ))}
-              <p className="pt-1 text-[11px] text-white/30">Sample feedback</p>
+              <p className="pt-1 text-[11px] text-white/30">Sample analytics</p>
             </div>
           </Card>
         </div>

@@ -45,7 +45,12 @@ type State = {
   practice: { solved: number; correct: number }
   blitzBest: number
   mistakes: { key: string; testId: string; module: number; index: number; addedAt: number; cleared: boolean }[]
+  customWords: CustomWord[]
+  saved: { key: string; testId: string; module: number; index: number; at: number }[]
+  planDone: Record<string, boolean>
+  drills: { at: number; subject: 'EBRW' | 'MATH'; n: number; correct: number; seconds: number }[]
 }
+export type CustomWord = { word: string; pos: 'adj' | 'verb' | 'noun' | 'adv'; def: string; ex: string; syn: string[]; level: 'mine'; addedAt: number }
 
 const initial: State = {
   profile: { target: 1450, current: null, testDate: null },
@@ -56,6 +61,10 @@ const initial: State = {
   practice: { solved: 0, correct: 0 },
   blitzBest: 0,
   mistakes: [],
+  customWords: [],
+  saved: [],
+  planDone: {},
+  drills: [],
 }
 
 /* ---------------- tiny global store (per user, localStorage) ---------------- */
@@ -184,3 +193,8 @@ export function loadTest(id: string) {
 export const loadIndex = () => fetch('/tests/index.json').then((r) => r.json() as Promise<TestMeta[]>)
 
 export const stripHtml = (h: string | null) => (h || '').replace(/<li>/g, '\n• ').replace(/<[^>]+>/g, ' ').replace(/\s+\n/g, '\n').replace(/[ \t]+/g, ' ').trim()
+
+export function toggleSaved(testId: string, module: number, index: number) {
+  const key = `${testId}:${module}:${index}`
+  setStore((s) => ({ ...s, saved: s.saved.some((x) => x.key === key) ? s.saved.filter((x) => x.key !== key) : [{ key, testId, module, index, at: Date.now() }, ...s.saved] }))
+}

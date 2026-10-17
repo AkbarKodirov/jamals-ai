@@ -58,7 +58,7 @@ export function useHumoChat(greeting: string, context?: string) {
 }
 
 /** Slide-over chat with Humo that already knows the test the student just took. */
-export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string }) {
+export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill, subtitle = 'Your Digital SAT tutor' }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string; subtitle?: string }) {
   const { msgs, busy, send } = useHumoChat(greeting, context)
   const [input, setInput] = useState('')
   useEffect(() => {
@@ -82,7 +82,7 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
               <img src="/humo-mark.svg" alt="" className="size-10 rounded-xl" />
               <div className="flex-1">
                 <p className="text-[15px] font-semibold">Humo</p>
-                <p className="text-[12px] text-moss">Knows your answers on this test</p>
+                <p className="text-[12px] text-moss">{subtitle}</p>
               </div>
               <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-moss hover:bg-cream">
                 <X className="size-5" />

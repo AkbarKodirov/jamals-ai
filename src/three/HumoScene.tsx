@@ -121,7 +121,7 @@ export default function HumoScene({ layout = 'hero' }: { layout?: Layout }) {
       <ambientLight intensity={0.15} />
       <directionalLight position={[3, 5, 6]} intensity={2.2} color="#ffe2a8" />
       <directionalLight position={[-4, 3, 6]} intensity={1.2} color="#fff1d0" />
-      <directionalLight position={[-6, 2, -4]} intensity={1.8} color="#62b968" />
+      <directionalLight position={[-6, 2, -4]} intensity={0.9} color="#7fbf86" />
       <pointLight position={[0, -0.5, 4]} intensity={1.4} color="#ffcf7a" distance={9} />
 
       <Suspense fallback={null}>

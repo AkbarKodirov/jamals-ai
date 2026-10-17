@@ -59,16 +59,16 @@ function QuestionCard({ q }: { q: Question }) {
 }
 
 export default function QuestionBank() {
-  const [exam, setExam] = useState<'All' | 'SAT' | 'IELTS'>('All')
+  const [exam, setExam] = useState<'All' | 'Math' | 'Reading & Writing'>('All')
   const [diff, setDiff] = useState<'All' | Question['difficulty']>('All')
-  const list = useMemo(() => fullQuestionBank.filter((q) => (exam === 'All' || q.exam === exam) && (diff === 'All' || q.difficulty === diff)), [exam, diff])
+  const list = useMemo(() => fullQuestionBank.filter((q) => (exam === 'All' || q.section === exam) && (diff === 'All' || q.difficulty === diff)), [exam, diff])
   const chip = (on: boolean) => `rounded-full px-4 py-2 text-[13px] font-medium transition ${on ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf] hover:ring-[#cfc6b4]'}`
   return (
     <div>
       <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Question bank</h1>
       <p className="mt-2 text-[15px] text-moss">{list.length} single questions with explanations. For full sections, use Practice tests.</p>
       <div className="mt-6 flex flex-wrap gap-2">
-        {(['All', 'SAT', 'IELTS'] as const).map((e) => (
+        {(['All', 'Reading & Writing', 'Math'] as const).map((e) => (
           <button key={e} onClick={() => setExam(e)} className={chip(exam === e)}>
             {e}
           </button>
