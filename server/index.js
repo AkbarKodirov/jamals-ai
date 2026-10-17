@@ -181,6 +181,37 @@ ${options.length ? '3. One short line for each wrong choice saying exactly why i
   }
 })
 
+/* ---------- Blitz weekly leaderboard (shared by all students) ---------- */
+const BLITZ_FILE = join(DATA_DIR, 'blitz.json')
+const weekKey = () => {
+  const d = new Date()
+  const day = (d.getUTCDay() + 6) % 7
+  d.setUTCDate(d.getUTCDate() - day)
+  return d.toISOString().slice(0, 10)
+}
+const loadBlitz = () => (existsSync(BLITZ_FILE) ? JSON.parse(readFileSync(BLITZ_FILE, 'utf8')) : {})
+
+app.post('/api/blitz', auth, (req, res) => {
+  const score = Math.max(0, Math.min(100000, Math.round(Number(req.body?.score) || 0)))
+  const u = Object.values(loadUsers()).find((x) => x.id === req.user.sub)
+  if (!u) return res.status(404).json({ error: 'Account not found.' })
+  const all = loadBlitz()
+  const wk = weekKey()
+  all[wk] = all[wk] || {}
+  const prev = all[wk][u.id]
+  if (!prev || score > prev.score) all[wk][u.id] = { name: u.name || 'Student', picture: u.picture || null, score, at: Date.now() }
+  writeFileSync(BLITZ_FILE, JSON.stringify(all))
+  res.json({ ok: true })
+})
+
+app.get('/api/blitz/leaderboard', (_, res) => {
+  const rows = Object.entries(loadBlitz()[weekKey()] || {})
+    .map(([id, r]) => ({ id, ...r }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+  res.json({ week: weekKey(), rows })
+})
+
 app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'Jamals AI', tutor: 'Humo', gemini: !!gemini }))
 
 app.listen(PORT, () => console.log(`Jamals AI backend running on http://localhost:${PORT}`))

@@ -3,6 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Flame, Heart, Trophy, X, Zap } from 'lucide-react'
 import { isCorrect, loadIndex, loadTest, markActive, setStore, useStore, type TestQuestion } from '../store'
 import { Passage } from './TakeTest'
+import { useAuth } from '../../lib/auth'
+
+type Row = { id: string; name: string; picture: string | null; score: number }
 
 const SECONDS = 60
 const mult = (streak: number) => (streak >= 10 ? 4 : streak >= 6 ? 3 : streak >= 3 ? 2 : 1)
@@ -14,8 +17,44 @@ async function buildPool() {
   return pool.sort(() => Math.random() - 0.5)
 }
 
+function Leaderboard({ rows, me }: { rows: Row[] | null; me?: string }) {
+  return (
+    <div className="card mx-auto mt-4 max-w-2xl p-5">
+      <p className="flex items-center justify-between text-[14px] font-semibold">
+        <span className="flex items-center gap-2">
+          <Trophy className="size-4 text-orange-500" /> This week's leaderboard
+        </span>
+        <span className="text-[12px] font-normal text-moss">Jamals students</span>
+      </p>
+      {!rows ? (
+        <p className="mt-4 text-[13px] text-moss">Leaderboard is available when the server is running.</p>
+      ) : rows.length === 0 ? (
+        <p className="mt-4 text-[13px] text-moss">No runs yet this week — be the first.</p>
+      ) : (
+        <ol className="mt-3 divide-y divide-[#efe9de]">
+          {rows.map((r, i) => (
+            <li key={r.id} className={`flex items-center gap-3 py-2.5 text-[14px] ${r.name === me ? 'font-semibold' : ''}`}>
+              <span className={`w-6 text-center tabular-nums ${i < 3 ? 'text-orange-500' : 'text-moss'}`}>{i + 1}</span>
+              {r.picture ? <img src={r.picture} alt="" referrerPolicy="no-referrer" className="size-7 rounded-full" /> : <span className="grid size-7 place-items-center rounded-full bg-cream text-[12px] font-semibold">{r.name[0]}</span>}
+              <span className="flex-1 truncate">{r.name}</span>
+              <span className="font-serif text-[18px] tabular-nums">{r.score}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  )
+}
+
 export default function Blitz() {
   const s = useStore()
+  const { token, user } = useAuth()
+  const [board, setBoard] = useState<Row[] | null>(null)
+  const loadBoard = () =>
+    fetch('/api/blitz/leaderboard')
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => setBoard(d.rows))
+      .catch(() => setBoard(null))
   const [pool, setPool] = useState<TestQuestion[] | null>(null)
   const [phase, setPhase] = useState<'idle' | 'play' | 'over'>('idle')
   const [i, setI] = useState(0)
@@ -84,7 +123,15 @@ export default function Blitz() {
   }
 
   useEffect(() => {
-    if (phase === 'over') setStore((st) => ({ ...st, blitzBest: Math.max(st.blitzBest, score) }))
+    loadBoard()
+  }, [])
+  useEffect(() => {
+    if (phase !== 'over') return
+    setStore((st) => ({ ...st, blitzBest: Math.max(st.blitzBest, score) }))
+    if (score > 0)
+      fetch('/api/blitz', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ score }) })
+        .catch(() => {})
+        .finally(loadBoard)
   }, [phase, score])
 
   if (phase === 'idle' || phase === 'over')
@@ -115,6 +162,7 @@ export default function Blitz() {
             {pool ? (phase === 'over' ? 'Play again' : 'Start run') : 'Loading questions…'}
           </button>
         </div>
+        <Leaderboard rows={board} me={user?.name} />
       </div>
     )
 
