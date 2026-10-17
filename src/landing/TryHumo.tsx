@@ -106,9 +106,9 @@ export function TryHumo() {
                     aria-pressed={isPicked}
                     className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-[15px] transition ${
                       isPicked && c.correct
-                        ? 'border-emerald-400/60 bg-emerald-400/10'
+                        ? 'border-emerald-400/60 bg-emerald-400/10 animate-pop'
                         : isPicked
-                          ? 'border-red-400/50 bg-red-400/[0.08]'
+                          ? 'border-red-400/50 bg-red-400/[0.08] animate-shake'
                           : reveal
                             ? 'border-emerald-400/30'
                             : 'border-white/10 hover:border-white/25 hover:bg-white/[0.03]'

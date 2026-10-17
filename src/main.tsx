@@ -2,16 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { MotionConfig } from 'framer-motion'
 import './index.css'
 import App from './App.tsx'
 import { AuthProvider, GOOGLE_CLIENT_ID } from './lib/auth.tsx'
 
 const tree = (
-  <BrowserRouter>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </BrowserRouter>
+  <MotionConfig reducedMotion="user">
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </MotionConfig>
 )
 
 createRoot(document.getElementById('root')!).render(

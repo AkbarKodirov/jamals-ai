@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Check, Plus } from 'lucide-react'
 import { GoogleButton } from '../auth/GoogleButton'
+import { Reveal, Spotlight } from '../components/motion'
+import { motion } from 'framer-motion'
 
 const UNIVERSITIES = [
   'Westminster International University in Tashkent',
@@ -44,14 +46,16 @@ export function HowItWorks() {
   return (
     <section className="border-t border-white/[0.07] py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">From first login to test day.</h2>
+        <Reveal>
+          <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">From first login to test day.</h2>
+        </Reveal>
         <ol className="mt-14 grid gap-px overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
           {steps.map(([t, b], i) => (
-            <li key={t} className="bg-ink p-6 sm:p-7">
+            <motion.li key={t} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="bg-ink p-6 sm:p-7">
               <span className="grid size-8 place-items-center rounded-full border border-jg-500/40 text-[13px] font-semibold tabular-nums text-jg-300">{i + 1}</span>
               <h3 className="mt-6 text-[17px] font-semibold tracking-tight">{t}</h3>
               <p className="mt-2 text-[14px] leading-relaxed text-white/50">{b}</p>
-            </li>
+            </motion.li>
           ))}
         </ol>
       </div>
@@ -96,8 +100,13 @@ export function Pricing() {
           <p className="mt-5 text-[16px] leading-relaxed text-white/55">Start free. Upgrade when your test date gets close.</p>
         </div>
         <div className="mt-14 grid gap-3 lg:grid-cols-3">
-          {PLANS.map((p) => (
-            <div
+          {PLANS.map((p, i) => (
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
               key={p.name}
               className={`relative flex flex-col rounded-[24px] p-7 ${p.featured ? 'border border-jg-500/40 bg-gradient-to-b from-jg-500/[0.12] via-jg-500/[0.03] to-transparent' : 'panel'}`}
             >
@@ -126,7 +135,7 @@ export function Pricing() {
               >
                 {p.cta}
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -241,13 +250,17 @@ export function Inside() {
   return (
     <section className="border-t border-white/[0.07] py-24 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">Built like a tutor, not a question dump.</h2>
+        <Reveal>
+          <h2 className="display max-w-2xl text-[clamp(2.1rem,4.4vw,3.5rem)]">Built like a tutor, not a question dump.</h2>
+        </Reveal>
         <div className="mt-12 grid gap-px overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
-          {INSIDE.map(([t, b]) => (
-            <div key={t} className="bg-ink p-6">
-              <h3 className="text-[16px] font-semibold tracking-tight">{t}</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-white/50">{b}</p>
-            </div>
+          {INSIDE.map(([t, b], i) => (
+            <motion.div key={t} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: (i % 4) * 0.08, duration: 0.6 }} className="bg-ink">
+              <Spotlight className="h-full p-6">
+                <h3 className="relative text-[16px] font-semibold tracking-tight">{t}</h3>
+                <p className="relative mt-2 text-[14px] leading-relaxed text-white/50">{b}</p>
+              </Spotlight>
+            </motion.div>
           ))}
         </div>
       </div>

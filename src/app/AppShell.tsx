@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
 import { HumoFab } from './components/HumoFab'
+import { motion } from 'framer-motion'
 import { useAuth } from '../lib/auth'
 import { streak, useBindStore, useStore } from './store'
 
@@ -121,12 +122,18 @@ export default function AppShell() {
                     to={to}
                     end={end}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-medium transition ${isActive ? 'bg-white/[0.1] text-cream' : 'text-cream/60 hover:bg-white/[0.05] hover:text-cream'}`
+                      `relative flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-medium transition-colors ${isActive ? 'text-cream' : 'text-cream/60 hover:bg-white/[0.05] hover:text-cream'}`
                     }
                   >
-                    <Icon className="size-[18px]" />
-                    {label}
-                    {to === '/app/humo' && <img src="/humo-mark.svg" alt="" className="ml-auto size-5 rounded-md" />}
+                    {({ isActive }) => (
+                      <>
+                        {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-xl bg-white/[0.1]" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                        {isActive && <motion.span layoutId="nav-bar" className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-jg-400" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                        <Icon className="relative size-[18px]" />
+                        <span className="relative">{label}</span>
+                        {to === '/app/humo' && <img src="/humo-mark.svg" alt="" className="relative ml-auto size-5 rounded-md" />}
+                      </>
+                    )}
                   </NavLink>
                 ))}
               </div>
@@ -162,7 +169,7 @@ export default function AppShell() {
           <span className="hidden md:block" />
           <div className="flex items-center gap-2">
             <span title="Daily streak" className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-semibold ${days ? 'bg-orange-500 text-white' : 'bg-white text-moss ring-1 ring-[#e3dccf]'}`}>
-              <Flame className="size-4" /> {days}
+              <Flame className={`size-4 ${days ? 'animate-flicker' : ''}`} /> {days}
             </span>
             <span className="md:hidden">
               <Avatar />
@@ -173,6 +180,7 @@ export default function AppShell() {
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-8">
         <Suspense fallback={<PageLoading />}>
+          <motion.div key={pathname} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
           <Routes>
             <Route index element={<HomePage />} />
             <Route path="humo" element={<HumoChat />} />
@@ -191,6 +199,7 @@ export default function AppShell() {
             <Route path="calculator" element={<ScoreCalculator />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
+          </motion.div>
         </Suspense>
       </main>
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Confetti } from '../../components/motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Brain, Check, Flame, Layers, ListChecks, PenLine, Plus, RotateCcw, Search, Sparkles, Trash2, X } from 'lucide-react'
 import { LEVELS, WORDS, type Word } from '../../data/vocab'
@@ -96,7 +97,8 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
 
   if (done)
     return (
-      <div className="card mx-auto max-w-xl p-8 text-center">
+      <div className="card relative mx-auto max-w-xl p-8 text-center">
+        <Confetti fire={score / items.length >= 0.8} />
         <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
         <h2 className="display mt-5 text-[34px]">
           {score}/{items.length}
@@ -162,7 +164,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
                 placeholder={`${q.answer[0]}${'_ '.repeat(q.answer.length - 1)}`}
-                className={`h-12 flex-1 rounded-xl border-2 px-4 font-serif text-[20px] focus:outline-none ${picked ? (picked === q.answer ? 'border-emerald-500 bg-emerald-50' : 'border-red-400 bg-red-50') : 'border-[#e6e0d3] focus:border-pine'}`}
+                className={`h-12 flex-1 rounded-xl border-2 px-4 font-serif text-[20px] focus:outline-none ${picked ? (picked === q.answer ? 'border-emerald-500 bg-emerald-50 animate-pop' : 'border-red-400 bg-red-50 animate-shake') : 'border-[#e6e0d3] focus:border-pine'}`}
                 aria-label="Type the word"
               />
               {!picked && <button className="btn btn-dark h-12 px-5 text-[14px]">Check</button>}
@@ -176,7 +178,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
                 <button
                   key={o}
                   onClick={() => choose(o)}
-                  className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${right ? 'border-emerald-500 bg-emerald-50' : wrong ? 'border-red-400 bg-red-50' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'} ${picked && !right && !wrong ? 'opacity-50' : ''}`}
+                  className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'} ${picked && !right && !wrong ? 'opacity-50' : ''}`}
                 >
                   <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
                   {o}

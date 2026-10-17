@@ -33,7 +33,7 @@ function QuestionCard({ q }: { q: Question }) {
                   markActive(30)
                 }}
                 className={`flex items-center justify-between rounded-xl border-2 px-4 py-3 text-left text-[14.5px] transition ${
-                  state === 'right' ? 'border-emerald-500 bg-emerald-50' : state === 'wrong' ? 'border-red-400 bg-red-50' : state === 'reveal' ? 'border-emerald-300' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
+                  state === 'right' ? 'border-emerald-500 bg-emerald-50 animate-pop' : state === 'wrong' ? 'border-red-400 bg-red-50 animate-shake' : state === 'reveal' ? 'border-emerald-300' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
                 }`}
               >
                 {c}

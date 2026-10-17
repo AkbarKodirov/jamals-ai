@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, Lightformer, Sparkles } from '@react-three/drei'
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
-import { HumoBird } from './HumoBird'
+import { HumoBird, introProgress } from './HumoBird'
 
 type Layout = 'hero' | 'compact'
 
@@ -11,8 +11,10 @@ type Layout = 'hero' | 'compact'
 function Halo() {
   const a = useRef<THREE.Mesh>(null)
   const b = useRef<THREE.Mesh>(null)
+  const g = useRef<THREE.Group>(null)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
+    if (g.current) g.current.scale.setScalar(0.4 + 0.6 * introProgress(t, 0.5, 1.6))
     if (a.current) a.current.rotation.z = t * 0.05
     if (b.current) {
       b.current.rotation.x = 1.2 + Math.sin(t * 0.2) * 0.08
@@ -20,7 +22,7 @@ function Halo() {
     }
   })
   return (
-    <group position={[0, 0.35, -1.1]}>
+    <group ref={g} position={[0, 0.35, -1.1]}>
       <mesh ref={a}>
         <torusGeometry args={[2.35, 0.008, 16, 256]} />
         <meshBasicMaterial color={[0.75, 2.2, 0.85]} toneMapped={false} transparent opacity={0.85} />
@@ -106,7 +108,7 @@ function SettleFrames() {
   return null
 }
 
-export default function HumoScene({ layout = 'hero' }: { layout?: Layout }) {
+export default function HumoScene({ layout = 'hero', bg = '#0a0f0e' }: { layout?: Layout; bg?: string }) {
   const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   return (
     <Canvas
@@ -117,7 +119,7 @@ export default function HumoScene({ layout = 'hero' }: { layout?: Layout }) {
       style={{ background: 'transparent' }}
     >
       {reduced && <SettleFrames />}
-      <color attach="background" args={["#0a0f0e"]} />
+      <color attach="background" args={[bg]} />
       <ambientLight intensity={0.15} />
       <directionalLight position={[3, 5, 6]} intensity={2.2} color="#ffe2a8" />
       <directionalLight position={[-4, 3, 6]} intensity={1.2} color="#fff1d0" />
@@ -144,7 +146,7 @@ export default function HumoScene({ layout = 'hero' }: { layout?: Layout }) {
 
       <EffectComposer multisampling={0}>
         <Bloom mipmapBlur intensity={0.75} luminanceThreshold={0.82} luminanceSmoothing={0.2} />
-        <Vignette eskil={false} offset={0.25} darkness={0.75} />
+        <Vignette eskil={false} offset={0.25} darkness={layout === "hero" ? 0.75 : 0} />
       </EffectComposer>
     </Canvas>
   )

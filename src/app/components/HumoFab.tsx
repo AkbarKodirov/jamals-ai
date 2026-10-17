@@ -33,7 +33,7 @@ export function HumoFab() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Ask Humo"
-        className="group fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full bg-pine py-1.5 pl-1.5 pr-4 text-[14px] font-semibold text-cream shadow-xl shadow-pine/30 transition hover:scale-[1.04] md:bottom-6 md:right-6"
+        className="group fixed bottom-24 right-4 z-30 flex animate-breathe items-center gap-2 rounded-full bg-pine py-1.5 pl-1.5 pr-4 text-[14px] font-semibold text-cream transition-transform hover:scale-[1.04] md:bottom-6 md:right-6"
       >
         <span className="relative">
           <img src="/humo-mark.svg" alt="" className="size-9 rounded-full ring-2 ring-jg-500" />

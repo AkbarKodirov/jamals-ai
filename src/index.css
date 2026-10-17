@@ -21,6 +21,35 @@
   --color-jg-700: #2a652e;     /* brand forest */
 
   --animate-marquee: marquee 40s linear infinite;
+  --animate-shake: shake 0.42s cubic-bezier(.36,.07,.19,.97) both;
+  --animate-pop: pop 0.45s cubic-bezier(.22,1,.36,1) both;
+  --animate-breathe: breathe 3.2s ease-in-out infinite;
+  --animate-flicker: flicker 2.4s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.2s linear infinite;
+  @keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(3px); }
+    30%, 50%, 70% { transform: translateX(-6px); }
+    40%, 60% { transform: translateX(6px); }
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.035); }
+    100% { transform: scale(1); }
+  }
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 10px 30px -10px rgb(27 41 37 / .45), 0 0 0 0 rgb(98 185 104 / .45); }
+    50% { box-shadow: 0 10px 30px -10px rgb(27 41 37 / .45), 0 0 0 10px rgb(98 185 104 / 0); }
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    30% { transform: scale(1.12) rotate(-6deg); }
+    60% { transform: scale(.96) rotate(4deg); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -67,6 +96,11 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, #f1ece2 25%, #f8f4ec 50%, #f1ece2 75%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
   }
   /* light app surfaces (dashboard) */
   .card {

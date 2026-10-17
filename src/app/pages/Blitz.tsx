@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Confetti } from '../../components/motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Flame, Heart, Trophy, X, Zap } from 'lucide-react'
 import { isCorrect, loadIndex, loadTest, markActive, setStore, useStore, type TestQuestion } from '../store'
@@ -139,6 +140,7 @@ export default function Blitz() {
       <div className="mx-auto max-w-2xl">
         <div className="relative overflow-hidden rounded-[28px] bg-pine p-8 text-center text-cream sm:p-10">
           <div className="pointer-events-none absolute left-1/2 top-0 size-72 -translate-x-1/2 rounded-full bg-orange-500/25 blur-3xl" />
+          <Confetti fire={phase === 'over' && score > 0 && score >= s.blitzBest} />
           <Zap className="relative mx-auto size-10 text-orange-400" />
           <h1 className="display relative mt-4 text-[44px]">{phase === 'over' ? `${score} points` : 'Blitz'}</h1>
           <p className="relative mt-2 text-[15px] text-cream/65">{phase === 'over' ? `${answered} questions answered. Best: ${Math.max(s.blitzBest, score)}` : 'Answer fast. Keep the streak. Three lives.'}</p>
@@ -204,7 +206,7 @@ export default function Blitz() {
               const right = picked != null && q.correct === k
               const wrong = picked === k && q.correct !== k
               return (
-                <button key={k} disabled={picked != null} onClick={() => resolve(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50' : wrong ? 'border-red-400 bg-red-50' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
+                <button key={k} disabled={picked != null} onClick={() => resolve(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
                   <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
                   <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: o }} />
                   {right && <Check className="size-5 text-emerald-600" />}

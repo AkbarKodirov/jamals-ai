@@ -5,6 +5,8 @@ import { useAuth } from '../../lib/auth'
 import { setStore, today, useStore } from '../store'
 import { WORDS } from '../../data/vocab'
 import { DailyQuestion } from '../components/DailyQuestion'
+import { motion } from 'framer-motion'
+import { CountUp } from '../../components/motion'
 
 const HumoScene = lazy(() => import('../../three/HumoScene'))
 
@@ -65,6 +67,8 @@ export default function Home() {
   const { user } = useAuth()
   const s = useStore()
   const first = user?.name?.split(' ')[0] ?? 'there'
+  const hour = new Date().getHours()
+  const greet = hour < 5 ? 'Xayrli tun' : hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech'
 
   const answered = s.attempts.reduce((a, t) => a + t.answers.filter((x) => x.value != null).length, 0) + s.practice.solved
   const correct = s.attempts.reduce((a, t) => a + t.answers.filter((x) => x.correct).length, 0) + s.practice.correct
@@ -100,9 +104,11 @@ export default function Home() {
     <div className="space-y-5">
       {/* Hero */}
       <section className="relative overflow-hidden rounded-[28px] bg-pine text-cream">
+        <div className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-jg-500/20 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 left-1/3 h-40 w-96 rounded-full bg-[#d79a2c]/10 blur-3xl" />
         <div className="absolute inset-y-0 right-0 hidden w-[46%] lg:block">
           <Suspense fallback={null}>
-            <HumoScene layout="compact" />
+            <HumoScene layout="compact" bg="#1b2925" />
           </Suspense>
           <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-pine to-transparent" />
         </div>
@@ -110,7 +116,12 @@ export default function Home() {
           <div className="flex items-center gap-2.5 lg:hidden">
             <img src="/humo-mark.svg" alt="" className="size-10 rounded-xl" />
           </div>
-          <h1 className="display mt-4 text-[clamp(2rem,4vw,2.9rem)] lg:mt-0">Salom, {first}.</h1>
+          <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-[13px] font-medium text-jg-300">
+            {greet}
+          </motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="display mt-2 text-[clamp(2rem,4vw,2.9rem)]">
+            Salom, {first}.
+          </motion.h1>
           <p className="mt-3 text-[15px] leading-relaxed text-cream/65">
             {s.attempts.length ? "Here's today's plan. Humo has reviewed your last test." : "Let's find your starting score. Take your first practice test and Humo will plan the rest."}
           </p>
@@ -146,7 +157,7 @@ export default function Home() {
             )}
           </p>
           <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-cream">
-            <div className="h-full rounded-full bg-gradient-to-r from-jg-700 to-jg-400 transition-all" style={{ width: `${progress}%` }} />
+            <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }} className="h-full rounded-full bg-gradient-to-r from-jg-700 to-jg-400" />
           </div>
           <div className="mt-2 flex justify-between text-[11px] text-moss">
             <span>400</span>
@@ -177,12 +188,12 @@ export default function Home() {
       {/* Analytics strip */}
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { icon: CheckCircle2, color: 'text-jg-600 bg-jg-50', label: 'Questions solved', value: answered || '–' },
-          { icon: Target, color: 'text-rose-600 bg-rose-50', label: 'Accuracy', value: accuracy != null ? `${accuracy}%` : '–' },
+          { icon: CheckCircle2, color: 'text-jg-600 bg-jg-50', label: 'Questions solved', value: answered ? <CountUp to={answered} /> : '–' },
+          { icon: Target, color: 'text-rose-600 bg-rose-50', label: 'Accuracy', value: accuracy != null ? <CountUp to={accuracy} format={(n) => `${Math.round(n)}%`} /> : '–' },
           { icon: Clock, color: 'text-sky-600 bg-sky-50', label: 'Study time', value: hours ? (hours < 1 ? `${Math.round(hours * 60)} min` : `${hours.toFixed(1)} h`) : '–' },
           { icon: CalendarDays, color: 'text-fuchsia-600 bg-fuchsia-50', label: 'Active days', value: `${last30} of 30` },
-        ].map(({ icon: Icon, color, label, value }) => (
-          <div key={label} className="card flex items-center gap-4 p-5">
+        ].map(({ icon: Icon, color, label, value }, i) => (
+          <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.06, ease: [0.22, 1, 0.36, 1] }} className="card card-hover flex items-center gap-4 p-5">
             <span className={`grid size-11 shrink-0 place-items-center rounded-2xl ${color}`}>
               <Icon className="size-5" />
             </span>
@@ -190,7 +201,7 @@ export default function Home() {
               <p className="text-[12.5px] text-moss">{label}</p>
               <p className="font-serif text-[24px] leading-tight tabular-nums">{value}</p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </section>
 
@@ -206,8 +217,8 @@ export default function Home() {
             </Link>
           </div>
           <ul className="mt-4 space-y-2.5">
-            {plan.map(({ icon: Icon, title, sub, to, done }) => (
-              <li key={title}>
+            {plan.map(({ icon: Icon, title, sub, to, done }, i) => (
+              <motion.li key={title} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 + i * 0.07 }}>
                 <Link to={to} className="card-hover flex items-center gap-4 rounded-2xl border border-[#efe9de] p-4">
                   <span className={`grid size-10 place-items-center rounded-xl ${done ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>{done ? <CheckCircle2 className="size-5" /> : <Icon className="size-5" />}</span>
                   <span className="min-w-0 flex-1">
@@ -215,7 +226,7 @@ export default function Home() {
                     <span className="block text-[12.5px] text-moss">{sub}</span>
                   </span>
                 </Link>
-              </li>
+              </motion.li>
             ))}
           </ul>
         </div>

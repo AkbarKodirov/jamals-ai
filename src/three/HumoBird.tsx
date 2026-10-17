@@ -15,6 +15,12 @@ const GOLD = {
   pale: '#fde3a2',
 }
 
+/** 0 → 1 over the first ~2s after mount: Humo unfolds its wings and rises into place. */
+const easeOut = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3)
+export function introProgress(t: number, delay = 0.2, dur = 1.9) {
+  return easeOut((t - delay) / dur)
+}
+
 function featherGeometry(len: number, width: number) {
   const s = new THREE.Shape()
   s.moveTo(0, 0)
@@ -100,15 +106,18 @@ function Wing({ side, mats }: { side: 1 | -1; mats: ReturnType<typeof useGoldMat
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
     const beat = Math.sin(t * 1.15)
+    const k = introProgress(t)
     if (pivot.current) {
-      pivot.current.rotation.z = 0.06 + beat * 0.16
-      pivot.current.rotation.y = Math.sin(t * 1.15 + 0.6) * 0.14
+      pivot.current.rotation.z = 0.06 + beat * 0.16 * k - (1 - k) * 0.9
+      pivot.current.rotation.y = Math.sin(t * 1.15 + 0.6) * 0.14 * k
+      pivot.current.scale.setScalar(0.55 + 0.45 * k)
     }
     featherRefs.current.forEach((m, i) => {
       if (!m) return
       const s = specs[i]
-      // feathers trail slightly behind the beat — reads as soft, alive motion
-      m.rotation.z = s.rot + Math.sin(t * 1.15 - s.phase * 1.1) * 0.05 * (1 - s.phase * 0.5)
+      // feathers fan out from a folded bundle, then trail slightly behind the beat
+      const folded = -1.7
+      m.rotation.z = folded + (s.rot - folded) * easeOut(k * 1.15 - s.phase * 0.15) + Math.sin(t * 1.15 - s.phase * 1.1) * 0.05 * (1 - s.phase * 0.5) * k
       m.rotation.x = Math.sin(t * 1.15 - s.phase) * 0.06
     })
   })
@@ -256,7 +265,9 @@ export function HumoBird(props: ThreeElements['group']) {
   useFrame(({ clock, pointer }) => {
     if (!root.current) return
     const t = clock.getElapsedTime()
-    root.current.position.y = Math.sin(t * 1.15 - 0.6) * 0.07 // body lifts on the downstroke
+    const k = introProgress(t, 0, 1.6)
+    root.current.position.y = Math.sin(t * 1.15 - 0.6) * 0.07 * k - (1 - k) * 0.8 // rises in, then lifts on each downstroke
+    root.current.scale.setScalar(0.85 + 0.15 * k)
     root.current.rotation.y = THREE.MathUtils.lerp(root.current.rotation.y, pointer.x * 0.35, 0.04)
     root.current.rotation.x = THREE.MathUtils.lerp(root.current.rotation.x, -pointer.y * 0.12 + 0.04, 0.04)
   })

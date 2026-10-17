@@ -54,7 +54,7 @@ export function DailyQuestion() {
           const right = done && item.q.correct === k
           const wrong = done && chosen === String(k) && item.q.correct !== k
           return (
-            <button key={k} disabled={done} onClick={() => answer(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-left text-[14px] ${right ? 'border-emerald-500 bg-emerald-50' : wrong ? 'border-red-400 bg-red-50' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
+            <button key={k} disabled={done} onClick={() => answer(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-left text-[14px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
               <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
               <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: o }} />
               {right && <Check className="size-5 text-emerald-600" />}

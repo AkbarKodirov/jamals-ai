@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
 import { isCorrect, loadTest, setStore, skillBreakdown, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
 import { SkillBars } from '../components/SkillBars'
+import { Confetti, CountUp, ScoreRing } from '../../components/motion'
 import { HumoExplain } from '../components/HumoExplain'
 import { HumoDrawer } from '../components/HumoDrawer'
 import { Passage, QuestionBody } from './TakeTest'
@@ -154,24 +155,33 @@ export default function Results() {
       {/* Score header */}
       <section className="relative overflow-hidden rounded-[28px] bg-pine p-7 text-cream sm:p-9">
         <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-jg-500/20 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="text-[13px] capitalize text-cream/55">
-              {attempt.testName} · {attempt.mode} mode
-            </p>
-            <p className="mt-3 flex items-baseline gap-3">
-              <span className="display text-[72px] leading-none tabular-nums">{attempt.scaled}</span>
-              <span className="text-[15px] text-cream/55">/ 800 estimated</span>
-            </p>
+        <Confetti fire={acc >= 70 && Date.now() - attempt.finishedAt < 15000} />
+        <div className="relative flex flex-wrap items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <ScoreRing value={attempt.scaled - 200} max={600}>
+              <div className="text-center">
+                <CountUp to={attempt.scaled} className="display block text-[44px] leading-none" />
+                <span className="mt-1 block text-[11px] text-cream/55">of 800</span>
+              </div>
+            </ScoreRing>
+            <div>
+              <p className="text-[13px] capitalize text-cream/55">
+                {attempt.testName} · {attempt.mode} mode
+              </p>
+              <p className="display mt-2 text-[30px] leading-tight">{acc >= 85 ? 'Outstanding.' : acc >= 70 ? 'Strong work.' : acc >= 50 ? 'Solid base to build on.' : "Let's turn this around."}</p>
+              <p className="mt-1 text-[13px] text-cream/55">Estimated section score</p>
+            </div>
           </div>
           <div className="grid grid-cols-3 gap-6 text-center">
-            {[
-              [`${attempt.raw}/${attempt.total}`, 'correct'],
-              [`${acc}%`, 'accuracy'],
-              [`${Math.round(secs / attempt.total)}s`, 'per question'],
-            ].map(([v, l]) => (
+            {(
+              [
+                [attempt.raw, (n: number) => `${Math.round(n)}/${attempt.total}`, 'correct'],
+                [acc, (n: number) => `${Math.round(n)}%`, 'accuracy'],
+                [Math.round(secs / attempt.total), (n: number) => `${Math.round(n)}s`, 'per question'],
+              ] as const
+            ).map(([v, f, l]) => (
               <div key={l}>
-                <p className="font-serif text-[26px] tabular-nums">{v}</p>
+                <CountUp to={v} format={f} className="font-serif text-[26px]" />
                 <p className="text-[12px] text-cream/50">{l}</p>
               </div>
             ))}

@@ -354,7 +354,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                           disabled={locked}
                           onClick={() => patch({ value: String(i), struck: a.struck.filter((s) => s !== i) })}
                           className={`flex flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${
-                            showRight ? 'border-emerald-500 bg-emerald-50' : showWrong ? 'border-red-400 bg-red-50' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
+                            showRight ? 'border-emerald-500 bg-emerald-50 animate-pop' : showWrong ? 'border-red-400 bg-red-50 animate-shake' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
                           } ${struck ? 'opacity-45' : ''}`}
                         >
                           <span className={`grid size-7 shrink-0 place-items-center rounded-full border-2 text-[12px] font-bold ${picked ? 'border-pine bg-pine text-cream' : 'border-pine/40'}`}>{LETTERS[i]}</span>

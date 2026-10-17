@@ -1,12 +1,13 @@
 import { Flag } from 'lucide-react'
+import { Reveal, Spotlight } from '../components/motion'
 
 function Card({ className = '', title, body, children }: { className?: string; title: string; body: string; children?: React.ReactNode }) {
   return (
-    <article className={`panel group relative flex flex-col overflow-hidden rounded-[24px] p-6 sm:p-7 ${className}`}>
-      <h3 className="text-[19px] font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 max-w-sm text-[14.5px] leading-relaxed text-white/50">{body}</p>
-      {children && <div className="mt-6 flex-1">{children}</div>}
-    </article>
+    <Spotlight className={`panel flex flex-col overflow-hidden rounded-[24px] p-6 transition-[border-color] duration-300 hover:border-jg-500/30 sm:p-7 ${className}`}>
+      <h3 className="relative text-[19px] font-semibold tracking-tight">{title}</h3>
+      <p className="relative mt-2 max-w-sm text-[14.5px] leading-relaxed text-white/50">{body}</p>
+      {children && <div className="relative mt-6 flex-1">{children}</div>}
+    </Spotlight>
   )
 }
 
@@ -49,10 +50,10 @@ export function Features() {
   return (
     <section id="features" className="scroll-mt-20 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="max-w-2xl">
+        <Reveal className="max-w-2xl">
           <h2 className="display text-[clamp(2.1rem,4.4vw,3.5rem)]">Everything between you and test day, in one place.</h2>
           <p className="mt-5 text-[16px] leading-relaxed text-white/55">Practice, full mocks, review and planning share one record of your progress, so Humo always knows what to give you next.</p>
-        </div>
+        </Reveal>
 
         <div className="mt-14 grid gap-3 md:grid-cols-6">
           <Card

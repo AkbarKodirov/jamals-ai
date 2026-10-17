@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Confetti } from '../../components/motion'
 import { useSearchParams } from 'react-router-dom'
 import { BookOpen, Calculator, Check, X } from 'lucide-react'
 import { isCorrect, loadIndex, loadTest, markActive, setStore, skillOf, SKILLS, useStore, type Skill, type TestQuestion } from '../store'
@@ -139,7 +140,8 @@ export default function Drills() {
 
   if (i >= items.length)
     return (
-      <div className="card mx-auto max-w-md p-8 text-center">
+      <div className="card relative mx-auto max-w-md p-8 text-center">
+        <Confetti fire={right / items.length >= 0.8} />
         <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
         <h2 className="display mt-5 text-[40px] tabular-nums">
           {right}/{items.length}
@@ -185,7 +187,7 @@ export default function Drills() {
               const r = checked && it.q.correct === k
               const w = checked && picked && it.q.correct !== k
               return (
-                <button key={k} disabled={checked} onClick={() => setValue(String(k))} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${r ? 'border-emerald-500 bg-emerald-50' : w ? 'border-red-400 bg-red-50' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
+                <button key={k} disabled={checked} onClick={() => setValue(String(k))} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${r ? 'border-emerald-500 bg-emerald-50 animate-pop' : w ? 'border-red-400 bg-red-50 animate-shake' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
                   <span className={`grid size-6 shrink-0 place-items-center rounded-full border-2 text-[11px] font-bold ${picked ? 'border-pine bg-pine text-cream' : 'border-pine/30'}`}>{'ABCD'[k]}</span>
                   <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: o }} />
                   {r && <Check className="size-5 text-emerald-600" />}
