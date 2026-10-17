@@ -3,6 +3,7 @@ import { RotateCw } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
 import { explain, HumoOffline } from '../humo'
 import type { TestQuestion } from '../store'
+import { RichText } from './RichText'
 
 /** Humo's explanation card — shown above each question in review, and after "Check answer" in practice mode. */
 export function HumoExplain({ testId, qKey, q, compact = false, onAsk }: { testId: string; qKey: string; q: TestQuestion; compact?: boolean; onAsk?: () => void }) {
@@ -34,7 +35,9 @@ export function HumoExplain({ testId, qKey, q, compact = false, onAsk }: { testI
           )}
         </div>
         {state.text ? (
-          <p className="mt-1.5 whitespace-pre-wrap text-[14px] leading-relaxed text-pine/85">{state.text}</p>
+          <div className="mt-1.5 text-[14px] leading-relaxed text-pine/85">
+            <RichText text={state.text} />
+          </div>
         ) : state.error ? (
           <div className="mt-1.5 text-[13.5px] text-pine/75">
             <p>{state.offline ? 'Humo is offline right now.' : state.error}</p>

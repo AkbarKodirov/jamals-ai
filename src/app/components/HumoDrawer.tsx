@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Send, X } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
 import { askHumo, HumoOffline, type ChatMsg } from '../humo'
+import { RichText } from './RichText'
 
 export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean }) {
   const end = useRef<HTMLDivElement>(null)
@@ -14,7 +15,9 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
       {msgs.map((m, i) => (
         <div key={i} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}>
           {m.role === 'humo' && <img src="/humo-mark.svg" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
-          <p className={`max-w-[82%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'bg-pine text-cream' : 'border border-[#ece6da] bg-white text-pine'}`}>{m.text}</p>
+          <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'bg-pine text-cream' : 'border border-[#ece6da] bg-white text-pine'}`}>
+            {m.role === 'humo' ? <RichText text={m.text} /> : m.text}
+          </div>
         </div>
       ))}
       {busy && (
