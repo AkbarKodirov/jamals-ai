@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
-import { isCorrect, loadTest, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
+import { isCorrect, loadTest, skillBreakdown, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
+import { SkillBars } from '../components/SkillBars'
 import { HumoExplain } from '../components/HumoExplain'
 import { HumoDrawer } from '../components/HumoDrawer'
 import { Passage, QuestionBody } from './TakeTest'
@@ -108,6 +109,7 @@ export default function Results() {
   const [filter, setFilter] = useState<'all' | 'wrong' | 'flagged' | 'right'>('wrong')
   const [chat, setChat] = useState<{ open: boolean; prefill?: string }>({ open: false })
 
+  const skills = useMemo(() => (attempt && test ? skillBreakdown(attempt.answers.map((a) => ({ q: test.modules[a.module].questions[a.index], type: attempt.type, correct: a.correct }))) : []), [attempt, test])
   const context = useMemo(() => {
     if (!attempt || !test) return ''
     const wrong = attempt.answers
@@ -121,8 +123,9 @@ export default function Results() {
         return `Q${n} (module ${a.module + 1}): ${stripHtml(q.passage).slice(0, 350)} | ${q.question.slice(0, 200)} | choices: ${q.options.map((o, i) => `${L[i]}) ${stripHtml(o)}`).join('; ')} | student: ${chosen} | correct: ${correct}`
       })
       .join('\n')
-    return `The student just finished "${attempt.testName}" (${attempt.type === 'MATH' ? 'SAT Math' : 'SAT Reading & Writing'}) in ${attempt.mode} mode. Raw score ${attempt.raw}/${attempt.total}, estimated section score ${attempt.scaled}. Questions they missed or left blank:\n${wrong || 'none'}`
-  }, [attempt, test])
+    const sk = skills.map((x) => `${x.skill} ${x.right}/${x.total}`).join(', ')
+    return `Skill results: ${sk}. The student just finished "${attempt.testName}" (${attempt.type === 'MATH' ? 'SAT Math' : 'SAT Reading & Writing'}) in ${attempt.mode} mode. Raw score ${attempt.raw}/${attempt.total}, estimated section score ${attempt.scaled}. Questions they missed or left blank:\n${wrong || 'none'}`
+  }, [attempt, test, skills])
 
   if (!attempt)
     return (
@@ -183,7 +186,20 @@ export default function Results() {
         </div>
       </section>
 
-      {/* Answer map */}
+      {/* Skills + answer map */}
+      {skills.length > 0 && (
+        <section className="card mt-5 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-[14px] font-semibold">
+              <Target className="size-4 text-jg-600" /> Skills, weakest first
+            </p>
+            <p className="text-[12px] text-moss">Fix the red ones first — that's where your next points are.</p>
+          </div>
+          <div className="mt-4 ">
+            <SkillBars stats={skills} />
+          </div>
+        </section>
+      )}
       <section className="card mt-5 p-5 sm:p-6">
         <div className="flex items-center gap-2 text-[14px] font-semibold">
           <Target className="size-4 text-jg-600" /> Answer map

@@ -198,3 +198,52 @@ export function toggleSaved(testId: string, module: number, index: number) {
   const key = `${testId}:${module}:${index}`
   setStore((s) => ({ ...s, saved: s.saved.some((x) => x.key === key) ? s.saved.filter((x) => x.key !== key) : [{ key, testId, module, index, at: Date.now() }, ...s.saved] }))
 }
+
+/* ---------- Digital SAT skill from the question's own wording ---------- */
+export const SKILLS = [
+  'Standard English conventions',
+  'Words in context',
+  'Transitions',
+  'Rhetorical synthesis',
+  'Command of evidence',
+  'Central ideas & details',
+  'Text structure & purpose',
+  'Inferences',
+  'Algebra',
+  'Advanced math',
+  'Geometry & trigonometry',
+  'Problem solving & data',
+] as const
+export type Skill = (typeof SKILLS)[number]
+
+export function skillOf(q: TestQuestion, type: 'EBRW' | 'MATH'): Skill {
+  const t = q.question.toLowerCase()
+  if (type === 'MATH') {
+    if (/angle|triangle|circle|radius|parallel|transversal|perimeter|area|volume|sin|cos|tan|polygon|ray /.test(t)) return 'Geometry & trigonometry'
+    if (/scatterplot|percent|mean|median|probability|data set|line of best fit|survey|sample|rate|ratio/.test(t)) return 'Problem solving & data'
+    if (/x²|\^2|quadratic|exponential|f\(x\)|polynomial|root|parabola|\(.*\)²/.test(t)) return 'Advanced math'
+    return 'Algebra'
+  }
+  if (t.includes('conventions of standard english')) return 'Standard English conventions'
+  if (t.includes('logical and precise word')) return 'Words in context'
+  if (t.includes('logical transition')) return 'Transitions'
+  if (t.includes('relevant information from the notes') || t.includes("student's goal") || t.includes('student wants')) return 'Rhetorical synthesis'
+  if (/support|weaken|undermine|illustrate|data from the (table|graph)|quotation/.test(t)) return 'Command of evidence'
+  if (/main idea|according to the text|based on the text/.test(t)) return 'Central ideas & details'
+  if (/function of the underlined|overall structure|main purpose|cross-text|text 2/.test(t)) return 'Text structure & purpose'
+  if (/most logically completes|suggests/.test(t)) return 'Inferences'
+  return 'Central ideas & details'
+}
+
+export type SkillStat = { skill: Skill; right: number; total: number }
+export function skillBreakdown(rows: { q: TestQuestion; type: 'EBRW' | 'MATH'; correct: boolean }[]): SkillStat[] {
+  const m = new Map<Skill, SkillStat>()
+  for (const r of rows) {
+    const k = skillOf(r.q, r.type)
+    const s = m.get(k) ?? { skill: k, right: 0, total: 0 }
+    s.total++
+    if (r.correct) s.right++
+    m.set(k, s)
+  }
+  return [...m.values()].sort((a, b) => a.right / a.total - b.right / b.total)
+}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { WORDS } from '../../data/vocab'
-import { useStore } from '../store'
+import { loadTest, skillBreakdown, useAsync, useStore, type Test } from '../store'
+import { SkillBars } from '../components/SkillBars'
 
 function Bar({ label, value, sub, tone = 'from-jg-700 to-jg-400' }: { label: string; value: number | null; sub?: string; tone?: string }) {
   return (
@@ -46,6 +47,15 @@ export default function Analytics() {
   const mastered = vocabAll.filter((w) => (s.vocab[w]?.reps ?? 0) >= 3).length
   const learning = vocabAll.filter((w) => s.vocab[w] && s.vocab[w].reps < 3).length
 
+  const ids = [...new Set(s.attempts.map((a) => a.testId))].join(',')
+  const { data: tests } = useAsync(() => Promise.all(ids ? ids.split(',').map((id) => loadTest(id).catch(() => null)) : []), [ids])
+  const byId = new Map((tests ?? []).filter(Boolean).map((t) => [(t as Test).id, t as Test]))
+  const skills = skillBreakdown(
+    s.attempts.flatMap((a) => {
+      const t = byId.get(a.testId)
+      return t ? a.answers.filter((x) => t.modules[x.module]?.questions[x.index]).map((x) => ({ q: t.modules[x.module].questions[x.index], type: a.type, correct: x.correct })) : []
+    }),
+  )
   const modeCount = (mode: string) => s.attempts.filter((a) => a.mode === mode).length
   const trend = s.attempts.slice(-12)
 
@@ -84,6 +94,15 @@ export default function Analytics() {
           <Bar label={`Math · ${m.pace ?? '–'}s per question`} value={pace(m.pace, 95)} sub="Test day allows about 95 seconds per question" tone="from-orange-600 to-orange-400" />
         </section>
 
+        {skills.length > 0 && (
+          <section className="card p-6 lg:col-span-2">
+            <h2 className="text-[15px] font-semibold">Accuracy by skill, weakest first</h2>
+            <p className="mt-1 text-[12.5px] text-moss">Across all your tests. Drill and read the lesson for the top two.</p>
+            <div className="mt-5 ">
+              <SkillBars stats={skills} />
+            </div>
+          </section>
+        )}
         <section className="card p-6">
           <h2 className="text-[15px] font-semibold">Score trend</h2>
           {trend.length < 2 ? (
