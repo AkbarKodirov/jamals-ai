@@ -85,13 +85,13 @@ export default function Analytics() {
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <section className="card space-y-5 p-6">
           <h2 className="text-[15px] font-semibold">Accuracy by section</h2>
-          <Bar label="Reading & Writing" value={rw.acc} sub={`${rw.total} questions answered`} />
-          <Bar label="Math" value={m.acc} sub={`${m.total} questions answered`} tone="from-sky-700 to-sky-400" />
+          <Bar label="Reading & Writing" value={rw.acc} sub={`${rw.total} questions seen in tests and drills`} />
+          <Bar label="Math" value={m.acc} sub={`${m.total} questions seen in tests and drills`} tone="from-sky-700 to-sky-400" />
         </section>
         <section className="card space-y-5 p-6">
           <h2 className="text-[15px] font-semibold">Pacing</h2>
-          <Bar label={`Reading & Writing · ${rw.pace ?? '–'}s per question`} value={pace(rw.pace, 71)} sub="Test day allows about 71 seconds per question" tone="from-orange-600 to-orange-400" />
-          <Bar label={`Math · ${m.pace ?? '–'}s per question`} value={pace(m.pace, 95)} sub="Test day allows about 95 seconds per question" tone="from-orange-600 to-orange-400" />
+          <Bar label={`Reading & Writing · ${rw.pace == null ? 'no data yet' : `${rw.pace}s per question`}`} value={pace(rw.pace, 71)} sub="Test day allows about 71 seconds per question" tone="from-orange-600 to-orange-400" />
+          <Bar label={`Math · ${m.pace == null ? 'no data yet' : `${m.pace}s per question`}`} value={pace(m.pace, 95)} sub="Test day allows about 95 seconds per question" tone="from-orange-600 to-orange-400" />
         </section>
 
         {skills.length > 0 && (

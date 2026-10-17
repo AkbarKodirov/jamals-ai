@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { SkillStat } from '../store'
 
 /** Weakest skills first — the order students should fix them in. */
@@ -10,7 +11,14 @@ export function SkillBars({ stats, dark = false }: { stats: SkillStat[]; dark?: 
         return (
           <li key={s.skill}>
             <div className="flex justify-between text-[13px]">
-              <span>{s.skill}</span>
+              <span className="flex items-center gap-2">
+                {s.skill}
+                {!dark && pct < 80 && (
+                  <Link to={`/app/drills?skill=${encodeURIComponent(s.skill)}`} className="rounded-full bg-pine px-2 py-0.5 text-[10.5px] font-semibold text-cream hover:bg-pine-2">
+                    Drill
+                  </Link>
+                )}
+              </span>
               <span className={`tabular-nums ${dark ? 'text-cream/55' : 'text-moss'}`}>
                 {s.right}/{s.total} · {pct}%
               </span>

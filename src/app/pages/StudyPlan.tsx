@@ -7,10 +7,10 @@ type Task = { id: string; title: string; to: string; min: number }
 
 // A balanced week used by Jamals Academy teachers: skill work early, a full test on Saturday, review on Sunday.
 const WEEK: ((weak: string) => Task[])[] = [
-  (w) => [{ id: 'drill-rw', title: 'Drill: Reading & Writing, 20 questions', to: '/app/drills', min: 30 }, { id: 'vocab', title: 'Daily 20 words', to: '/app/vocab', min: 10 }, { id: 'weak', title: `Lesson: ${w}`, to: '/app/lessons', min: 15 }],
+  (w) => [{ id: 'drill-rw', title: 'Drill: Reading & Writing, 20 questions', to: '/app/drills', min: 30 }, { id: 'vocab', title: 'Daily 20 words', to: '/app/vocab', min: 10 }, { id: 'weak', title: `Drill: ${w}, 10 questions`, to: `/app/drills?skill=${encodeURIComponent(w)}`, min: 15 }],
   () => [{ id: 'drill-m', title: 'Drill: Math, 20 questions', to: '/app/drills', min: 30 }, { id: 'vocab', title: 'Daily 20 words', to: '/app/vocab', min: 10 }],
   () => [{ id: 'mistakes', title: 'Fix 10 mistakes from your notebook', to: '/app/mistakes', min: 25 }, { id: 'lesson', title: 'One lesson + Ask Humo', to: '/app/lessons', min: 20 }],
-  (w) => [{ id: 'drill-weak', title: `Drill your weakest area (${w})`, to: '/app/drills', min: 30 }, { id: 'vocab', title: 'Daily 20 words', to: '/app/vocab', min: 10 }],
+  (w) => [{ id: 'drill-weak', title: `Drill your weakest skill: ${w}`, to: `/app/drills?skill=${encodeURIComponent(w)}`, min: 30 }, { id: 'vocab', title: 'Daily 20 words', to: '/app/vocab', min: 10 }],
   () => [{ id: 'blitz', title: 'Two Blitz runs (pacing)', to: '/app/blitz', min: 15 }, { id: 'vocab-cards', title: 'Flashcards: due words', to: '/app/vocab', min: 15 }],
   () => [{ id: 'test', title: 'Full practice test in exam mode', to: '/app/tests', min: 70 }],
   () => [{ id: 'review', title: "Review Saturday's test with Humo", to: '/app/results', min: 30 }],
@@ -30,7 +30,7 @@ export default function StudyPlan() {
   const [offset, setOffset] = useState(0)
   const start = mondayOf(new Date())
   start.setDate(start.getDate() + offset * 7)
-  const weak = s.attempts.length ? (s.attempts.filter((a) => a.type === 'MATH').length && Math.min(...s.attempts.filter((a) => a.type === 'MATH').map((a) => a.raw / a.total)) < Math.min(1, ...s.attempts.filter((a) => a.type === 'EBRW').map((a) => a.raw / a.total)) ? 'Math' : 'Reading & Writing') : 'Words in Context'
+  const weak = s.weakSkills[0] ?? 'Words in context'
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start)
     d.setDate(d.getDate() + i)

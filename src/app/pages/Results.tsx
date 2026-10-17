@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
-import { isCorrect, loadTest, skillBreakdown, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
+import { isCorrect, loadTest, setStore, skillBreakdown, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
 import { SkillBars } from '../components/SkillBars'
 import { HumoExplain } from '../components/HumoExplain'
 import { HumoDrawer } from '../components/HumoDrawer'
@@ -110,6 +110,10 @@ export default function Results() {
   const [chat, setChat] = useState<{ open: boolean; prefill?: string }>({ open: false })
 
   const skills = useMemo(() => (attempt && test ? skillBreakdown(attempt.answers.map((a) => ({ q: test.modules[a.module].questions[a.index], type: attempt.type, correct: a.correct }))) : []), [attempt, test])
+  useEffect(() => {
+    const weak = skills.filter((x) => x.total >= 2 && x.right / x.total < 0.8).map((x) => x.skill).slice(0, 2)
+    if (weak.length) setStore((st) => ({ ...st, weakSkills: weak }))
+  }, [skills])
   const context = useMemo(() => {
     if (!attempt || !test) return ''
     const wrong = attempt.answers

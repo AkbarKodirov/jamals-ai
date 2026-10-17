@@ -47,6 +47,7 @@ type State = {
   mistakes: { key: string; testId: string; module: number; index: number; addedAt: number; cleared: boolean }[]
   customWords: CustomWord[]
   saved: { key: string; testId: string; module: number; index: number; at: number }[]
+  weakSkills: string[]
   planDone: Record<string, boolean>
   drills: { at: number; subject: 'EBRW' | 'MATH'; n: number; correct: number; seconds: number }[]
 }
@@ -63,6 +64,7 @@ const initial: State = {
   mistakes: [],
   customWords: [],
   saved: [],
+  weakSkills: [],
   planDone: {},
   drills: [],
 }
