@@ -53,12 +53,28 @@ export type PlanKind = 'drill-rw' | 'drill-math' | 'skill' | 'vocab' | 'mistakes
 export type PlanTask = { id: string; kind: PlanKind; title: string; min: number; skill?: string }
 export type WeekPlan = { days: PlanTask[][] }
 
-export type ChatMsg = { role: 'user' | 'humo'; text: string; desmos?: DesmosScreenData[]; plan?: WeekPlan | null; at?: number }
-export type Chat = { id: string; title: string; createdAt: number; updatedAt: number; pinned?: boolean; msgs: ChatMsg[] }
+export type ChatMsg = { role: 'user' | 'humo'; text: string; desmos?: DesmosScreenData[]; plan?: WeekPlan | null; at?: number; images?: string[] }
+export type Chat = { id: string; title: string; createdAt: number; updatedAt: number; pinned?: boolean; space?: 'humo' | 'desmos'; msgs: ChatMsg[] }
 
 export type Highlight = { start: number; end: number; color: 'yellow' | 'blue' | 'pink' | 'underline'; note?: string }
 export type Session = { at: number; seconds: number; kind: string; subject?: 'EBRW' | 'MATH' }
-export type Settings = { language: 'en' | 'uz' | 'ru'; humoStyle: 'hint' | 'full'; dailyGoal: number; reminders: boolean; sounds: boolean; desmosFirst: boolean }
+export type Settings = { language: 'en' | 'uz' | 'ru'; humoStyle: 'hint' | 'full'; dailyGoal: number; reminders: boolean; sounds: boolean; desmosFirst: boolean; theme: 'system' | 'light' | 'dark' }
+
+/* Question bank */
+export type BankQ = TestQuestion & {
+  id: string
+  set: string
+  setName: string
+  section: 'EBRW' | 'MATH'
+  domain: string
+  skill: Skill
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  challenge?: boolean
+  bankId?: string
+  solution?: { hints: string[]; desmos: string[]; look_for: string; why: string; trap: string; rule: string; topic: string }
+}
+export type BankProgress = { tries: number; correct: boolean; chosen: string | null; at: number; seconds: number }
+export type Collection = { id: string; name: string; keys: string[]; createdAt: number }
 
 type State = {
   profile: Profile
@@ -68,9 +84,9 @@ type State = {
   studySeconds: number
   practice: { solved: number; correct: number }
   blitzBest: number
-  mistakes: { key: string; testId: string; module: number; index: number; addedAt: number; cleared: boolean }[]
+  mistakes: { key: string; testId: string; module: number; index: number; addedAt: number; cleared: boolean; bankId?: string }[]
   customWords: CustomWord[]
-  saved: { key: string; testId: string; module: number; index: number; at: number }[]
+  saved: { key: string; testId: string; module: number; index: number; at: number; bankId?: string }[]
   weakSkills: string[]
   planDone: Record<string, boolean>
   drills: { at: number; subject: 'EBRW' | 'MATH'; n: number; correct: number; seconds: number }[]
@@ -81,6 +97,10 @@ type State = {
   sessions: Session[]
   settings: Settings
   desmosLab: Record<string, { tries: number; solved: boolean; at: number }>
+  qbank: Record<string, BankProgress>
+  notes: Record<string, string>
+  collections: Collection[]
+  lessonsDone: Record<string, number>
 }
 export type CustomWord = { word: string; pos: 'adj' | 'verb' | 'noun' | 'adv'; def: string; ex: string; syn: string[]; level: 'mine'; addedAt: number }
 
@@ -103,8 +123,12 @@ const initial: State = {
   chats: [],
   highlights: {},
   sessions: [],
-  settings: { language: 'en', humoStyle: 'hint', dailyGoal: 20, reminders: true, sounds: false, desmosFirst: true },
+  settings: { language: 'en', humoStyle: 'hint', dailyGoal: 20, reminders: true, sounds: false, desmosFirst: true, theme: 'system' },
   desmosLab: {},
+  qbank: {},
+  notes: {},
+  collections: [],
+  lessonsDone: {},
 }
 
 /* ---------------- tiny global store (per user, localStorage) ---------------- */
@@ -239,6 +263,44 @@ export function loadTest(id: string) {
   if (!testCache.has(id)) testCache.set(id, fetch(`/tests/${id}.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error('Test not found')))))
   return testCache.get(id)!
 }
+let bankP: Promise<BankQ[]> | null = null
+/** The whole Question Bank (Jamals' own sets + the Desmos collection), loaded once. */
+export const loadBank = (): Promise<BankQ[]> => (bankP ??= fetch('/bank/bank.json').then((r) => (r.ok ? r.json() : Promise.reject(new Error('Question bank unavailable')))))
+
+/** Saved / mistake entries point at either a test question or a bank question. */
+export type QRef = { key: string; testId: string; module: number; index: number; bankId?: string }
+export type Resolved = { q: TestQuestion; section: 'EBRW' | 'MATH'; source: string; skill: Skill; difficulty: string; bank?: BankQ }
+export async function resolveRef(r: QRef): Promise<Resolved | null> {
+  if (r.bankId) {
+    const b = (await loadBank()).find((x) => x.id === r.bankId)
+    return b ? { q: b, section: b.section, source: b.setName, skill: b.skill, difficulty: b.difficulty, bank: b } : null
+  }
+  const t = await loadTest(r.testId).catch(() => null)
+  const q = t?.modules[r.module]?.questions[r.index]
+  return t && q ? { q, section: t.type, source: `${t.name} · M${r.module + 1} Q${r.index + 1}`, skill: skillOf(q, t.type), difficulty: 'Test', bank: undefined } : null
+}
+
+/** Records a Question Bank answer: progress, activity, and the mistakes log. */
+export function recordBank(b: BankQ, chosen: string, correct: boolean, seconds: number) {
+  const key = `bank:${b.id}`
+  setStore((s) => ({
+    ...s,
+    qbank: { ...s.qbank, [b.id]: { tries: (s.qbank[b.id]?.tries ?? 0) + 1, correct, chosen, at: Date.now(), seconds } },
+    mistakes: correct
+      ? s.mistakes.map((m) => (m.key === key ? { ...m, cleared: true } : m))
+      : s.mistakes.some((m) => m.key === key && !m.cleared)
+        ? s.mistakes
+        : [...s.mistakes.filter((m) => m.key !== key), { key, testId: 'bank', module: 0, index: 0, bankId: b.id, addedAt: Date.now(), cleared: false }],
+    practice: { solved: s.practice.solved + 1, correct: s.practice.correct + (correct ? 1 : 0) },
+  }))
+  markActive(seconds, 'practice', b.section)
+}
+
+export function toggleSavedBank(id: string) {
+  const key = `bank:${id}`
+  setStore((s) => ({ ...s, saved: s.saved.some((x) => x.key === key) ? s.saved.filter((x) => x.key !== key) : [{ key, testId: 'bank', module: 0, index: 0, bankId: id, at: Date.now() }, ...s.saved] }))
+}
+
 export const loadIndex = () => fetch('/tests/index.json').then((r) => r.json() as Promise<TestMeta[]>)
 
 export const stripHtml = (h: string | null) => (h || '').replace(/<li>/g, '\n• ').replace(/<[^>]+>/g, ' ').replace(/\s+\n/g, '\n').replace(/[ \t]+/g, ' ').trim()
@@ -268,8 +330,8 @@ export type Skill = (typeof SKILLS)[number]
 export function skillOf(q: TestQuestion, type: 'EBRW' | 'MATH'): Skill {
   const t = q.question.toLowerCase()
   if (type === 'MATH') {
-    if (/angle|triangle|circle|radius|parallel|transversal|perimeter|area|volume|sin|cos|tan|polygon|ray /.test(t)) return 'Geometry & trigonometry'
-    if (/scatterplot|percent|mean|median|probability|data set|line of best fit|survey|sample|rate|ratio/.test(t)) return 'Problem solving & data'
+    if (/\b(angles?|triangles?|circles?|radius|parallel|transversal|perimeter|area|volume|sin|cos|tan|polygons?|rays?|diameter|arc|chord|hypotenuse|rectangle|square|cylinder|cone|sphere|cube)\b|°/.test(t)) return 'Geometry & trigonometry'
+    if (/scatterplot|percent|%|\bmean\b|median|probability|data set|line of best fit|survey|sample|\brate\b|ratio|standard deviation|margin of error|table/.test(t)) return 'Problem solving & data'
     if (/x²|\^2|quadratic|exponential|f\(x\)|polynomial|root|parabola|\(.*\)²/.test(t)) return 'Advanced math'
     return 'Algebra'
   }

@@ -46,9 +46,22 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
           style={{ transformOrigin: m.role === 'user' ? 'bottom right' : 'bottom left' }}
           className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}
         >
-          {m.role === 'humo' && <img src="/humo-mark.svg" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
-          <div className={`rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'max-w-[82%] bg-pine text-cream' : `border border-[#ece6da] bg-white text-pine ${m.desmos?.length || m.plan ? 'w-full max-w-[94%]' : 'max-w-[82%]'}`}`}>
-            {m.role === 'humo' ? <HumoReply msg={m} /> : m.text}
+          {m.role === 'humo' && <img src="/humo-mark.png" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
+          <div className={`rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'max-w-[82%] bg-pine text-cream' : `border border-line bg-card text-pine ${m.desmos?.length || m.plan ? 'w-full max-w-[94%]' : 'max-w-[82%]'}`}`}>
+            {m.role === 'humo' ? (
+              <HumoReply msg={m} />
+            ) : (
+              <>
+                {m.images?.length ? (
+                  <span className="mb-1.5 flex flex-wrap gap-1.5">
+                    {m.images.map((src, k) => (
+                      <img key={k} src={src} alt="Question photo" className="max-h-48 rounded-xl ring-1 ring-white/20" />
+                    ))}
+                  </span>
+                ) : null}
+                {m.text}
+              </>
+            )}
           </div>
         </motion.div>
       ))}
@@ -56,9 +69,9 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5">
           <span className="relative">
             <span className="absolute inset-0 animate-ping rounded-lg bg-jg-400/40" />
-            <img src="/humo-mark.svg" alt="" className="relative size-7 rounded-lg" />
+            <img src="/humo-mark.png" alt="" className="relative size-7 rounded-lg" />
           </span>
-          <span className="flex items-center gap-1 rounded-2xl border border-[#ece6da] bg-white px-4 py-3">
+          <span className="flex items-center gap-1 rounded-2xl border border-line bg-card px-4 py-3">
             {[0, 1, 2].map((i) => (
               <span key={i} className="size-1.5 animate-bounce rounded-full bg-jg-500" style={{ animationDelay: `${i * 120}ms` }} />
             ))}
@@ -70,7 +83,7 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
   )
 }
 
-export function useHumoChat(greeting: string, context?: string, opts: { initial?: ChatMsg[]; onChange?: (msgs: ChatMsg[]) => void } = {}) {
+export function useHumoChat(greeting: string, context?: string, opts: { initial?: ChatMsg[]; onChange?: (msgs: ChatMsg[]) => void; space?: 'humo' | 'desmos' } = {}) {
   const { token } = useAuth()
   const [msgs, setMsgsRaw] = useState<ChatMsg[]>(() => opts.initial ?? [{ role: 'humo', text: greeting }])
   const [busy, setBusy] = useState(false)
@@ -82,14 +95,14 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
       queueMicrotask(() => onChange.current?.(next))
       return next
     })
-  async function send(text: string) {
+  async function send(text: string, images?: string[]) {
     const t = text.trim()
-    if (!t || busy) return
-    const history = [...msgs, { role: 'user' as const, text: t, at: Date.now() }]
+    if ((!t && !images?.length) || busy) return
+    const history = [...msgs, { role: 'user' as const, text: t, at: Date.now(), ...(images?.length ? { images } : {}) }]
     setMsgs(() => history)
     setBusy(true)
     try {
-      const r = await askHumo(history, token, context)
+      const r = await askHumo(history, token, context, opts.space)
       setMsgs((m) => [...m, { role: 'humo', text: r.reply, desmos: r.desmos?.length ? r.desmos : undefined, plan: r.plan ?? undefined, at: Date.now() }])
     } catch (e) {
       setMsgs((m) => [...m, { role: 'humo', text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() }])
@@ -104,9 +117,17 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
 }
 
 /** Slide-over chat with Humo that already knows the test the student just took. */
-export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill, subtitle = 'Your Digital SAT tutor' }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string; subtitle?: string }) {
+export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill, subtitle = 'Your Digital SAT tutor', autoSend }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string; subtitle?: string; autoSend?: string | null }) {
   const { msgs, busy, send } = useHumoChat(greeting, context)
   const [input, setInput] = useState('')
+  const sent = useRef<string | null>(null)
+  useEffect(() => {
+    if (open && autoSend && sent.current !== autoSend) {
+      sent.current = autoSend
+      send(autoSend)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, autoSend])
   useEffect(() => {
     if (open && prefill) setInput(prefill)
   }, [open, prefill])
@@ -124,8 +145,8 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-cream"
           >
-            <div className="flex items-center gap-3 border-b border-[#e8e2d6] bg-white px-5 py-4">
-              <img src="/humo-mark.svg" alt="" className="size-10 rounded-xl" />
+            <div className="flex items-center gap-3 border-b border-line bg-card px-5 py-4">
+              <img src="/humo-mark.png" alt="" className="size-10 rounded-xl" />
               <div className="flex-1">
                 <p className="text-[15px] font-semibold">Humo</p>
                 <p className="text-[12px] text-moss">{subtitle}</p>
@@ -140,7 +161,7 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
             {msgs.length === 1 && (
               <div className="flex flex-wrap gap-2 px-5 pb-3">
                 {suggestions.map((s) => (
-                  <button key={s} onClick={() => send(s)} className="rounded-full border border-[#e3dccf] bg-white px-3 py-1.5 text-[12.5px] text-pine hover:border-jg-500">
+                  <button key={s} onClick={() => send(s)} className="rounded-full border border-line bg-card px-3 py-1.5 text-[12.5px] text-pine hover:border-jg-500">
                     {s}
                   </button>
                 ))}
@@ -152,7 +173,7 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
                 send(input)
                 setInput('')
               }}
-              className="m-4 mt-0 flex gap-2 rounded-2xl border border-[#e3dccf] bg-white p-1.5 focus-within:border-jg-500"
+              className="m-4 mt-0 flex gap-2 rounded-2xl border border-line bg-card p-1.5 focus-within:border-jg-500"
             >
               <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about any question…" className="flex-1 bg-transparent px-3 text-[14.5px] placeholder:text-moss/60 focus:outline-none" />
               <button aria-label="Send" disabled={busy || !input.trim()} className="grid size-10 place-items-center rounded-xl bg-pine text-cream disabled:opacity-40">

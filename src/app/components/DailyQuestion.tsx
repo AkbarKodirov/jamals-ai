@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Sparkles, X } from 'lucide-react'
-import { isCorrect, loadIndex, loadTest, markActive, setStore, today, useStore, type TestQuestion } from '../store'
+import { isCorrect, loadBank, markActive, setStore, today, useStore, type TestQuestion } from '../store'
+import { describeQuestion, usePublishScreen } from '../screen'
 import { HumoExplain } from './HumoExplain'
 import { Passage } from '../pages/TakeTest'
 
@@ -14,14 +15,15 @@ export function DailyQuestion() {
 
   useEffect(() => {
     const n = Math.floor(Date.now() / 86400000)
-    loadIndex().then(async (idx) => {
-      const t = await loadTest(idx[n % idx.length].id)
-      const flat = t.modules.flatMap((m, mi) => m.questions.map((q, qi) => ({ q, key: `${mi}:${qi}` }))).filter((x) => x.q.format === 'mc')
-      const pick = flat[(n * 7) % flat.length]
-      setItem({ ...pick, testId: t.id })
+    // from the Question Bank, so the full practice tests stay unseen
+    loadBank().then((bank) => {
+      const flat = bank.filter((b) => b.format === 'mc' && !b.image && !b.passageImage)
+      const b = flat[(n * 7919) % flat.length]
+      setItem({ q: b, key: b.id, testId: 'bank' })
     })
   }, [])
 
+  usePublishScreen(item ? { title: "today's daily question", key: `daily:${day}`, text: describeQuestion(item.q, { chosen: value, checked: value != null, correct: value != null && isCorrect(item.q, value), where: 'Daily question on the dashboard' }), wrong: value != null && !isCorrect(item.q, value) } : null)
   const streakDays = Object.keys(s.planDone).filter((k) => k.startsWith('daily:') && !k.endsWith(':ok')).length
   if (!item) return <div className="skeleton h-48 rounded-[24px]" />
   const chosen = value ?? (answered ? (s.planDone[`daily:${day}:ok`] ? String(item.q.correct) : null) : null)
@@ -54,7 +56,7 @@ export function DailyQuestion() {
           const right = done && item.q.correct === k
           const wrong = done && chosen === String(k) && item.q.correct !== k
           return (
-            <button key={k} disabled={done} onClick={() => answer(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-left text-[14px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
+            <button key={k} disabled={done} onClick={() => answer(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-left text-[14px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-line hover:border-line-strong'}`}>
               <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
               <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: o }} />
               {right && <Check className="size-5 text-emerald-600" />}

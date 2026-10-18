@@ -1,3 +1,5 @@
+import { usePublishScreen } from '../screen'
+import { useSearchParams } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import { Confetti, Tilt } from '../../components/motion'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -71,6 +73,11 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
   const [typed, setTyped] = useState('')
   const done = i >= items.length
   const q = items[i]
+  usePublishScreen(
+    !done
+      ? { title: `vocabulary quiz (${title})`, key: `vocab:${i}`, wrong: picked != null && picked !== q.answer, text: `Vocabulary question (${q.type}): ${q.prompt}\nChoices: ${q.options.join(' | ')}\n${picked ? `Student chose: ${picked} — ${picked === q.answer ? 'correct' : `incorrect; the answer is ${q.answer} (${q.word.def})`}` : 'Not answered yet — give a hint, not the answer.'}` }
+      : null,
+  )
 
   function choose(opt: string) {
     if (picked) return
@@ -99,7 +106,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
     return (
       <div className="card relative mx-auto max-w-xl p-8 text-center">
         <Confetti fire={score / items.length >= 0.8} />
-        <img src="/humo-mark.svg" alt="" className="mx-auto size-14 rounded-2xl" />
+        <img src="/humo-mark.png" alt="" className="mx-auto size-14 rounded-2xl" />
         <h2 className="display mt-5 text-[34px]">
           {score}/{items.length}
         </h2>
@@ -141,7 +148,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
           </span>
         </div>
       </div>
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#ece6da]">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-soft">
         <div className="h-full rounded-full bg-jg-500 transition-all" style={{ width: `${(i / items.length) * 100}%` }} />
       </div>
 
@@ -164,7 +171,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
                 placeholder={`${q.answer[0]}${'_ '.repeat(q.answer.length - 1)}`}
-                className={`h-12 flex-1 rounded-xl border-2 px-4 font-serif text-[20px] focus:outline-none ${picked ? (picked === q.answer ? 'border-emerald-500 bg-emerald-50 animate-pop' : 'border-red-400 bg-red-50 animate-shake') : 'border-[#e6e0d3] focus:border-pine'}`}
+                className={`h-12 flex-1 rounded-xl border-2 px-4 font-serif text-[20px] focus:outline-none ${picked ? (picked === q.answer ? 'border-emerald-500 bg-emerald-50 animate-pop' : 'border-red-400 bg-red-50 animate-shake') : 'border-line focus:border-pine'}`}
                 aria-label="Type the word"
               />
               {!picked && <button className="btn btn-dark h-12 px-5 text-[14px]">Check</button>}
@@ -178,7 +185,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
                 <button
                   key={o}
                   onClick={() => choose(o)}
-                  className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'} ${picked && !right && !wrong ? 'opacity-50' : ''}`}
+                  className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-line hover:border-line-strong'} ${picked && !right && !wrong ? 'opacity-50' : ''}`}
                 >
                   <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
                   {o}
@@ -240,7 +247,7 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
         </button>
         <span className="text-[13px] tabular-nums text-moss">{queue.length} left</span>
       </div>
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#ece6da]">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-soft">
         <motion.div className="h-full rounded-full bg-jg-500" animate={{ width: `${(doneN / Math.max(1, doneN + queue.length)) * 100}%` }} transition={{ duration: 0.4 }} />
       </div>
       <Tilt className="mt-5" max={5}>
@@ -282,8 +289,16 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
 }
 
 /* ---------- page ---------- */
+const VTABS = [
+  ['practice', 'Practice'],
+  ['words', 'Word list'],
+  ['mine', 'My words'],
+] as const
+
 export default function Vocabulary() {
   const s = useStore()
+  const [params, setParams] = useSearchParams()
+  const tab = (params.get('tab') as (typeof VTABS)[number][0]) || 'practice'
   const [level, setLevel] = useState<Word['level'] | 'mine' | 'all'>('all')
   const [session, setSession] = useState<null | { kind: 'quiz' | 'cards'; words: AnyWord[]; types: QType[]; title: string }>(null)
   const [q, setQ] = useState('')
@@ -309,17 +324,31 @@ export default function Vocabulary() {
     <div>
       <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Vocabulary</h1>
       <p className="mt-2 text-[15px] text-moss">{ALL.length} words ({s.customWords.length} of your own) with spaced repetition — words you miss come back sooner, words you know fade out.</p>
+      <div className="mt-5 flex gap-1 border-b border-line">
+        {VTABS.map(([k, l]) => (
+          <button key={k} onClick={() => setParams({ tab: k })} className={`relative px-4 pb-3 pt-1 text-[14px] font-medium ${tab === k ? 'text-pine' : 'text-moss hover:text-pine'}`}>
+            {l}
+            {k === 'mine' && <span className="ml-1.5 rounded-md bg-cream px-1.5 py-0.5 text-[11px]">{s.customWords.length}</span>}
+            {tab === k && <motion.span layoutId="vtab" className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-pine" />}
+          </button>
+        ))}
+      </div>
+      {tab === 'mine' && <MyWords />}
+      {tab !== 'mine' && (
+      <>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-2">
         {[{ id: 'all' as const, name: 'All levels' }, ...LEVELS, { id: 'mine' as const, name: `My words (${s.customWords.length})` }].map((l) => (
-          <button key={l.id} onClick={() => setLevel(l.id)} className={`rounded-full px-4 py-2 text-[13px] font-medium ${level === l.id ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf]'}`}>
+          <button key={l.id} onClick={() => setLevel(l.id)} className={`rounded-full px-4 py-2 text-[13px] font-medium ${level === l.id ? 'bg-pine text-cream' : 'bg-card ring-1 ring-line'}`}>
             {l.name}
           </button>
         ))}
       </div>
 
+      {tab === 'practice' && (
+      <>
       {/* Daily */}
-      <section className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-jg-500/30 bg-gradient-to-br from-jg-50 to-white p-6">
+      <section className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-jg-500/30 bg-gradient-to-br from-jg-50 to-card p-6">
         <div>
           <p className="text-[13px] font-semibold text-jg-700">Daily 20</p>
           <p className="mt-1 text-[18px] font-medium">
@@ -366,13 +395,15 @@ export default function Vocabulary() {
         ))}
       </section>
 
-      <MyWords />
+      </>
+      )}
 
       {/* Word list */}
+      {tab === 'words' && (
       <section className="card mt-4 p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[16px] font-semibold">Word list</h2>
-          <label className="flex items-center gap-2 rounded-full border border-[#e3dccf] px-3 py-1.5">
+          <label className="flex items-center gap-2 rounded-full border border-line px-3 py-1.5">
             <Search className="size-4 text-moss" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search words" className="w-40 bg-transparent text-[13px] focus:outline-none" />
           </label>
@@ -381,7 +412,7 @@ export default function Vocabulary() {
           {list.map((w) => {
             const st = status(s.vocab[w.word])
             return (
-              <li key={w.word} className="rounded-2xl border border-[#efe9de] p-3.5">
+              <li key={w.word} className="rounded-2xl border border-line p-3.5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[15px] font-semibold">
                     {w.word} <span className="text-[12px] font-normal text-moss">{w.pos}</span>
@@ -402,6 +433,9 @@ export default function Vocabulary() {
           </p>
         )}
       </section>
+      )}
+      </>
+      )}
     </div>
   )
 }
@@ -412,7 +446,7 @@ function MyWords() {
   const empty = { word: '', pos: 'adj' as CustomWord['pos'], def: '', ex: '', syn: '' }
   const [d, setD] = useState(empty)
   const [err, setErr] = useState<string | null>(null)
-  const input = 'h-11 w-full rounded-xl border border-[#e3dccf] bg-white px-3.5 text-[14px] focus:border-jg-500 focus:outline-none'
+  const input = 'h-11 w-full rounded-xl border border-line bg-card px-3.5 text-[14px] focus:border-jg-500 focus:outline-none'
 
   function add(e: React.FormEvent) {
     e.preventDefault()
@@ -450,11 +484,11 @@ function MyWords() {
       <div>
         <h3 className="text-[14px] font-semibold">My words ({s.customWords.length})</h3>
         {s.customWords.length === 0 ? (
-          <p className="mt-3 rounded-2xl border border-dashed border-[#e3dccf] p-6 text-center text-[13px] text-moss">No words yet. Add the first one on the left.</p>
+          <p className="mt-3 rounded-2xl border border-dashed border-line p-6 text-center text-[13px] text-moss">No words yet. Add the first one on the left.</p>
         ) : (
           <ul className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
             {s.customWords.map((w) => (
-              <li key={w.word} className="flex items-start justify-between gap-3 rounded-2xl border border-[#efe9de] p-3">
+              <li key={w.word} className="flex items-start justify-between gap-3 rounded-2xl border border-line p-3">
                 <span className="min-w-0">
                   <span className="text-[14.5px] font-semibold">{w.word}</span> <span className="text-[12px] text-moss">{w.pos}</span>
                   <span className="block text-[13px] text-pine/75">{w.def}</span>

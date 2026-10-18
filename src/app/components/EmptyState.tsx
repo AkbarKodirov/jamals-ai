@@ -7,7 +7,7 @@ export function EmptyState({ title, body, action }: { title: string; body?: stri
     <div className="card relative overflow-hidden px-6 py-14 text-center">
       <div className="pointer-events-none absolute left-1/2 top-6 size-40 -translate-x-1/2 rounded-full bg-jg-500/10 blur-2xl" />
       <motion.img
-        src="/humo-mark.svg"
+        src="/humo-mark.png"
         alt=""
         className="relative mx-auto size-16 rounded-2xl shadow-lg shadow-pine/10"
         animate={{ y: [0, -8, 0], rotate: [0, -3, 0, 3, 0] }}

@@ -61,7 +61,7 @@ function upsertUser(data) {
 /* ---------- app ---------- */
 const app = express()
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || true }))
-app.use(express.json({ limit: '1mb' }))
+app.use(express.json({ limit: '12mb' }))
 
 function auth(req, res, next) {
   const h = req.headers.authorization || ''
@@ -136,7 +136,7 @@ You are an expert Digital SAT tutor with a warm, precise, encouraging style.
 - When asked for a study plan, ask for (or use) test date, target score and weak areas, then give a week-by-week plan.
 - Keep answers short and scannable; use plain text, not markdown tables. Write math in plain text (x², √2, 7/2, ≤), never LaTeX or $…$ delimiters; put Desmos lines in \`backticks\`.
 - Never claim to be affiliated with the College Board.
-- When you recommend practice, point to the Jamals AI features by name: Practice tests (Exam / Practice / Sprint mode), Drills (choose a skill), Lessons, Vocabulary (Daily 20, Spell it, own words), Blitz, Study plan, Saved & mistakes, Analytics.
+- When you recommend practice, point to the Jamals AI features by name: Practice tests (Exam / Practice / Sprint mode), Question bank (filter by skill and difficulty, Question Rush), Desmos Lab (upload a photo of a math question), Learn courses (SAT Reading & Writing, Math & Desmos), Vocabulary (Practice, Word list, My words), Blitz, Study plan, Saved & mistakes (saved, mistakes log, notes, collections), Analytics. There are no Drills or Lessons pages any more.
 - Digital SAT skills: Words in context, Transitions, Standard English conventions, Rhetorical synthesis, Command of evidence, Central ideas & details, Text structure & purpose, Inferences, Algebra, Advanced math, Problem solving & data, Geometry & trigonometry.`
 
 const PLAN_GUIDE = `STUDY PLAN EDITS
@@ -209,19 +209,68 @@ async function finishReply(text, { expect, question } = {}) {
   return { text: text.replace(/\n{3,}/g, '\n\n').trim(), desmos, plan }
 }
 
+const DESMOS_LAB = `DESMOS LAB MODE: the student sends photos or screenshots of SAT Math questions (sometimes several, sometimes with a typed note).
+First write the question you read in one or two lines ("I read: …") so the student can catch a misread. If the photo is unreadable or cut off, say what is missing and ask for a clearer photo instead of guessing.
+Then solve it the Desmos way in the 8-part shape with exactly one desmos block. For a Reading & Writing question, answer normally without a desmos block.`
+
+function toParts(m) {
+  const parts = []
+  for (const url of (m.images || []).slice(0, 3)) {
+    const mm = /^data:(image\/(?:png|jpeg|webp|heic|heif));base64,(.+)$/.exec(String(url))
+    if (mm) parts.push({ inlineData: { mimeType: mm[1], data: mm[2] } })
+  }
+  parts.push({ text: String(m.text || (parts.length ? 'Solve this question.' : '')).slice(0, 8000) })
+  return parts
+}
+
 app.post('/api/chat', async (req, res) => {
-  const { messages = [], context } = req.body || {}
+  const { messages = [], context, space } = req.body || {}
   if (!gemini) return res.status(503).json({ error: NO_KEY })
   try {
-    const contents = messages.slice(-20).map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: String(m.text).slice(0, 8000) }] }))
-    const system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
-    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.5 } })
-    const last = messages.filter((m) => m.role === 'user').pop()?.text
+    const recent = messages.slice(-20)
+    // images are expensive: only the last two messages that carry them are sent
+    let withImages = 0
+    const contents = recent
+      .map((m, i) => ({ m, i }))
+      .reverse()
+      .map(({ m }) => {
+        const keep = m.images?.length && withImages < 2
+        if (keep) withImages++
+        return { role: m.role === 'user' ? 'user' : 'model', parts: toParts(keep ? m : { ...m, images: [], text: m.images?.length ? `${m.text || ''} [photo of a question sent earlier]` : m.text }) }
+      })
+      .reverse()
+    let system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
+    if (space === 'desmos') system = `${system}\n\n${DESMOS_LAB}`
+    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.4 } })
+    const last = recent.filter((m) => m.role === 'user').pop()?.text
     const r = await finishReply(out.text || '', { question: last })
     res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
   } catch (e) {
     console.error(e)
     res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+  }
+})
+
+/* ---------- "Similar question": Humo writes a fresh question on the same skill ---------- */
+app.post('/api/similar', async (req, res) => {
+  const { passage, question, options = [], skill, section } = req.body || {}
+  if (!question && !passage) return res.status(400).json({ error: 'Missing question.' })
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
+  try {
+    const prompt = `Write ONE new, original Digital SAT ${section === 'MATH' ? 'Math' : 'Reading and Writing'} question that tests the same skill (${skill || 'same skill'}) at the same difficulty as this one, with different content and numbers.
+Original for reference only (do not copy it):
+${passage ? `Text: ${passage}\n` : ''}Question: ${question}
+${options.length ? `Choices: ${options.join(' | ')}` : ''}
+
+Return JSON: {"passage": "text or empty string", "question": "…", "options": ["…","…","…","…"], "correct": 0-3, "explanation": "2-4 sentences: why the answer is right and the trap in the best wrong choice"}.
+Use plain text math (x², √, 7/2). Exactly four options, exactly one correct. Double-check the key.`
+    const out = await gemini.models.generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: HUMO_SYSTEM, temperature: 0.8, responseMimeType: 'application/json' } })
+    const j = JSON.parse(out.text)
+    if (!Array.isArray(j.options) || j.options.length !== 4 || !(j.correct >= 0 && j.correct <= 3)) throw new Error('bad shape')
+    res.json({ passage: String(j.passage || ''), question: String(j.question), options: j.options.map(String), correct: Number(j.correct), explanation: String(j.explanation || '') })
+  } catch (e) {
+    console.error(e)
+    res.status(502).json({ error: 'Humo could not write a similar question right now. Try again.' })
   }
 })
 

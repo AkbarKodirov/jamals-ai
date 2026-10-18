@@ -103,8 +103,8 @@ export function DesmosScreen({ screen, compact = false }: { screen: Screen; comp
   }
 
   return (
-    <figure className={`overflow-hidden rounded-2xl border border-[#dcd5c6] bg-white shadow-[0_8px_30px_-20px_rgb(27_41_37/.5)] ${compact ? '' : 'my-3'}`}>
-      <figcaption className="flex items-center gap-2 border-b border-[#ece6da] bg-[#fbfaf7] px-3 py-2 text-[12px]">
+    <figure className={`overflow-hidden rounded-2xl border border-line-strong bg-card shadow-[0_8px_30px_-20px_rgb(27_41_37/.5)] ${compact ? '' : 'my-3'}`}>
+      <figcaption className="flex items-center gap-2 border-b border-line bg-soft px-3 py-2 text-[12px]">
         <span className="grid size-5 place-items-center rounded-md bg-[#2d70b3] text-[10px] font-bold text-white">D</span>
         <span className="min-w-0 flex-1 truncate font-medium text-pine">{screen.title || 'Desmos screen'}</span>
         <span className="hidden rounded-full bg-jg-50 px-2 py-0.5 text-[10.5px] font-semibold text-jg-700 sm:inline">Numbers checked</span>
@@ -120,8 +120,8 @@ export function DesmosScreen({ screen, compact = false }: { screen: Screen; comp
         <AnimatePresence>
           {live && (
             <motion.div className="fixed inset-0 z-[70] grid place-items-center bg-pine/50 p-3 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLive(false)}>
-              <motion.div initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 12 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-5xl overflow-hidden rounded-3xl bg-white">
-                <div className="flex items-center gap-3 border-b border-[#ece6da] px-5 py-3">
+              <motion.div initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 12 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-5xl overflow-hidden rounded-3xl bg-card">
+                <div className="flex items-center gap-3 border-b border-line px-5 py-3">
                   <p className="flex-1 text-[14px] font-semibold text-pine">Live Desmos · {screen.title || 'Humo solve'}</p>
                   <button onClick={() => setLive(false)} aria-label="Close" className="rounded-full p-1.5 text-moss hover:bg-cream">
                     <X className="size-5" />

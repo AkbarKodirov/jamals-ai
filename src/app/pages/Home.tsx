@@ -1,4 +1,5 @@
 import { KINDS } from '../plan'
+import { UNIVERSITIES, uniLogo } from '../../landing/Sections'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookMarked, CalendarDays, CheckCircle2, Clock, NotebookPen, Pencil, Target, Trophy, Zap } from 'lucide-react'
@@ -51,7 +52,7 @@ function EditableScore({ label, value, onSave, accent }: { label: string; value:
             setEdit(false)
           }}
         >
-          <input autoFocus type="number" min={400} max={1600} step={10} value={v} onChange={(e) => setV(e.target.value)} onBlur={() => setEdit(false)} className="w-28 rounded-xl border border-[#e3dccf] px-3 py-1.5 font-serif text-[30px] focus:border-jg-500 focus:outline-none" />
+          <input autoFocus type="number" min={400} max={1600} step={10} value={v} onChange={(e) => setV(e.target.value)} onBlur={() => setEdit(false)} className="w-28 rounded-xl border border-line px-3 py-1.5 font-serif text-[30px] focus:border-jg-500 focus:outline-none" />
         </form>
       ) : (
         <button onClick={() => setEdit(true)} className="group flex items-center gap-2">
@@ -97,7 +98,7 @@ export default function Home() {
       : { icon: Trophy, title: 'Full test in exam mode', sub: 'Timed, no hints — like test day.', to: '/app/tests', done: s.attempts.some((a) => new Date(a.finishedAt).toISOString().slice(0, 10) === today()) },
     { icon: BookMarked, title: `Daily 20 words`, sub: `${Math.min(20, dueWords)} words due for review`, to: '/app/vocab', done: dueWords === 0 },
     s.weakSkills[0]
-      ? { icon: Target, title: `Drill your weakest skill: ${s.weakSkills[0]}`, sub: 'From your last test — 10 questions with Humo explanations.', to: `/app/drills?skill=${encodeURIComponent(s.weakSkills[0])}`, done: false }
+      ? { icon: Target, title: `Drill your weakest skill: ${s.weakSkills[0]}`, sub: 'From your last test — 10 questions with Humo explanations.', to: `/app/practice/run?skills=${encodeURIComponent(s.weakSkills[0])}&status=unsolved&order=random&n=10`, done: false }
       : openMistakes
       ? { icon: NotebookPen, title: `Review ${openMistakes} mistake${openMistakes > 1 ? 's' : ''}`, sub: 'Fix them before they repeat on test day.', to: '/app/mistakes', done: false }
       : { icon: Zap, title: 'One Blitz run', sub: '60 seconds a question, three lives.', to: '/app/blitz', done: false },
@@ -110,7 +111,7 @@ export default function Home() {
   return (
     <div className="space-y-5">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-[28px] bg-pine text-cream">
+      <section className="theme-light relative overflow-hidden rounded-[28px] bg-pine text-cream">
         <div className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-jg-500/20 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-1/3 h-40 w-96 rounded-full bg-[#d79a2c]/10 blur-3xl" />
         <div className="absolute inset-y-0 right-0 hidden w-[46%] lg:block">
@@ -121,7 +122,7 @@ export default function Home() {
         </div>
         <div className="relative max-w-xl p-7 sm:p-10">
           <div className="flex items-center gap-2.5 lg:hidden">
-            <img src="/humo-mark.svg" alt="" className="size-10 rounded-xl" />
+            <img src="/humo-mark.png" alt="" className="size-10 rounded-xl" />
           </div>
           <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-[13px] font-medium text-jg-300">
             {greet}
@@ -181,7 +182,7 @@ export default function Home() {
               value={s.profile.testDate ?? ''}
               min={today()}
               onChange={(e) => setStore((x) => ({ ...x, profile: { ...x.profile, testDate: e.target.value || null } }))}
-              className="rounded-lg border border-[#e3dccf] px-2 py-1 text-[12px] text-moss focus:border-jg-500 focus:outline-none"
+              className="rounded-lg border border-line px-2 py-1 text-[12px] text-moss focus:border-jg-500 focus:outline-none"
               aria-label="Exam date"
             />
           </div>
@@ -212,6 +213,26 @@ export default function Home() {
         ))}
       </section>
 
+      {/* where Jamals students go */}
+      <section className="card overflow-hidden p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[15px] font-semibold">Where Jamals students go</h2>
+          <span className="text-[12px] text-moss">Your target: {s.profile.target}</span>
+        </div>
+        <div className="relative mt-4 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
+          <ul className="flex w-max animate-marquee gap-3 hover:[animation-play-state:paused]">
+            {[...UNIVERSITIES, ...UNIVERSITIES].map(([u, d], i) => (
+              <li key={i} aria-hidden={i >= UNIVERSITIES.length} className="flex shrink-0 items-center gap-2.5 rounded-xl bg-soft py-2 pl-2 pr-4">
+                <span className="grid size-8 place-items-center rounded-lg bg-white">
+                  <img src={uniLogo(d)} alt="" loading="lazy" referrerPolicy="no-referrer" className="size-6 object-contain" />
+                </span>
+                <span className="whitespace-nowrap text-[13px] font-medium">{u}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <DailyQuestion />
 
       {/* Plan + recent */}
@@ -227,7 +248,7 @@ export default function Home() {
           <ul className="mt-4 space-y-2.5">
             {plan.map(({ icon: Icon, title, sub, to, done }, i) => (
               <motion.li key={title} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 + i * 0.07 }}>
-                <Link to={to} className="card-hover flex items-center gap-4 rounded-2xl border border-[#efe9de] p-4">
+                <Link to={to} className="card-hover flex items-center gap-4 rounded-2xl border border-line p-4">
                   <span className={`grid size-10 place-items-center rounded-xl ${done ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>{done ? <CheckCircle2 className="size-5" /> : <Icon className="size-5" />}</span>
                   <span className="min-w-0 flex-1">
                     <span className={`block text-[14.5px] font-medium ${done ? 'text-moss line-through' : ''}`}>{title}</span>
@@ -246,9 +267,9 @@ export default function Home() {
             </Link>
           </div>
           {s.attempts.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-[#e3dccf] p-8 text-center text-[13px] text-moss">No tests yet. Your results will show up here.</div>
+            <div className="mt-6 rounded-2xl border border-dashed border-line p-8 text-center text-[13px] text-moss">No tests yet. Your results will show up here.</div>
           ) : (
-            <ul className="mt-4 divide-y divide-[#efe9de]">
+            <ul className="mt-4 divide-y divide-line">
               {s.attempts
                 .slice(-5)
                 .reverse()

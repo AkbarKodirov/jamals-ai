@@ -32,7 +32,7 @@ function Leaderboard({ rows, me }: { rows: Row[] | null; me?: string }) {
       ) : rows.length === 0 ? (
         <p className="mt-4 text-[13px] text-moss">No runs yet this week — be the first.</p>
       ) : (
-        <ol className="mt-3 divide-y divide-[#efe9de]">
+        <ol className="mt-3 divide-y divide-line">
           {rows.map((r, i) => (
             <li key={r.id} className={`flex items-center gap-3 py-2.5 text-[14px] ${r.name === me ? 'font-semibold' : ''}`}>
               <span className={`w-6 text-center tabular-nums ${i < 3 ? 'text-orange-500' : 'text-moss'}`}>{i + 1}</span>
@@ -189,7 +189,7 @@ export default function Blitz() {
         </span>
         <span className="font-serif text-[26px] tabular-nums">{score}</span>
       </div>
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#ece6da]">
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-soft">
         <div className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${left <= 10 ? 'bg-red-500' : 'bg-orange-500'}`} style={{ width: `${(left / SECONDS) * 100}%` }} />
       </div>
 
@@ -206,7 +206,7 @@ export default function Blitz() {
               const right = picked != null && q.correct === k
               const wrong = picked === k && q.correct !== k
               return (
-                <button key={k} disabled={picked != null} onClick={() => resolve(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'}`}>
+                <button key={k} disabled={picked != null} onClick={() => resolve(k)} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50 animate-pop' : wrong ? 'border-red-400 bg-red-50 animate-shake' : 'border-line hover:border-line-strong'}`}>
                   <span className="grid size-6 shrink-0 place-items-center rounded-full border border-pine/30 text-[11px] font-bold">{'ABCD'[k]}</span>
                   <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: o }} />
                   {right && <Check className="size-5 text-emerald-600" />}

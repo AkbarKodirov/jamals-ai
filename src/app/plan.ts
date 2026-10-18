@@ -1,16 +1,17 @@
+import { lessonFor } from './learn/courses'
 import { setStore, type PlanKind, type PlanTask, type Profile, type WeekPlan } from './store'
 
 export const KINDS: Record<PlanKind, { label: string; to: (t: PlanTask) => string; min: number; color: string }> = {
-  'drill-rw': { label: 'Reading & Writing drill', to: () => '/app/drills?subject=EBRW', min: 30, color: 'bg-jg-500' },
-  'drill-math': { label: 'Math drill', to: () => '/app/drills?subject=MATH', min: 30, color: 'bg-sky-500' },
-  skill: { label: 'Skill drill', to: (t) => `/app/drills?skill=${encodeURIComponent(t.skill || '')}`, min: 20, color: 'bg-violet-500' },
+  'drill-rw': { label: 'Reading & Writing practice', to: () => '/app/practice/run?section=EBRW&status=unsolved&order=random&n=20', min: 30, color: 'bg-jg-500' },
+  'drill-math': { label: 'Math practice', to: () => '/app/practice/run?section=MATH&status=unsolved&order=random&n=20', min: 30, color: 'bg-sky-500' },
+  skill: { label: 'Weak-skill practice', to: (t) => `/app/practice/run?skills=${encodeURIComponent(t.skill || '')}&status=unsolved&order=random&n=10`, min: 20, color: 'bg-violet-500' },
   vocab: { label: 'Vocabulary', to: () => '/app/vocab', min: 15, color: 'bg-amber-500' },
   mistakes: { label: 'Fix mistakes', to: () => '/app/mistakes', min: 25, color: 'bg-rose-500' },
-  lesson: { label: 'Lesson', to: () => '/app/lessons', min: 20, color: 'bg-teal-500' },
+  lesson: { label: 'Lesson', to: (t) => lessonFor(t.skill ?? '')?.to ?? '/app/learn/rw', min: 20, color: 'bg-teal-500' },
   blitz: { label: 'Blitz', to: () => '/app/blitz', min: 15, color: 'bg-orange-500' },
   test: { label: 'Full practice test', to: () => '/app/tests', min: 70, color: 'bg-pine' },
   review: { label: 'Review with Humo', to: () => '/app/results', min: 30, color: 'bg-emerald-600' },
-  desmos: { label: 'Desmos Lab', to: () => '/app/desmos', min: 20, color: 'bg-[#2d70b3]' },
+  desmos: { label: 'Desmos practice', to: () => '/app/practice/run?set=desmos&status=unsolved&order=random&n=5', min: 20, color: 'bg-[#2d70b3]' },
   custom: { label: 'Custom task', to: () => '/app/plan', min: 20, color: 'bg-stone-400' },
 }
 
@@ -51,9 +52,9 @@ export function generatePlan(p: Profile, weak: string[] = []): WeekPlan {
     const math = alt++ % 2 === 1
     const skill = nextFocus(math)
     const core = r5(budget * (skill ? 0.4 : 0.55))
-    const out: PlanTask[] = [math ? task('drill-math', 'Math drill, 20 questions', core) : task('drill-rw', 'Reading & Writing drill, 20 questions', core)]
-    if (skill) out.push(task('skill', `Drill your weak skill: ${skill}`, r5(budget * 0.2), skill))
-    if (budget >= 45) out.push(math ? task('desmos', 'Desmos Lab: one hard question the Desmos way', r5(budget * 0.2)) : task('lesson', 'One strategy lesson', r5(budget * 0.2)))
+    const out: PlanTask[] = [math ? task('drill-math', 'Math practice, 20 questions', core) : task('drill-rw', 'Reading & Writing practice, 20 questions', core)]
+    if (skill) out.push(task('skill', `Practice your weak skill: ${skill}`, r5(budget * 0.2), skill))
+    if (budget >= 45) out.push(math ? task('desmos', 'Desmos collection: hard Math the Desmos way', r5(budget * 0.2)) : task('lesson', 'One strategy lesson', r5(budget * 0.2)))
     out.push(task('vocab', 'Daily 20 words', 10))
     if (p.level === 'new' && budget >= 90) out.push(task('blitz', 'One Blitz run for pacing', 10))
     plan[d] = out

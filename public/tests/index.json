@@ -1,82 +1,50 @@
 [
- {
-  "id": "pt1",
-  "name": "Practice Test 1",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "pt2",
-  "name": "Practice Test 2",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "pt3",
-  "name": "Practice Test 3",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "pt4",
-  "name": "Practice Test 4",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "pt5",
-  "name": "Practice Test 5",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "pt6",
-  "name": "Practice Test 6",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "ef5",
-  "name": "English Final 5",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "coe3",
-  "name": "Command of Evidence (mixed) 3",
-  "type": "EBRW",
-  "modules": 2,
-  "questions": 54,
-  "minutesPerModule": 32
- },
- {
-  "id": "math-lines",
-  "name": "Math — Lines & Angles",
-  "type": "MATH",
-  "modules": 1,
-  "questions": 22,
-  "minutesPerModule": 35
- },
- {
-  "id": "math-hard1",
-  "name": "Hardest Math questions - 1",
-  "type": "MATH",
-  "modules": 1,
-  "questions": 22,
-  "minutesPerModule": 35
- }
+  {
+    "id": "pt1",
+    "name": "Practice Test 1",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  },
+  {
+    "id": "pt2",
+    "name": "Practice Test 2",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  },
+  {
+    "id": "pt3",
+    "name": "Practice Test 3",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  },
+  {
+    "id": "pt4",
+    "name": "Practice Test 4",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  },
+  {
+    "id": "pt5",
+    "name": "Practice Test 5",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  },
+  {
+    "id": "pt6",
+    "name": "Practice Test 6",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
+  }
 ]

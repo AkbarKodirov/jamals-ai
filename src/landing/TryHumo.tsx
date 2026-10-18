@@ -184,7 +184,7 @@ export function TryHumo() {
                   className="overflow-hidden"
                 >
                   <div className="mt-6 flex gap-3.5 rounded-2xl border border-jg-500/20 bg-gradient-to-b from-jg-500/[0.08] to-transparent p-4 sm:p-5">
-                    <img src="/humo-mark.svg" alt="" className="size-9 shrink-0 rounded-full ring-2 ring-jg-500/40" />
+                    <img src="/humo-mark.png" alt="" className="size-9 shrink-0 rounded-full ring-2 ring-jg-500/40" />
                     <div className="min-w-0 flex-1">
                       <p className="mb-2 text-[13px] font-semibold text-jg-300">Humo</p>
                       <Typed lines={picked.humo} />

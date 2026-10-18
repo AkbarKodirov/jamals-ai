@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, CalendarPlus, Check, Download, Languages, LogOut, RotateCcw, Sigma, Trash2, Upload, UserRound } from 'lucide-react'
+import { Bell, CalendarPlus, Check, Download, Languages, LogOut, Monitor, Moon, RotateCcw, Sigma, Sun, Trash2, Upload, UserRound } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
 import { getStore, resetStore, setStore, useStore, type Settings as SettingsT, type Profile } from '../store'
 import { DAY_NAMES, downloadIcs, generatePlan } from '../plan'
@@ -9,7 +9,7 @@ import { Avatar } from '../AppShell'
 
 function Section({ icon: Icon, title, sub, children }: { icon: typeof Bell; title: string; sub?: string; children: React.ReactNode }) {
   return (
-    <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} className="card p-6">
+    <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="card p-6">
       <div className="flex items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-cream text-pine">
           <Icon className="size-5" />
@@ -31,8 +31,8 @@ function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
         <span className="block text-[14px] font-medium">{label}</span>
         {sub && <span className="block text-[12px] text-moss">{sub}</span>}
       </span>
-      <span className={`relative h-6 w-11 rounded-full transition-colors ${on ? 'bg-jg-500' : 'bg-[#ddd5c5]'}`}>
-        <motion.span layout transition={{ type: 'spring', stiffness: 600, damping: 32 }} className={`absolute top-0.5 size-5 rounded-full bg-white shadow ${on ? 'right-0.5' : 'left-0.5'}`} />
+      <span className={`relative h-6 w-11 rounded-full transition-colors ${on ? 'bg-jg-500' : 'bg-line-strong'}`}>
+        <motion.span layout transition={{ type: 'spring', stiffness: 600, damping: 32 }} className={`absolute top-0.5 size-5 rounded-full bg-card shadow ${on ? 'right-0.5' : 'left-0.5'}`} />
       </span>
     </button>
   )
@@ -43,7 +43,7 @@ function Seg<T extends string>({ value, options, onChange }: { value: T; options
     <div className="inline-flex rounded-xl bg-cream p-1">
       {options.map(([v, l]) => (
         <button key={v} onClick={() => onChange(v)} className={`relative rounded-lg px-3.5 py-1.5 text-[13px] font-medium ${value === v ? 'text-pine' : 'text-moss'}`}>
-          {value === v && <motion.span layoutId={`seg-${options.map((o) => o[0]).join()}`} className="absolute inset-0 rounded-lg bg-white shadow-sm" />}
+          {value === v && <motion.span layoutId={`seg-${options.map((o) => o[0]).join()}`} className="absolute inset-0 rounded-lg bg-card shadow-sm" />}
           <span className="relative">{l}</span>
         </button>
       ))}
@@ -133,31 +133,31 @@ export default function Settings() {
           </div>
         </Section>
 
-        <Section icon={Check} title="SAT goal" sub="Humo plans and predicts against these">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <label className="block">
-              <span className="flex justify-between text-[13px] text-moss">
-                Target score <span className="font-serif text-[22px] text-pine">{p.target}</span>
-              </span>
-              <input type="range" min={900} max={1600} step={10} value={p.target} onChange={(e) => prof({ target: Number(e.target.value) })} className="mt-2 w-full accent-[#48ae4f]" />
-            </label>
-            <label className="block">
-              <span className="text-[13px] text-moss">Test date</span>
-              <input type="date" value={p.testDate ?? ''} onChange={(e) => prof({ testDate: e.target.value || null })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none" />
-            </label>
-            <label className="block">
-              <span className="text-[13px] text-moss">Current / latest total score</span>
-              <input type="number" min={400} max={1600} step={10} value={p.current ?? ''} placeholder="Not set" onChange={(e) => prof({ current: e.target.value ? Number(e.target.value) : null })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none" />
-            </label>
-            <label className="block">
-              <span className="text-[13px] text-moss">Aim</span>
-              <select value={p.aim ?? ''} onChange={(e) => prof({ aim: e.target.value })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none">
-                <option value="">Not set</option>
-                {['Top US university', 'Scholarship abroad', 'University in Uzbekistan', 'Just exploring'].map((a) => (
-                  <option key={a}>{a}</option>
-                ))}
-              </select>
-            </label>
+        <Section icon={Sun} title="Appearance" sub="Light, dark, or follow your device">
+          <div className="grid grid-cols-3 gap-3">
+            {(
+              [
+                ['system', 'System', Monitor],
+                ['light', 'Light', Sun],
+                ['dark', 'Dark', Moon],
+              ] as const
+            ).map(([k, l, Icon]) => {
+              const on = s.settings.theme === k
+              return (
+                <motion.button key={k} whileTap={{ scale: 0.97 }} onClick={() => set({ theme: k })} className={`overflow-hidden rounded-2xl border-2 text-left transition ${on ? 'border-jg-500 shadow-[0_0_0_4px_rgb(72_174_79/.15)]' : 'border-line hover:border-line-strong'}`}>
+                  <div className={`relative h-20 ${k === 'dark' ? 'bg-[#0d1311]' : k === 'light' ? 'bg-[#faf7f1]' : 'bg-gradient-to-r from-[#faf7f1] from-50% to-[#0d1311] to-50%'}`}>
+                    <span className="absolute inset-y-2 left-2 w-5 rounded-md bg-[#1b2925]" />
+                    <span className={`absolute left-9 right-3 top-3 h-5 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
+                    <span className={`absolute bottom-3 left-9 h-5 w-1/3 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
+                    <span className="absolute bottom-3 right-3 h-5 w-8 rounded-md bg-[#48ae4f]" />
+                  </div>
+                  <span className="flex items-center gap-2 px-3 py-2.5 text-[13.5px] font-medium">
+                    <Icon className="size-4" /> {l}
+                    {on && <Check className="ml-auto size-4 text-jg-600" />}
+                  </span>
+                </motion.button>
+              )
+            })}
           </div>
         </Section>
 
@@ -177,7 +177,11 @@ export default function Settings() {
             <Seg value={String(p.minutesPerDay ?? 60)} options={['30', '45', '60', '90', '120'].map((m) => [m, `${m}m`])} onChange={(v) => prof({ minutesPerDay: Number(v) })} />
             <label className="flex items-center gap-2 text-[13px] text-moss">
               Start at
-              <input type="time" value={p.studyTime ?? '18:00'} onChange={(e) => prof({ studyTime: e.target.value })} className="rounded-lg border border-[#e3dccf] bg-white px-2 py-1.5 text-[14px] text-pine" />
+              <input type="time" value={p.studyTime ?? '18:00'} onChange={(e) => prof({ studyTime: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
+            </label>
+            <label className="flex items-center gap-2 text-[13px] text-moss">
+              SAT date
+              <input type="date" value={p.testDate ?? ''} onChange={(e) => prof({ testDate: e.target.value || null })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
             </label>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -231,7 +235,7 @@ export default function Settings() {
             <span className="text-[14px] font-medium">Daily question goal</span>
             <Seg value={String(s.settings.dailyGoal)} options={['10', '20', '40', '60'].map((n) => [n, n])} onChange={(v) => set({ dailyGoal: Number(v) })} />
           </div>
-          <div className="mt-3 divide-y divide-[#efe9de]">
+          <div className="mt-3 divide-y divide-line">
             <Toggle
               on={s.settings.reminders}
               onChange={async (v) => {
@@ -292,9 +296,9 @@ export default function Settings() {
             {danger && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                 <div className="mt-4 rounded-2xl bg-red-50 p-4 text-[13.5px] text-red-900">
-                  {danger === 'reset' ? 'This erases your tests, drills, vocabulary, plan and chats on this device.' : 'This deletes your Jamals AI account and all progress. It cannot be undone.'} Type <b>DELETE</b> to confirm.
+                  {danger === 'reset' ? 'This erases your tests, practice, vocabulary, plan and chats on this device.' : 'This deletes your Jamals AI account and all progress. It cannot be undone.'} Type <b>DELETE</b> to confirm.
                   <div className="mt-3 flex gap-2">
-                    <input value={typed} onChange={(e) => setTyped(e.target.value)} className="w-36 rounded-lg border border-red-200 bg-white px-3 py-2 text-[14px] focus:outline-none" />
+                    <input value={typed} onChange={(e) => setTyped(e.target.value)} className="w-36 rounded-lg border border-red-200 bg-card px-3 py-2 text-[14px] focus:outline-none" />
                     <button
                       disabled={typed !== 'DELETE'}
                       onClick={() => {

@@ -147,7 +147,7 @@ export default function Onboarding() {
               <motion.div key={step} custom={dir} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}>
                 {step === 0 && (
                   <div>
-                    <img src="/humo-mark.svg" alt="" className="size-16 rounded-2xl lg:hidden" />
+                    <img src="/humo-mark.png" alt="" className="size-16 rounded-2xl lg:hidden" />
                     <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-3 py-1 text-[12.5px] text-jg-300 lg:mt-0">
                       <Sparkles className="size-3.5" /> Welcome to Jamals AI
                     </p>
@@ -290,7 +290,7 @@ export default function Onboarding() {
                 {step === 4 && (
                   <div>
                     <h2 className="display text-[clamp(1.9rem,3.6vw,2.8rem)]">What feels hardest?</h2>
-                    <p className="mt-2 text-[14px] text-cream/60">Pick any. Humo adds extra drills for these.</p>
+                    <p className="mt-2 text-[14px] text-cream/60">Pick any. Humo adds extra practice for these.</p>
                     {(
                       [
                         ['Reading & Writing', SKILLS.slice(0, 8)],

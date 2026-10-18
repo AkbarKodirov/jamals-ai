@@ -43,7 +43,7 @@ function ModeSheet({ test, onClose }: { test: TestMeta; onClose: () => void }) {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
         transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-        className="w-full max-w-3xl rounded-t-[28px] bg-white p-6 sm:rounded-[28px] sm:p-8"
+        className="w-full max-w-3xl rounded-t-[28px] bg-card p-6 sm:rounded-[28px] sm:p-8"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -65,7 +65,7 @@ function ModeSheet({ test, onClose }: { test: TestMeta; onClose: () => void }) {
                 key={m.id}
                 onClick={() => setMode(m.id)}
                 aria-pressed={on}
-                className={`rounded-2xl border-2 p-4 text-left transition ${on ? 'border-jg-500 bg-jg-50' : 'border-[#ece6da] hover:border-[#d6cdbb]'}`}
+                className={`rounded-2xl border-2 p-4 text-left transition ${on ? 'border-jg-500 bg-jg-50' : 'border-line hover:border-line-strong'}`}
               >
                 <span className={`grid size-9 place-items-center rounded-xl ${on ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>
                   <Icon className="size-[18px]" />
@@ -85,7 +85,7 @@ function ModeSheet({ test, onClose }: { test: TestMeta; onClose: () => void }) {
             )
           })}
         </div>
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#efe9de] pt-5">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
           <p className="text-[12.5px] text-moss">
             {test.questions} questions, {test.modules} module{test.modules > 1 ? 's' : ''}
           </p>
@@ -137,7 +137,7 @@ export default function Tests() {
                 {done}/{data.length}
               </p>
             </div>
-            <div className="h-8 w-px bg-[#ece6da]" />
+            <div className="h-8 w-px bg-soft" />
             <div>
               <p className="text-[11px] text-moss">Best R&W</p>
               <p className="font-serif text-[22px] tabular-nums">{Math.max(0, ...[...best.entries()].filter(([id]) => data.find((t) => t.id === id)?.type === 'EBRW').map(([, b]) => b.scaled)) || '–'}</p>
@@ -156,7 +156,7 @@ export default function Tests() {
             ['done', 'Completed'],
           ] as const
         ).map(([k, l]) => (
-          <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-4 py-2 text-[13px] font-medium transition ${filter === k ? 'bg-pine text-cream' : 'bg-white text-pine ring-1 ring-[#e3dccf] hover:ring-[#cfc6b4]'}`}>
+          <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-4 py-2 text-[13px] font-medium transition ${filter === k ? 'bg-pine text-cream' : 'bg-card text-pine ring-1 ring-line hover:ring-line-strong'}`}>
             {l}
           </button>
         ))}

@@ -36,12 +36,12 @@ function AddTask({ onAdd, weak }: { onAdd: (t: PlanTask) => void; weak: string }
   const [custom, setCustom] = useState('')
   return (
     <div className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#e3dccf] py-2 text-[12.5px] font-medium text-moss transition hover:border-jg-500 hover:text-jg-700">
+      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-line py-2 text-[12.5px] font-medium text-moss transition hover:border-jg-500 hover:text-jg-700">
         <Plus className="size-3.5" /> Add task
       </button>
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0, y: -4, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.97 }} className="absolute inset-x-0 top-full z-20 mt-1.5 rounded-2xl border border-[#e6e0d3] bg-white p-2 shadow-[0_18px_40px_-18px_rgb(27_41_37/.45)]">
+          <motion.div initial={{ opacity: 0, y: -4, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.97 }} className="absolute inset-x-0 top-full z-20 mt-1.5 rounded-2xl border border-line bg-card p-2 shadow-[0_18px_40px_-18px_rgb(27_41_37/.45)]">
             {ADDABLE.filter((k) => k !== 'custom').map((k) => (
               <button
                 key={k}
@@ -64,7 +64,7 @@ function AddTask({ onAdd, weak }: { onAdd: (t: PlanTask) => void; weak: string }
                 setCustom('')
                 setOpen(false)
               }}
-              className="mt-1 flex gap-1 border-t border-[#efe9de] pt-2"
+              className="mt-1 flex gap-1 border-t border-line pt-2"
             >
               <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="Your own task…" className="min-w-0 flex-1 rounded-lg bg-cream px-2.5 py-1.5 text-[12.5px] focus:outline-none" />
               <button className="rounded-lg bg-pine px-2.5 text-[12px] font-semibold text-cream">Add</button>
@@ -95,7 +95,7 @@ function AskHumoPlan({ plan }: { plan: WeekPlan }) {
     <div className="card relative overflow-hidden p-5">
       <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-jg-400/15 blur-3xl" />
       <div className="relative flex items-center gap-3">
-        <img src="/humo-mark.svg" alt="" className="size-10 rounded-xl" />
+        <img src="/humo-mark.png" alt="" className="size-10 rounded-xl" />
         <div>
           <p className="text-[15px] font-semibold">Ask Humo to change your plan</p>
           <p className="text-[12.5px] text-moss">Say it in your own words — English, O'zbekcha or Русский.</p>
@@ -106,7 +106,7 @@ function AskHumoPlan({ plan }: { plan: WeekPlan }) {
           e.preventDefault()
           ask(text)
         }}
-        className="relative mt-4 flex gap-2 rounded-2xl border border-[#e3dccf] bg-white p-1.5 focus-within:border-jg-500"
+        className="relative mt-4 flex gap-2 rounded-2xl border border-line bg-card p-1.5 focus-within:border-jg-500"
       >
         <input value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. I have football on Wednesdays, move that work to Thursday" className="min-w-0 flex-1 bg-transparent px-3 text-[14px] focus:outline-none" />
         <button disabled={st.busy || !text.trim()} className="btn btn-dark h-10 px-4 text-[13px] disabled:opacity-40">
@@ -124,7 +124,7 @@ function AskHumoPlan({ plan }: { plan: WeekPlan }) {
                 setText(t)
                 ask(t)
               }}
-              className="rounded-full border border-[#e3dccf] bg-white px-3 py-1.5 text-[12.5px] hover:border-jg-500 disabled:opacity-50"
+              className="rounded-full border border-line bg-card px-3 py-1.5 text-[12.5px] hover:border-jg-500 disabled:opacity-50"
             >
               {t}
             </button>
@@ -237,10 +237,10 @@ export default function StudyPlan() {
             </button>
             <AnimatePresence>
               {cal && (
-                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="absolute right-0 z-30 mt-2 w-80 rounded-2xl border border-[#e6e0d3] bg-white p-3 shadow-[0_24px_50px_-20px_rgb(27_41_37/.5)]">
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="absolute right-0 z-30 mt-2 w-80 rounded-2xl border border-line bg-card p-3 shadow-[0_24px_50px_-20px_rgb(27_41_37/.5)]">
                   <p className="px-1 text-[13px] font-semibold">Put your plan in your calendar</p>
                   <p className="px-1 pt-0.5 text-[11.5px] text-moss">Weekly events at {s.profile.studyTime ?? '18:00'} until test day, with a 15-minute reminder.</p>
-                  <button onClick={() => downloadIcs(plan, s.profile)} className="mt-3 flex w-full items-center gap-3 rounded-xl bg-pine px-3 py-2.5 text-left text-[13px] text-cream hover:bg-[#253731]">
+                  <button onClick={() => downloadIcs(plan, s.profile)} className="mt-3 flex w-full items-center gap-3 rounded-xl bg-pine px-3 py-2.5 text-left text-[13px] text-cream hover:bg-pine-2">
                     <Download className="size-4" />
                     <span className="flex-1">
                       Whole plan (.ics)
@@ -318,7 +318,7 @@ export default function StudyPlan() {
           const isToday = date === today()
           const allDone = tasks.length > 0 && tasks.every((t) => s.planDone[`${date}:${t.id}`])
           return (
-            <motion.section layout key={date} className={`card p-4 transition-shadow ${isToday ? 'ring-2 ring-jg-500' : ''} ${allDone ? 'bg-gradient-to-b from-jg-50 to-white' : ''}`}>
+            <motion.section layout key={date} className={`card p-4 transition-shadow ${isToday ? 'ring-2 ring-jg-500' : ''} ${allDone ? 'bg-gradient-to-b from-jg-50 to-card' : ''}`}>
               <p className="flex items-center justify-between text-[13px]">
                 <span className="font-semibold">{d.toLocaleDateString(undefined, { weekday: 'long' })}</span>
                 <span className={isToday ? 'rounded-full bg-jg-500 px-2 py-0.5 text-[11px] font-semibold text-ink' : 'text-moss'}>{isToday ? 'Today' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
@@ -330,7 +330,7 @@ export default function StudyPlan() {
                     const k = `${date}:${t.id}`
                     const ok = !!s.planDone[k]
                     return (
-                      <Reorder.Item key={t.id} value={t} dragListener={editing} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -20, height: 0 }} className={`relative flex items-start gap-2.5 overflow-hidden rounded-xl border bg-white p-2.5 transition-colors duration-300 ${ok && !editing ? 'border-jg-500/30 bg-jg-50/60' : 'border-[#efe9de]'} ${editing ? 'cursor-grab active:cursor-grabbing' : ''}`}>
+                      <Reorder.Item key={t.id} value={t} dragListener={editing} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -20, height: 0 }} className={`relative flex items-start gap-2.5 overflow-hidden rounded-xl border bg-card p-2.5 transition-colors duration-300 ${ok && !editing ? 'border-jg-500/30 bg-jg-50/60' : 'border-line'} ${editing ? 'cursor-grab active:cursor-grabbing' : ''}`}>
                         <span className={`absolute inset-y-0 left-0 w-1 ${KINDS[t.kind].color}`} />
                         {editing ? (
                           <GripVertical className="mt-0.5 size-4 shrink-0 text-moss/60" />
@@ -339,7 +339,7 @@ export default function StudyPlan() {
                             whileTap={{ scale: 0.85 }}
                             aria-label={ok ? 'Mark not done' : 'Mark done'}
                             onClick={() => setStore((x) => ({ ...x, planDone: { ...x.planDone, [k]: !ok } }))}
-                            className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${ok ? 'border-jg-500 bg-jg-500 text-ink' : 'border-[#d6cdbb] hover:border-jg-500'}`}
+                            className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${ok ? 'border-jg-500 bg-jg-500 text-ink' : 'border-line-strong hover:border-jg-500'}`}
                           >
                             {ok && (
                               <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 500, damping: 18 }}>
@@ -362,13 +362,13 @@ export default function StudyPlan() {
                           )}
                           <div className="mt-1 flex items-center gap-1.5 text-[11px] text-moss">
                             {editing && (
-                              <button aria-label="5 minutes less" onClick={() => bump(i, t.id, -5)} className="grid size-5 place-items-center rounded-md bg-cream hover:bg-[#ece6da]">
+                              <button aria-label="5 minutes less" onClick={() => bump(i, t.id, -5)} className="grid size-5 place-items-center rounded-md bg-cream hover:bg-soft">
                                 <Minus className="size-3" />
                               </button>
                             )}
                             <span className="tabular-nums">{t.min} min</span>
                             {editing && (
-                              <button aria-label="5 minutes more" onClick={() => bump(i, t.id, 5)} className="grid size-5 place-items-center rounded-md bg-cream hover:bg-[#ece6da]">
+                              <button aria-label="5 minutes more" onClick={() => bump(i, t.id, 5)} className="grid size-5 place-items-center rounded-md bg-cream hover:bg-soft">
                                 <Plus className="size-3" />
                               </button>
                             )}

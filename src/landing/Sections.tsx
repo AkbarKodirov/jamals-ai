@@ -5,29 +5,34 @@ import { GoogleButton } from '../auth/GoogleButton'
 import { Reveal, Spotlight } from '../components/motion'
 import { motion } from 'framer-motion'
 
-const UNIVERSITIES = [
-  'Westminster International University in Tashkent',
-  'Inha University in Tashkent',
-  'New York University Abu Dhabi',
-  'KAIST',
-  'University of Toronto',
-  "King's College London",
-  'Seoul National University',
-  'Technical University of Munich',
-  'National University of Singapore',
-  'Turin Polytechnic University in Tashkent',
+export const UNIVERSITIES: [string, string][] = [
+  ['Westminster International University in Tashkent', 'wiut.uz'],
+  ['Inha University in Tashkent', 'inha.uz'],
+  ['New York University Abu Dhabi', 'nyuad.nyu.edu'],
+  ['KAIST', 'kaist.ac.kr'],
+  ['University of Toronto', 'utoronto.ca'],
+  ["King's College London", 'kcl.ac.uk'],
+  ['Seoul National University', 'snu.ac.kr'],
+  ['Technical University of Munich', 'tum.de'],
+  ['National University of Singapore', 'nus.edu.sg'],
+  ['Turin Polytechnic University in Tashkent', 'polito.uz'],
 ]
+/** University crest via Google's public favicon service (loaded by the visitor's browser). */
+export const uniLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
 
 export function Proof() {
   const row = [...UNIVERSITIES, ...UNIVERSITIES]
   return (
     <section className="border-t border-white/[0.07] py-12" aria-label="Universities our students aim for">
-      <p className="mx-auto max-w-7xl px-4 text-[13px] text-white/40 sm:px-6">Built for the scores these universities ask for</p>
-      <div className="relative mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-        <ul className="flex w-max animate-marquee gap-12 whitespace-nowrap hover:[animation-play-state:paused]">
-          {row.map((u, i) => (
-            <li key={i} className="text-[19px] font-medium tracking-tight text-white/30" aria-hidden={i >= UNIVERSITIES.length}>
-              {u}
+      <p className="mx-auto max-w-7xl px-4 text-[13px] text-white/40 sm:px-6">Jamals students aim for — and get into — universities like these</p>
+      <div className="relative mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+        <ul className="flex w-max animate-marquee gap-4 hover:[animation-play-state:paused]">
+          {row.map(([u, d], i) => (
+            <li key={i} aria-hidden={i >= UNIVERSITIES.length} className="flex shrink-0 items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-2.5 pl-2.5 pr-5 transition hover:border-white/20 hover:bg-white/[0.06]">
+              <span className="grid size-10 place-items-center overflow-hidden rounded-xl bg-white">
+                <img src={uniLogo(d)} alt="" loading="lazy" className="size-7 object-contain" referrerPolicy="no-referrer" />
+              </span>
+              <span className="whitespace-nowrap text-[15px] font-medium tracking-tight text-white/70">{u}</span>
             </li>
           ))}
         </ul>

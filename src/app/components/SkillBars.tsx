@@ -14,8 +14,8 @@ export function SkillBars({ stats, dark = false }: { stats: SkillStat[]; dark?: 
               <span className="flex items-center gap-2">
                 {s.skill}
                 {!dark && pct < 80 && (
-                  <Link to={`/app/drills?skill=${encodeURIComponent(s.skill)}`} className="rounded-full bg-pine px-2 py-0.5 text-[10.5px] font-semibold text-cream hover:bg-pine-2">
-                    Drill
+                  <Link to={`/app/practice/run?skills=${encodeURIComponent(s.skill)}&status=unsolved&order=random&n=10`} className="rounded-full bg-pine px-2 py-0.5 text-[10.5px] font-semibold text-cream hover:bg-pine-2">
+                    Practice
                   </Link>
                 )}
               </span>

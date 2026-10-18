@@ -1,24 +1,66 @@
 import { useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { History, MessageSquarePlus, Pencil, Pin, PinOff, Search, Send, Trash2, X } from 'lucide-react'
+import { Camera, History, ImagePlus, MessageSquarePlus, Pencil, Pin, PinOff, Search, Send, Trash2, X } from 'lucide-react'
 import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
 import { setStore, useStore, type Chat, type ChatMsg } from '../store'
 import { studentContext } from '../humoContext'
 import { uid } from '../plan'
 
-const GREETING = "Salom! I'm Humo. Send me any SAT question — I'll solve math the Desmos way with a real Desmos screen — or ask me to build or change your study plan."
-const STARTERS = ['Solve x² − 5x + 6 = 0 with Desmos', 'Make my weekends lighter in my plan', 'Ikkinchi darajali tenglamalarni tushuntir', 'What should I study after my last test?']
+type Space = 'humo' | 'desmos'
+const COPY: Record<Space, { greeting: string; starters: string[]; title: string; sub: string; placeholder: string }> = {
+  humo: {
+    greeting: "Salom! I'm Humo. Send me any SAT question — I'll solve math the Desmos way with a real Desmos screen — or ask me to build or change your study plan.",
+    starters: ['Solve x² − 5x + 6 = 0 with Desmos', 'Make my weekends lighter in my plan', 'Ikkinchi darajali tenglamalarni tushuntir', 'What should I study after my last test?'],
+    title: 'Humo',
+    sub: 'Digital SAT tutor · Desmos solves · edits your plan · English, O\'zbekcha, Русский',
+    placeholder: 'Ask Humo or paste a math question…',
+  },
+  desmos: {
+    greeting: 'Send me a photo or screenshot of any SAT Math question. I read it, type it into Desmos, check every number, and show you the Desmos screen step by step.',
+    starters: ['How do I solve systems in Desmos?', 'Teach me list regression [ ] ~ [ ]', 'When should I NOT use Desmos?', 'Solve: for what k does x² + kx + 9 = 0 have one solution?'],
+    title: 'Desmos Lab',
+    sub: 'Upload a question photo · Humo solves it on a real Desmos screen · only in Uzbekistan',
+    placeholder: 'Add a photo, paste a screenshot, or type the question…',
+  },
+}
 
-function saveChat(id: string, msgs: ChatMsg[]) {
+/** Photos are big: keep a smaller copy in history and drop pictures from the oldest chats when storage gets full. */
+function shrink(src: string, max: number, q: number) {
+  return new Promise<string>((res) => {
+    const img = new Image()
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height))
+      const c = document.createElement('canvas')
+      c.width = Math.round(img.width * k)
+      c.height = Math.round(img.height * k)
+      c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height)
+      res(c.toDataURL('image/jpeg', q))
+    }
+    img.onerror = () => res(src)
+    img.src = src
+  })
+}
+
+async function saveChat(id: string, msgs: ChatMsg[], space: Space) {
   if (msgs.filter((m) => m.role === 'user').length === 0) return
-  const firstQ = msgs.find((m) => m.role === 'user')!.text
+  const first = msgs.find((m) => m.role === 'user')!
+  const read = msgs.find((m) => m.role === 'humo' && /I read:/i.test(m.text))?.text.match(/I read:\s*\**\s*([^\n]+)/i)?.[1]
+  const firstQ = first.text || (read ? read.replace(/[*"“”]/g, '').trim() : first.images?.length ? 'Question photo' : 'Chat')
+  const stored = await Promise.all(msgs.map(async (m) => (m.images?.length ? { ...m, images: await Promise.all(m.images.map((x) => (x.length > 90000 ? shrink(x, 720, 0.7) : x))) } : m)))
   setStore((s) => {
     const existing = s.chats.find((c) => c.id === id)
     const chat: Chat = existing
-      ? { ...existing, msgs, updatedAt: Date.now() }
-      : { id, title: firstQ.replace(/\s+/g, ' ').slice(0, 52) + (firstQ.length > 52 ? '…' : ''), createdAt: Date.now(), updatedAt: Date.now(), msgs }
-    return { ...s, chats: [chat, ...s.chats.filter((c) => c.id !== id)].slice(0, 80) }
+      ? { ...existing, msgs: stored, updatedAt: Date.now(), title: existing.title === 'Question photo' && read ? firstQ.slice(0, 52) : existing.title }
+      : { id, space, title: firstQ.replace(/\s+/g, ' ').slice(0, 52) + (firstQ.length > 52 ? '…' : ''), createdAt: Date.now(), updatedAt: Date.now(), msgs: stored }
+    let chats = [chat, ...s.chats.filter((c) => c.id !== id)].slice(0, 80)
+    // keep pictures in at most the 12 newest chats so local storage never fills up
+    let withPics = 0
+    chats = chats.map((c) => {
+      if (!c.msgs.some((m) => m.images?.length)) return c
+      return ++withPics <= 12 ? c : { ...c, msgs: c.msgs.map((m) => (m.images ? { ...m, images: undefined, text: `${m.text} [photo]`.trim() } : m)) }
+    })
+    return { ...s, chats }
   })
 }
 
@@ -33,11 +75,11 @@ function groupOf(t: number) {
   return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 }
 
-function HistoryList({ active, onPick, onNew }: { active: string; onPick: (id: string) => void; onNew: () => void }) {
+function HistoryList({ active, onPick, onNew, space }: { active: string; onPick: (id: string) => void; onNew: () => void; space: Space }) {
   const s = useStore()
   const [q, setQ] = useState('')
   const [editing, setEditing] = useState<string | null>(null)
-  const list = s.chats.filter((c) => !q || c.title.toLowerCase().includes(q.toLowerCase()) || c.msgs.some((m) => m.text.toLowerCase().includes(q.toLowerCase())))
+  const list = s.chats.filter((c) => (c.space ?? 'humo') === space).filter((c) => !q || c.title.toLowerCase().includes(q.toLowerCase()) || c.msgs.some((m) => m.text.toLowerCase().includes(q.toLowerCase())))
   const pinned = list.filter((c) => c.pinned)
   const rest = list.filter((c) => !c.pinned).sort((a, b) => b.updatedAt - a.updatedAt)
   const groups: [string, Chat[]][] = []
@@ -54,7 +96,7 @@ function HistoryList({ active, onPick, onNew }: { active: string; onPick: (id: s
       <button onClick={onNew} className="btn btn-dark h-10 w-full text-[13.5px]">
         <MessageSquarePlus className="size-4" /> New chat
       </button>
-      <label className="mt-3 flex items-center gap-2 rounded-xl border border-[#e6e0d3] bg-white px-3 py-2 focus-within:border-jg-500">
+      <label className="mt-3 flex items-center gap-2 rounded-xl border border-line bg-card px-3 py-2 focus-within:border-jg-500">
         <Search className="size-3.5 text-moss" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search chats" className="w-full bg-transparent text-[13px] focus:outline-none" />
       </label>
@@ -65,7 +107,7 @@ function HistoryList({ active, onPick, onNew }: { active: string; onPick: (id: s
             <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-moss/80">{g}</p>
             <AnimatePresence initial={false}>
               {chats.map((c) => (
-                <motion.div key={c.id} layout initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, height: 0 }} className={`group relative flex items-center rounded-xl ${c.id === active ? 'bg-white shadow-[0_4px_14px_-8px_rgb(27_41_37/.35)] ring-1 ring-[#e6e0d3]' : 'hover:bg-white/70'}`}>
+                <motion.div key={c.id} layout initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, height: 0 }} className={`group relative flex items-center rounded-xl ${c.id === active ? 'bg-card shadow-[0_4px_14px_-8px_rgb(27_41_37/.35)] ring-1 ring-line' : 'hover:bg-white/70'}`}>
                   {editing === c.id ? (
                     <input
                       autoFocus
@@ -110,68 +152,154 @@ function HistoryList({ active, onPick, onNew }: { active: string; onPick: (id: s
           </div>
         ))}
       </div>
-      <p className="border-t border-[#e6e0d3] pt-2 text-[11px] text-moss">Saved on this device · {s.chats.length} chat{s.chats.length === 1 ? '' : 's'}</p>
+      <p className="border-t border-line pt-2 text-[11px] text-moss">Saved on this device · {s.chats.filter((c) => (c.space ?? 'humo') === space).length} chats</p>
     </div>
   )
 }
 
-function ChatPane({ id, initial }: { id: string; initial?: ChatMsg[] }) {
+function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; space: Space }) {
   const s = useStore()
-  const context = studentContext(s, 'the Ask Humo page')
-  const { msgs, busy, send } = useHumoChat(GREETING, context, { initial, onChange: (m) => saveChat(id, m) })
+  const c = COPY[space]
+  const context = studentContext(s, space === 'desmos' ? 'the Desmos Lab (photo questions)' : 'the Ask Humo page')
+  const { msgs, busy, send } = useHumoChat(c.greeting, context, { initial, onChange: (m) => saveChat(id, m, space), space })
   const [input, setInput] = useState('')
+  const [pics, setPics] = useState<string[]>([])
+  const [drag, setDrag] = useState(false)
   const box = useRef<HTMLTextAreaElement>(null)
+  const file = useRef<HTMLInputElement>(null)
+  const cam = useRef<HTMLInputElement>(null)
+
+  async function addFiles(files: FileList | File[]) {
+    const list = [...files].filter((f) => f.type.startsWith('image/')).slice(0, 3 - pics.length)
+    const urls = await Promise.all(
+      list.map(
+        (f) =>
+          new Promise<string>((res) => {
+            const r = new FileReader()
+            r.onload = () => res(String(r.result))
+            r.readAsDataURL(f)
+          }),
+      ),
+    )
+    const small = await Promise.all(urls.map((u) => shrink(u, 1600, 0.85)))
+    setPics((p) => [...p, ...small].slice(0, 3))
+  }
+  function submit() {
+    if (!input.trim() && !pics.length) return
+    send(input, pics)
+    setInput('')
+    setPics([])
+    if (box.current) box.current.style.height = 'auto'
+  }
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div
+      className="relative flex min-h-0 flex-1 flex-col"
+      onDragOver={(e) => {
+        e.preventDefault()
+        setDrag(true)
+      }}
+      onDragLeave={() => setDrag(false)}
+      onDrop={(e) => {
+        e.preventDefault()
+        setDrag(false)
+        addFiles(e.dataTransfer.files)
+      }}
+    >
       <div className="card flex-1 overflow-y-auto bg-cream/40 p-4 sm:p-5">
         <HumoMessages msgs={msgs} busy={busy} />
         {msgs.length === 1 && (
-          <div className="mt-6 grid gap-2 sm:grid-cols-2">
-            {STARTERS.map((t, i) => (
-              <motion.button key={t} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.06 }} onClick={() => send(t)} className="rounded-2xl border border-[#e3dccf] bg-white px-4 py-3 text-left text-[13.5px] transition hover:-translate-y-0.5 hover:border-jg-500">
-                {t}
+          <>
+            {space === 'desmos' && (
+              <motion.button initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} onClick={() => file.current?.click()} className="mt-6 flex w-full flex-col items-center gap-2 rounded-3xl border-2 border-dashed border-[#2d70b3]/35 bg-[#2d70b3]/[0.04] px-6 py-10 text-center transition hover:border-[#2d70b3] hover:bg-[#2d70b3]/[0.07]">
+                <span className="grid size-14 place-items-center rounded-2xl bg-[#2d70b3] text-white shadow-lg shadow-[#2d70b3]/30">
+                  <ImagePlus className="size-7" />
+                </span>
+                <span className="mt-2 text-[16px] font-semibold text-pine">Upload a question photo</span>
+                <span className="text-[13px] text-moss">Screenshot, phone photo or a page from a book · drag and drop or paste works too</span>
               </motion.button>
-            ))}
-          </div>
+            )}
+            <div className="mt-6 grid gap-2 sm:grid-cols-2">
+              {c.starters.map((t, i) => (
+                <motion.button key={t} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.06 }} onClick={() => send(t)} className="rounded-2xl border border-line bg-card px-4 py-3 text-left text-[13.5px] transition hover:-translate-y-0.5 hover:border-jg-500">
+                  {t}
+                </motion.button>
+              ))}
+            </div>
+          </>
         )}
       </div>
+      <AnimatePresence>
+        {drag && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 z-10 grid place-items-center rounded-[24px] border-2 border-dashed border-[#2d70b3] bg-[#2d70b3]/10 text-[15px] font-semibold text-[#2d70b3]">
+            Drop the question photo
+          </motion.div>
+        )}
+      </AnimatePresence>
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          send(input)
-          setInput('')
+          submit()
         }}
-        className="mt-3 flex items-end gap-2 rounded-2xl border border-[#e3dccf] bg-white p-1.5 focus-within:border-jg-500"
+        className="mt-3 rounded-2xl border border-line bg-card p-1.5 focus-within:border-jg-500"
       >
-        <textarea
-          ref={box}
-          rows={1}
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value)
-            e.target.style.height = 'auto'
-            e.target.style.height = `${Math.min(160, e.target.scrollHeight)}px`
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault()
-              send(input)
-              setInput('')
-              if (box.current) box.current.style.height = 'auto'
-            }
-          }}
-          placeholder="Ask Humo or paste a math question…"
-          className="max-h-40 flex-1 resize-none bg-transparent px-3 py-2.5 text-[14.5px] placeholder:text-moss/60 focus:outline-none"
-        />
-        <button aria-label="Send" disabled={busy || !input.trim()} className="grid size-11 place-items-center rounded-xl bg-pine text-cream disabled:opacity-40">
-          <Send className="size-4" />
-        </button>
+        {pics.length > 0 && (
+          <div className="flex flex-wrap gap-2 p-2">
+            {pics.map((p, i) => (
+              <span key={i} className="relative">
+                <img src={p} alt="" className="h-20 rounded-xl object-cover ring-1 ring-line" />
+                <button type="button" aria-label="Remove photo" onClick={() => setPics((x) => x.filter((_, j) => j !== i))} className="absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-pine text-cream">
+                  <X className="size-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="flex items-end gap-1.5">
+          <input ref={file} type="file" accept="image/*" multiple hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
+          <input ref={cam} type="file" accept="image/*" capture="environment" hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
+          <button type="button" aria-label="Add a photo" onClick={() => file.current?.click()} className={`grid size-11 shrink-0 place-items-center rounded-xl hover:bg-cream ${space === 'desmos' ? 'text-[#2d70b3]' : 'text-moss'}`}>
+            <ImagePlus className="size-5" />
+          </button>
+          <button type="button" aria-label="Take a photo" onClick={() => cam.current?.click()} className="grid size-11 shrink-0 place-items-center rounded-xl text-moss hover:bg-cream sm:hidden">
+            <Camera className="size-5" />
+          </button>
+          <textarea
+            ref={box}
+            rows={1}
+            value={input}
+            onPaste={(e) => {
+              const f = [...e.clipboardData.files]
+              if (f.length) {
+                e.preventDefault()
+                addFiles(f)
+              }
+            }}
+            onChange={(e) => {
+              setInput(e.target.value)
+              e.target.style.height = 'auto'
+              e.target.style.height = `${Math.min(160, e.target.scrollHeight)}px`
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                submit()
+              }
+            }}
+            placeholder={c.placeholder}
+            className="max-h-40 flex-1 resize-none bg-transparent px-2 py-2.5 text-[14.5px] placeholder:text-moss/60 focus:outline-none"
+          />
+          <button aria-label="Send" disabled={busy || (!input.trim() && !pics.length)} className={`grid size-11 place-items-center rounded-xl text-cream disabled:opacity-40 ${space === 'desmos' ? 'bg-[#2d70b3]' : 'bg-pine'}`}>
+            <Send className="size-4" />
+          </button>
+        </div>
       </form>
     </div>
   )
 }
 
-export default function HumoChat() {
+export default function HumoChat({ space = 'humo' }: { space?: Space }) {
+  const c = COPY[space]
   const s = useStore()
   const [params, setParams] = useSearchParams()
   const fresh = useMemo(() => uid(), [])
@@ -194,14 +322,14 @@ export default function HumoChat() {
   return (
     <div className="mx-auto flex h-[calc(100svh-13rem)] max-w-6xl gap-5 md:h-[calc(100svh-8rem)]">
       <aside className="hidden w-64 shrink-0 lg:block">
-        <HistoryList active={active} onPick={pick} onNew={startNew} />
+        <HistoryList active={active} onPick={pick} onNew={startNew} space={space} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-center gap-3 pb-4">
-          <img src="/humo-mark.svg" alt="" className="size-11 rounded-2xl" />
+          {space === 'desmos' ? <span className="grid size-11 place-items-center rounded-2xl bg-[#2d70b3] font-serif text-[22px] font-bold text-white">D</span> : <img src="/humo-mark.png" alt="" className="size-11 rounded-2xl" />}
           <div className="min-w-0 flex-1">
-            <h1 className="display truncate text-[26px] leading-none">{chat?.title ?? 'Humo'}</h1>
-            <p className="mt-1 hidden text-[12.5px] text-moss sm:block">Digital SAT tutor · Desmos solves · edits your plan · English, O'zbekcha, Русский</p>
+            <h1 className="display truncate text-[26px] leading-none">{chat?.title ?? c.title}</h1>
+            <p className="mt-1 hidden text-[12.5px] text-moss sm:block">{c.sub}</p>
           </div>
           <button onClick={() => setDrawer(true)} className="btn btn-ghost h-10 px-3 text-[13px] lg:hidden">
             <History className="size-4" /> History
@@ -210,7 +338,7 @@ export default function HumoChat() {
             <MessageSquarePlus className="size-4" />
           </button>
         </div>
-        <ChatPane key={active} id={active} initial={chat?.msgs} />
+        <ChatPane key={active} id={active} initial={chat?.msgs} space={space} />
       </div>
       <AnimatePresence>
         {drawer && (
@@ -222,7 +350,7 @@ export default function HumoChat() {
               </button>
               <p className="mb-3 text-[15px] font-semibold">Chat history</p>
               <div className="h-[calc(100%-2.5rem)]">
-                <HistoryList active={active} onPick={pick} onNew={startNew} />
+                <HistoryList active={active} onPick={pick} onNew={startNew} space={space} />
               </div>
             </motion.aside>
           </>

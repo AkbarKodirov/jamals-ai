@@ -18,10 +18,16 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
   return data as T
 }
 
-export async function askHumo(messages: ChatMsg[], token: string | null, context?: string) {
-  // only text goes back to the model; pictures and plans stay on this device
-  const slim = messages.map((m) => ({ role: m.role, text: m.text }))
-  return call<{ reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }>('/api/chat', { messages: slim, context }, token)
+export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos') {
+  // text (and question photos) go to the model; Desmos screens and plans stay on this device
+  const slim = messages.map((m) => ({ role: m.role, text: m.text, ...(m.images?.length ? { images: m.images } : {}) }))
+  return call<{ reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }>('/api/chat', { messages: slim, context, space }, token)
+}
+
+export type Similar = { passage: string; question: string; options: string[]; correct: number; explanation: string }
+export function similarQuestion(q: TestQuestion, skill: string, section: string, token: string | null) {
+  const p = questionPayload(q, null)
+  return call<Similar>('/api/similar', { passage: p.passage, question: p.question, options: p.options, skill, section }, token)
 }
 
 export type DesmosSolve = { text: string; desmos: DesmosScreen[] }

@@ -62,11 +62,11 @@ function HintButton({ q, value }: { q: TestQuestion; value: string | null }) {
     <div className="mt-3">
       {!hint ? (
         <button onClick={get} disabled={busy} className="inline-flex items-center gap-2 text-[13px] font-medium text-jg-700 hover:text-jg-600 disabled:opacity-60">
-          <img src="/humo-mark.svg" alt="" className="size-5 rounded-md" /> {busy ? 'Humo is thinking…' : 'Get a hint from Humo'}
+          <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> {busy ? 'Humo is thinking…' : 'Get a hint from Humo'}
         </button>
       ) : (
         <div className="flex gap-2.5 rounded-xl border border-jg-500/25 bg-jg-50 p-3 text-[13.5px]">
-          <img src="/humo-mark.svg" alt="" className="size-6 shrink-0 rounded-md" />
+          <img src="/humo-mark.png" alt="" className="size-6 shrink-0 rounded-md" />
           <div>
             <RichText text={hint} />
           </div>
@@ -221,7 +221,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
     if (phase === 'break')
       return (
         <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="mx-auto max-w-lg px-6 py-20 text-center">
-          <motion.img src="/humo-mark.svg" alt="" className="mx-auto size-16 rounded-2xl shadow-lg shadow-jg-500/20" animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.img src="/humo-mark.png" alt="" className="mx-auto size-16 rounded-2xl shadow-lg shadow-jg-500/20" animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
           <h2 className="display mt-6 text-[34px]">Module {mod + 1} done</h2>
           <p className="mt-3 text-[15px] text-moss">
             {mode === 'practice' ? 'Take a breath, then continue to the next module.' : `Module ${mod + 2} starts with a fresh ${Math.round(perModule / 60)}-minute timer. On test day you get a 10-minute break between sections, not between modules — so keep going while you're warm.`}
@@ -275,7 +275,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
   return (
     <div className="flex min-h-svh flex-col" onCopy={(e) => e.preventDefault()} onContextMenu={(e) => e.preventDefault()}>
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-[#e8e2d6] bg-white">
+      <header className="sticky top-0 z-20 border-b border-line bg-card">
         <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold">
@@ -291,7 +291,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                 <span className={`font-mono text-[20px] font-semibold tabular-nums ${hideTimer ? 'invisible' : ''} ${left < 300 ? 'animate-pulse text-red-600' : ''}`}>
                   {mm}:{ss}
                 </span>
-                <button onClick={() => setHideTimer((h) => !h)} className="flex items-center gap-1 rounded-full border border-[#e3dccf] px-2.5 py-0.5 text-[11px] text-moss hover:bg-cream">
+                <button onClick={() => setHideTimer((h) => !h)} className="flex items-center gap-1 rounded-full border border-line px-2.5 py-0.5 text-[11px] text-moss hover:bg-cream">
                   {hideTimer ? <Eye className="size-3" /> : <EyeOff className="size-3" />} {hideTimer ? 'Show' : 'Hide'}
                 </button>
               </>
@@ -302,16 +302,16 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
           <div className="flex justify-end gap-1.5">
             {test.type === 'MATH' && (
               <>
-                <button onClick={() => setCalc((v) => !v)} aria-pressed={calc} title="Desmos calculator" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${calc ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+                <button onClick={() => setCalc((v) => !v)} aria-pressed={calc} title="Desmos calculator" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${calc ? 'border-pine bg-pine text-cream' : 'border-line text-moss hover:bg-cream'}`}>
                   <Calculator className="size-4" /> <span className="hidden lg:inline">Calculator</span>
                 </button>
-                <button onClick={() => setRefSheet((v) => !v)} aria-pressed={refSheet} title="Reference sheet" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${refSheet ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+                <button onClick={() => setRefSheet((v) => !v)} aria-pressed={refSheet} title="Reference sheet" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${refSheet ? 'border-pine bg-pine text-cream' : 'border-line text-moss hover:bg-cream'}`}>
                   <Sigma className="size-4" /> <span className="hidden lg:inline">Reference</span>
                 </button>
               </>
             )}
             {isRW && (
-              <button onClick={() => setAnnotate((v) => !v)} aria-pressed={annotate} title="Highlights & notes: select text in the passage" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${annotate ? 'border-amber-300 bg-amber-100 text-amber-900' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+              <button onClick={() => setAnnotate((v) => !v)} aria-pressed={annotate} title="Highlights & notes: select text in the passage" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${annotate ? 'border-amber-300 bg-amber-100 text-amber-900' : 'border-line text-moss hover:bg-cream'}`}>
                 <Highlighter className="size-4" /> <span className="hidden lg:inline">Highlight</span>
               </button>
             )}
@@ -319,11 +319,11 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
               onClick={() => setEliminate((v) => !v)}
               aria-pressed={eliminate}
               title="Answer eliminator"
-              className={`hidden h-9 items-center rounded-lg border px-2.5 text-[12px] font-semibold line-through sm:flex ${eliminate ? 'border-pine bg-pine text-cream' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}
+              className={`hidden h-9 items-center rounded-lg border px-2.5 text-[12px] font-semibold line-through sm:flex ${eliminate ? 'border-pine bg-pine text-cream' : 'border-line text-moss hover:bg-cream'}`}
             >
               ABC
             </button>
-            <button onClick={() => setConfirmExit(true)} className="flex h-9 items-center gap-1.5 rounded-lg border border-[#e3dccf] px-3 text-[13px] text-moss hover:bg-cream">
+            <button onClick={() => setConfirmExit(true)} className="flex h-9 items-center gap-1.5 rounded-lg border border-line px-3 text-[13px] text-moss hover:bg-cream">
               <LogOut className="size-4" /> <span className="hidden sm:inline">Exit</span>
             </button>
           </div>
@@ -336,7 +336,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
         {body ?? (
           <div className={`mx-auto grid h-full ${hasPassage ? 'max-w-7xl lg:grid-cols-2' : 'max-w-3xl'}`}>
             {hasPassage && (
-              <motion.section key={`p-${mod}-${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="border-b border-[#efe9de] px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
+              <motion.section key={`p-${mod}-${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="border-b border-line px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
                 {isRW ? <Highlightable html={q.passage!} storeKey={`${test.id}:${mod}:${idx}:p`} enabled={annotate} className="prose-q font-serif text-[17px] leading-[1.75] text-pine" /> : <Passage html={q.passage!} />}
               </motion.section>
             )}
@@ -363,7 +363,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                           disabled={locked}
                           onClick={() => patch({ value: String(i), struck: a.struck.filter((s) => s !== i) })}
                           className={`flex flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[15px] transition ${
-                            showRight ? 'border-emerald-500 bg-emerald-50 animate-pop' : showWrong ? 'border-red-400 bg-red-50 animate-shake' : picked ? 'border-pine bg-cream' : 'border-[#e6e0d3] hover:border-[#c9c0ad]'
+                            showRight ? 'border-emerald-500 bg-emerald-50 animate-pop' : showWrong ? 'border-red-400 bg-red-50 animate-shake' : picked ? 'border-pine bg-cream' : 'border-line hover:border-line-strong'
                           } ${struck ? 'opacity-45' : ''}`}
                         >
                           <span className={`grid size-7 shrink-0 place-items-center rounded-full border-2 text-[12px] font-bold ${picked ? 'border-pine bg-pine text-cream' : 'border-pine/40'}`}>{LETTERS[i]}</span>
@@ -375,7 +375,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                           <button
                             onClick={() => patch({ struck: struck ? a.struck.filter((s) => s !== i) : [...a.struck, i], value: picked && !struck ? null : a.value })}
                             aria-label={`${struck ? 'Undo eliminate' : 'Eliminate'} ${LETTERS[i]}`}
-                            className="grid size-8 shrink-0 place-items-center rounded-full border border-[#d8d0bf] text-[11px] font-bold text-moss line-through hover:bg-cream"
+                            className="grid size-8 shrink-0 place-items-center rounded-full border border-line-strong text-[11px] font-bold text-moss line-through hover:bg-cream"
                           >
                             {struck ? '↺' : LETTERS[i]}
                           </button>
@@ -395,7 +395,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                     inputMode="decimal"
                     value={a.value ?? ''}
                     onChange={(e) => patch({ value: e.target.value.replace(/[^0-9./-]/g, '').slice(0, 6) })}
-                    className="mt-2 block w-48 rounded-xl border-2 border-[#e6e0d3] px-4 py-3 font-mono text-[20px] focus:border-pine focus:outline-none"
+                    className="mt-2 block w-48 rounded-xl border-2 border-line px-4 py-3 font-mono text-[20px] focus:border-pine focus:outline-none"
                   />
                   {locked && (
                     <p className={`mt-3 text-[14px] font-semibold ${isCorrect(q, a.value) ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -426,7 +426,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
 
       {/* Footer nav */}
       {phase === 'question' && (
-        <footer className="sticky bottom-0 z-20 border-t border-[#e8e2d6] bg-white">
+        <footer className="sticky bottom-0 z-20 border-t border-line bg-card">
           <div className="relative grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
             <span className="hidden truncate text-[13px] text-moss sm:block">{answeredCount} answered</span>
             <span className="sm:hidden" />
@@ -460,7 +460,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
-                  className="absolute bottom-[4.5rem] left-1/2 w-[min(92vw,30rem)] -translate-x-1/2 rounded-2xl border border-[#e8e2d6] bg-white p-5 shadow-2xl"
+                  className="absolute bottom-[4.5rem] left-1/2 w-[min(92vw,30rem)] -translate-x-1/2 rounded-2xl border border-line bg-card p-5 shadow-2xl"
                 >
                   <p className="text-center text-[14px] font-semibold">
                     Module {mod + 1} questions
@@ -485,7 +485,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                       setNavOpen(false)
                       setPhase('review')
                     }}
-                    className="mt-4 w-full rounded-xl border border-[#e3dccf] py-2 text-[13px] font-medium hover:bg-cream"
+                    className="mt-4 w-full rounded-xl border border-line py-2 text-[13px] font-medium hover:bg-cream"
                   >
                     Go to review page
                   </button>
@@ -498,8 +498,8 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
 
       {/* Desmos calculator — the same graphing calculator built into Bluebook */}
       {calc && (
-        <div className="fixed bottom-20 left-3 top-20 z-30 flex w-[min(94vw,26rem)] flex-col overflow-hidden rounded-2xl border border-[#e3dccf] bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-[#efe9de] px-4 py-2.5">
+        <div className="fixed bottom-20 left-3 top-20 z-30 flex w-[min(94vw,26rem)] flex-col overflow-hidden rounded-2xl border border-line bg-card shadow-2xl">
+          <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
             <span className="text-[13px] font-semibold">Desmos calculator</span>
             <button onClick={() => setCalc(false)} aria-label="Close calculator" className="rounded-md p-1 text-moss hover:bg-cream">
               <X className="size-4" />
@@ -509,7 +509,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
         </div>
       )}
       {refSheet && (
-        <div className="fixed right-3 top-20 z-30 w-[min(94vw,24rem)] rounded-2xl border border-[#e3dccf] bg-white p-5 shadow-2xl">
+        <div className="fixed right-3 top-20 z-30 w-[min(94vw,24rem)] rounded-2xl border border-line bg-card p-5 shadow-2xl">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-semibold">Reference sheet</span>
             <button onClick={() => setRefSheet(false)} aria-label="Close reference sheet" className="rounded-md p-1 text-moss hover:bg-cream">
@@ -545,7 +545,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
       <AnimatePresence>
         {confirmExit && (
           <motion.div className="fixed inset-0 z-50 grid place-items-center bg-pine/50 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div role="alertdialog" className="w-full max-w-sm rounded-3xl bg-white p-6 text-center">
+            <div role="alertdialog" className="w-full max-w-sm rounded-3xl bg-card p-6 text-center">
               <h3 className="font-serif text-[24px]">Leave this test?</h3>
               <p className="mt-2 text-[14px] text-moss">You can submit now and see your score for what you answered, or quit without saving.</p>
               <div className="mt-6 grid gap-2">

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowDownRight, ArrowUpRight, Clock, Flame, Gauge, Sparkles, Target, Trophy } from 'lucide-react'
 import { WORDS } from '../../data/vocab'
-import { loadTest, skillOf, streak, useAsync, useStore, type Skill, type Test } from '../store'
+import { loadBank, loadTest, skillOf, streak, useAsync, useStore, type Skill, type Test } from '../store'
 import { EmptyState } from '../components/EmptyState'
 import { HumoDrawer } from '../components/HumoDrawer'
 import { CountUp } from '../../components/motion'
@@ -43,7 +43,7 @@ const KIND_LABEL: Record<string, string> = { test: 'Practice tests', drill: 'Dri
 const dayKey = (t: number) => new Date(t).toISOString().slice(0, 10)
 const pct = (r: number, t: number) => (t ? Math.round((r / t) * 100) : null)
 const fmtMin = (sec: number) => (sec >= 3600 ? `${(sec / 3600).toFixed(1)} h` : `${Math.round(sec / 60)} min`)
-const band = (v: number | null) => (v == null ? 'bg-[#efe9de]' : v >= 85 ? 'bg-jg-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
+const band = (v: number | null) => (v == null ? 'bg-soft' : v >= 85 ? 'bg-jg-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
 
 /** Floating tooltip shared by every chart on the page. */
 function useTip() {
@@ -95,6 +95,7 @@ export default function Analytics() {
   const since = range === 'all' ? 0 : Date.now() - Number(range) * 86400000
 
   const ids = [...new Set(s.attempts.map((a) => a.testId))].join(',')
+  const { data: bank } = useAsync(() => loadBank().catch(() => []), [])
   const { data: tests } = useAsync(() => Promise.all(ids ? ids.split(',').map((id) => loadTest(id).catch(() => null)) : []), [ids])
 
   const d = useMemo(() => {
@@ -107,6 +108,11 @@ export default function Analytics() {
       const t = byId.get(a.testId)
       return t ? a.answers.filter((x) => t.modules[x.module]?.questions[x.index]).map((x) => ({ skill: skillOf(t.modules[x.module].questions[x.index], a.type), type: a.type, correct: x.correct, seconds: x.seconds, at: a.finishedAt })) : []
     })
+    // Question Bank answers count too
+    for (const b of bank ?? []) {
+      const p = s.qbank[b.id]
+      if (p && p.at >= since) rows.push({ skill: b.skill, type: b.section, correct: p.correct, seconds: p.seconds, at: p.at })
+    }
     const total = rows.length + drills.reduce((x, y) => x + y.n, 0)
     const right = rows.filter((r) => r.correct).length + drills.reduce((x, y) => x + y.correct, 0)
 
@@ -189,9 +195,9 @@ export default function Analytics() {
 
     const studySec = sessions.reduce((a, b) => a + b.seconds, 0)
     return { rows, total, right, skillList, rwDomains: RW_DOMAINS.map(domain), mDomains: M_DOMAINS.map(domain), act, weekly, rw: secs('EBRW'), m: secs('MATH'), byKind, hours, sittings: sittings.reverse(), predicted, delta, studySec }
-  }, [tests, s.attempts, s.drills, s.sessions, s.profile, since, range])
+  }, [tests, bank, s.qbank, s.attempts, s.drills, s.sessions, s.profile, since, range])
 
-  if (!s.attempts.length && !s.drills.length && !s.sessions.length)
+  if (!s.attempts.length && !s.drills.length && !s.sessions.length && !Object.keys(s.qbank).length)
     return (
       <div>
         <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Analytics</h1>
@@ -246,10 +252,10 @@ export default function Analytics() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Analytics</h1>
-          <p className="mt-2 text-[14px] text-moss">Every chart, free. From your tests, drills, vocab and Desmos Lab on this device.</p>
+          <p className="mt-2 text-[14px] text-moss">Every chart, free. From your tests, Question Bank, vocab and Desmos Lab on this device.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-xl bg-white p-1 ring-1 ring-[#e6e0d3]">
+          <div className="inline-flex rounded-xl bg-card p-1 ring-1 ring-line">
             {RANGES.map(([k, l]) => (
               <button key={k} onClick={() => setRange(k)} className={`relative rounded-lg px-3 py-1.5 text-[12.5px] font-medium ${range === k ? 'text-cream' : 'text-moss'}`}>
                 {range === k && <motion.span layoutId="range-pill" className="absolute inset-0 rounded-lg bg-pine" transition={{ type: 'spring', stiffness: 500, damping: 36 }} />}
@@ -258,7 +264,7 @@ export default function Analytics() {
             ))}
           </div>
           <button onClick={() => setHumo(true)} className="btn btn-dark h-10 px-4 text-[13px]">
-            <img src="/humo-mark.svg" alt="" className="size-5 rounded-md" /> Humo, read my stats
+            <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Humo, read my stats
           </button>
         </div>
       </div>
@@ -353,7 +359,7 @@ export default function Analytics() {
                 const share = k.total / Math.max(1, d.rows.filter((r) => r.type === k.type).length)
                 const gain = (1 - k.right / k.total) * share * (k.type === 'MATH' ? 44 : 54) * 11 * 0.6
                 return (
-                  <motion.div key={k.skill} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} className="flex flex-col rounded-2xl border border-[#efe9de] p-4">
+                  <motion.div key={k.skill} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} className="flex flex-col rounded-2xl border border-line p-4">
                     <div className="flex items-center justify-between text-[11.5px] text-moss">
                       <span>
                         0{i + 1} · {k.type === 'MATH' ? 'Math' : 'R&W'}
@@ -369,7 +375,7 @@ export default function Analytics() {
                       <motion.div initial={{ width: 0 }} whileInView={{ width: `${a}%` }} viewport={{ once: true }} transition={{ duration: 0.8 }} className={`h-full rounded-full ${band(a)}`} />
                     </div>
                     <div className="mt-3 flex gap-1.5">
-                      <Link to={`/app/drills?skill=${encodeURIComponent(k.skill)}`} className="btn btn-dark h-8 flex-1 text-[12px]">
+                      <Link to={`/app/practice/run?skills=${encodeURIComponent(k.skill)}&status=unsolved&order=random&n=10`} className="btn btn-dark h-8 flex-1 text-[12px]">
                         Practice
                       </Link>
                       {k.type === 'MATH' && (
@@ -418,7 +424,7 @@ export default function Analytics() {
               <div key={i} className="flex h-full flex-1 flex-col justify-end gap-[2px]" {...tip.bind(<>{b.label}<br />{b.right} correct · {b.wrong} wrong</>)}>
                 {b.wrong > 0 && <motion.span initial={{ height: 0 }} whileInView={{ height: `${(b.wrong / maxAct) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.01 }} className="w-full rounded-t-[3px]" style={{ background: WRONG }} />}
                 {b.right > 0 && <motion.span initial={{ height: 0 }} whileInView={{ height: `${(b.right / maxAct) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.01 }} className={`w-full ${b.wrong ? '' : 'rounded-t-[3px]'}`} style={{ background: RIGHT }} />}
-                {b.right + b.wrong === 0 && <span className="h-[3px] w-full rounded-full bg-[#efe9de]" />}
+                {b.right + b.wrong === 0 && <span className="h-[3px] w-full rounded-full bg-soft" />}
               </div>
             ))}
           </div>
@@ -442,7 +448,7 @@ export default function Analytics() {
               return (
                 <div key={i} className="flex h-full flex-1 flex-col justify-end gap-[2px]" {...tip.bind(<>{b.label}<br />R&W {fmtMin(b.rw)} · Math {fmtMin(b.math)} · Other {fmtMin(b.other)}</>)}>
                   {segs.map(([v, c], j) => (v > 0 ? <motion.span key={j} initial={{ height: 0 }} whileInView={{ height: `${(v / maxTime) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full first:rounded-t-[3px]" style={{ background: c }} /> : null))}
-                  {b.rw + b.math + b.other === 0 && <span className="h-[3px] w-full rounded-full bg-[#efe9de]" />}
+                  {b.rw + b.math + b.other === 0 && <span className="h-[3px] w-full rounded-full bg-soft" />}
                 </div>
               )
             })}
@@ -517,7 +523,7 @@ export default function Analytics() {
           {d.sittings.length === 0 ? (
             <p className="rounded-2xl bg-cream p-6 text-center text-[13px] text-moss">No sessions in the last 7 days. Do a few questions and they show up here.</p>
           ) : (
-            <ul className="divide-y divide-[#efe9de]">
+            <ul className="divide-y divide-line">
               {d.sittings.slice(0, 7).map((x) => (
                 <li key={x.start} className="flex items-center gap-3 py-2.5 text-[13px]">
                   <span className="grid size-9 place-items-center rounded-xl bg-cream text-[11px] font-semibold leading-tight text-pine">

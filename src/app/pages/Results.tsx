@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Target, X } from 'lucide-react'
+import { Bookmark, BookmarkPlus, Check, ChevronDown, Clock, MessageCircle, RotateCcw, Sparkles, Target, X } from 'lucide-react'
 import { isCorrect, loadTest, setStore, skillBreakdown, stripHtml, toggleSaved, useAsync, useStore, type Attempt, type Test } from '../store'
 import { SkillBars } from '../components/SkillBars'
 import { Confetti, CountUp, ScoreRing } from '../../components/motion'
@@ -30,11 +30,12 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
   const blank = a.value == null || a.value === ''
   const { ref, seen } = useInView<HTMLElement>()
   const [showPassage, setShowPassage] = useState(!ok)
+  const [analyze, setAnalyze] = useState(false)
   const isSaved = useStore().saved.some((x) => x.key === `${test.id}:${m}:${i}`)
 
   return (
     <article ref={ref} id={`q-${m}-${i}`} className="card scroll-mt-24 overflow-hidden">
-      <div className={`flex items-center justify-between gap-3 border-b px-5 py-3 ${ok ? 'border-emerald-100 bg-emerald-50/60' : blank ? 'border-[#efe9de] bg-cream' : 'border-red-100 bg-red-50/60'}`}>
+      <div className={`flex items-center justify-between gap-3 border-b px-5 py-3 ${ok ? 'border-emerald-100 bg-emerald-50/60' : blank ? 'border-line bg-cream' : 'border-red-100 bg-red-50/60'}`}>
         <span className="flex items-center gap-2.5">
           <span className={`grid size-7 place-items-center rounded-full text-[12px] font-bold text-white ${ok ? 'bg-emerald-500' : blank ? 'bg-moss' : 'bg-red-500'}`}>{ok ? <Check className="size-4" /> : blank ? '–' : <X className="size-4" />}</span>
           <span className="text-[14px] font-semibold">
@@ -44,7 +45,7 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
           {a.flagged && <Bookmark className="size-4 fill-red-500 text-red-500" />}
         </span>
         <span className="flex items-center gap-3 text-[12px] text-moss tabular-nums">
-          <button onClick={() => toggleSaved(test.id, m, i)} className={`flex items-center gap-1 rounded-full px-2 py-1 font-medium ${isSaved ? 'bg-pine text-cream' : 'hover:bg-white'}`}>
+          <button onClick={() => toggleSaved(test.id, m, i)} className={`flex items-center gap-1 rounded-full px-2 py-1 font-medium ${isSaved ? 'bg-pine text-cream' : 'hover:bg-card'}`}>
             <BookmarkPlus className="size-3.5" /> {isSaved ? 'Saved' : 'Save'}
           </button>
           <span className="flex items-center gap-1">
@@ -54,11 +55,20 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
       </div>
 
       <div className="space-y-5 p-5 sm:p-6">
-        {/* Humo first — above the question */}
-        {seen ? (
+        {/* Humo analyses a question only when the student asks */}
+        {analyze ? (
           <HumoExplain testId={test.id} qKey={`${m}:${i}`} q={q} math={test.type === 'MATH'} onAsk={() => onAsk(`About question ${n}: `)} />
         ) : (
-          <div className="h-24 rounded-2xl bg-jg-50/60" />
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-jg-500/20 bg-gradient-to-r from-jg-50 to-card p-3">
+            <img src="/humo-mark.png" alt="" className="size-9 rounded-xl" />
+            <p className="min-w-0 flex-1 text-[13px] text-moss">{ok ? 'Got it right — want the fastest method anyway?' : blank ? 'Skipped — see how to solve it.' : 'Humo can show exactly where this one went wrong.'}</p>
+            <button onClick={() => setAnalyze(true)} className="inline-flex items-center gap-1.5 rounded-full bg-pine px-4 py-2 text-[13px] font-semibold text-cream hover:bg-pine-2">
+              <Sparkles className="size-4 text-jg-300" /> Analyze with Humo
+            </button>
+            <button onClick={() => onAsk(`About question ${n}: `)} className="inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-[13px] font-semibold ring-1 ring-line hover:ring-jg-500">
+              <MessageCircle className="size-4" /> Ask Humo
+            </button>
+          </div>
         )}
 
         {q.passage && (
@@ -82,7 +92,7 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
               const right = q.correct === oi
               const mine = a.value === String(oi)
               return (
-                <div key={oi} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50' : mine ? 'border-red-400 bg-red-50' : 'border-[#efe9de]'}`}>
+                <div key={oi} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-[14.5px] ${right ? 'border-emerald-500 bg-emerald-50' : mine ? 'border-red-400 bg-red-50' : 'border-line'}`}>
                   <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${right ? 'bg-emerald-500 text-white' : mine ? 'bg-red-500 text-white' : 'border border-pine/30'}`}>{L[oi]}</span>
                   <span className="prose-q flex-1" dangerouslySetInnerHTML={{ __html: opt }} />
                   {mine && <span className="text-[11px] font-semibold text-moss">Your answer</span>}
@@ -189,7 +199,7 @@ export default function Results() {
         </div>
         <div className="relative mt-7 flex flex-wrap gap-2.5">
           <button onClick={() => setChat({ open: true })} className="btn btn-green h-11 px-5 text-[14px]">
-            <img src="/humo-mark.svg" alt="" className="size-6 rounded-md" /> Talk it through with Humo
+            <img src="/humo-mark.png" alt="" className="size-6 rounded-md" /> Talk it through with Humo
           </button>
           {wrongN > 0 && (
             <Link to="/app/mistakes" className="btn h-11 border border-white/15 px-5 text-[14px] text-cream hover:bg-white/[0.06]">
@@ -227,7 +237,7 @@ export default function Results() {
               href={`#q-${a.module}-${a.index}`}
               onClick={() => setFilter('all')}
               title={a.seconds > slowLimit ? `${a.seconds}s — slow` : `${a.seconds}s`}
-              className={`relative grid size-8 place-items-center rounded-lg text-[11.5px] font-semibold tabular-nums ${a.correct ? 'bg-emerald-500 text-white' : a.value == null || a.value === '' ? 'bg-[#e9e3d7] text-moss' : 'bg-red-500 text-white'}`}
+              className={`relative grid size-8 place-items-center rounded-lg text-[11.5px] font-semibold tabular-nums ${a.correct ? 'bg-emerald-500 text-white' : a.value == null || a.value === '' ? 'bg-soft text-moss' : 'bg-red-500 text-white'}`}
             >
               {n + 1}
               {a.seconds > slowLimit && <span className="absolute -right-1 -top-1 size-2.5 rounded-full bg-orange-500 ring-2 ring-white" />}
@@ -237,7 +247,7 @@ export default function Results() {
         <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-moss">
           <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-emerald-500" /> Correct</span>
           <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-red-500" /> Wrong</span>
-          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-[#e9e3d7]" /> Blank</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-soft" /> Blank</span>
           <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-orange-500" /> Over {slowLimit / 60} min{slowN ? ` (${slowN})` : ''}</span>
         </p>
       </section>
@@ -254,7 +264,7 @@ export default function Results() {
               ['all', 'All'],
             ] as const
           ).map(([k, l]) => (
-            <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ${filter === k ? 'bg-pine text-cream' : 'bg-white ring-1 ring-[#e3dccf]'}`}>
+            <button key={k} onClick={() => setFilter(k)} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ${filter === k ? 'bg-pine text-cream' : 'bg-card ring-1 ring-line'}`}>
               {l}
             </button>
           ))}
@@ -277,7 +287,7 @@ export default function Results() {
         className="fixed bottom-24 right-5 z-30 flex items-center gap-2 rounded-full bg-pine py-2 pl-2 pr-4 text-[14px] font-semibold text-cream shadow-xl shadow-pine/30 transition hover:scale-[1.03] md:bottom-8"
         aria-label="Chat with Humo about this test"
       >
-        <img src="/humo-mark.svg" alt="" className="size-9 rounded-full ring-2 ring-jg-500" />
+        <img src="/humo-mark.png" alt="" className="size-9 rounded-full ring-2 ring-jg-500" />
         Ask Humo
         <MessageCircle className="size-4 opacity-70" />
       </button>

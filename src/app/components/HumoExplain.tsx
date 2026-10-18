@@ -21,7 +21,7 @@ export function DesmosSolvePanel({ id, q }: { id: string; q: TestQuestion }) {
   }
   if (st.data)
     return (
-      <div className="mt-3 rounded-2xl border border-[#2d70b3]/20 bg-white p-4 text-[14px] leading-relaxed text-pine">
+      <div className="mt-3 rounded-2xl border border-[#2d70b3]/20 bg-card p-4 text-[14px] leading-relaxed text-pine">
         <p className="mb-2 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wide text-[#2d70b3]">
           <span className="grid size-5 place-items-center rounded-md bg-[#2d70b3] text-[10px] font-bold text-white">D</span> Solved with Desmos
         </p>
@@ -31,7 +31,7 @@ export function DesmosSolvePanel({ id, q }: { id: string; q: TestQuestion }) {
   return (
     <div className="mt-3">
       <button onClick={go} disabled={st.busy} className="inline-flex items-center gap-2 rounded-full bg-[#2d70b3] px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:bg-[#245d96] disabled:opacity-70">
-        {st.busy ? <span className="size-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <span className="grid size-4 place-items-center rounded bg-white text-[9px] font-bold text-[#2d70b3]">D</span>}
+        {st.busy ? <span className="size-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <span className="grid size-4 place-items-center rounded bg-card text-[9px] font-bold text-[#2d70b3]">D</span>}
         {st.busy ? 'Humo is solving it in Desmos…' : 'Solve it with Desmos'}
       </button>
       {st.error && <p className="mt-2 text-[12.5px] text-moss">{st.error}</p>}
@@ -56,8 +56,8 @@ export function HumoExplain({ testId, qKey, q, compact = false, onAsk, math = fa
   }, [testId, qKey, q, token, n])
 
   return (
-    <div className={`flex gap-3 rounded-2xl border border-jg-500/25 bg-gradient-to-b from-jg-50 to-white ${compact ? 'p-3.5' : 'p-4 sm:p-5'}`}>
-      <img src="/humo-mark.svg" alt="" className="size-9 shrink-0 rounded-xl" />
+    <div className={`flex gap-3 rounded-2xl border border-jg-500/25 bg-gradient-to-b from-jg-50 to-card ${compact ? 'p-3.5' : 'p-4 sm:p-5'}`}>
+      <img src="/humo-mark.png" alt="" className="size-9 shrink-0 rounded-xl" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <p className="text-[13px] font-semibold text-jg-700">Humo explains</p>

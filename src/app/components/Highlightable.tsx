@@ -188,14 +188,14 @@ export function Highlightable({ html, text, storeKey, enabled = true, className 
           )}
           {note && (
             <motion.div data-hl-tool className="fixed inset-0 z-[85] grid place-items-center bg-pine/30 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setNote(null)}>
-              <motion.div initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl bg-white p-4 shadow-xl">
+              <motion.div initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl bg-card p-4 shadow-xl">
                 <div className="flex items-center justify-between">
                   <p className="text-[14px] font-semibold">Note</p>
                   <button aria-label="Close" onClick={() => setNote(null)} className="rounded-full p-1 text-moss hover:bg-cream">
                     <X className="size-4" />
                   </button>
                 </div>
-                <textarea autoFocus value={note.value} onChange={(e) => setNote({ ...note, value: e.target.value.slice(0, 300) })} rows={4} placeholder="e.g. Claim → evidence here" className="mt-3 w-full resize-none rounded-xl border border-[#e3dccf] p-3 text-[14px] focus:border-jg-500 focus:outline-none" />
+                <textarea autoFocus value={note.value} onChange={(e) => setNote({ ...note, value: e.target.value.slice(0, 300) })} rows={4} placeholder="e.g. Claim → evidence here" className="mt-3 w-full resize-none rounded-xl border border-line p-3 text-[14px] focus:border-jg-500 focus:outline-none" />
                 <div className="mt-3 flex justify-end gap-2">
                   <button
                     onClick={() => {

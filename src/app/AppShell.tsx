@@ -12,17 +12,18 @@ const Tests = lazy(() => import('./pages/Tests'))
 const TakeTest = lazy(() => import('./pages/TakeTest'))
 const Results = lazy(() => import('./pages/Results'))
 const ResultsList = lazy(() => import('./pages/ResultsList'))
-const QuestionBank = lazy(() => import('./pages/QuestionBank'))
+const QBankHome = lazy(() => import('./practice/QBank').then((m) => ({ default: m.QBankHome })))
+const QBankSection = lazy(() => import('./practice/QBank').then((m) => ({ default: m.QBankSection })))
+const Runner = lazy(() => import('./practice/Runner'))
+const CoursePage = lazy(() => import('./learn/Learn').then((m) => ({ default: m.CoursePage })))
+const LessonPage = lazy(() => import('./learn/Learn').then((m) => ({ default: m.LessonPage })))
 const Vocabulary = lazy(() => import('./pages/Vocabulary'))
 const Blitz = lazy(() => import('./pages/Blitz'))
 const Mistakes = lazy(() => import('./pages/Mistakes'))
 const StudyPlan = lazy(() => import('./pages/StudyPlan'))
-const Drills = lazy(() => import('./pages/Drills'))
 const ExamPapers = lazy(() => import('./pages/ExamPapers'))
-const Lessons = lazy(() => import('./pages/Lessons'))
 const Analytics = lazy(() => import('./pages/Analytics'))
 const ScoreCalculator = lazy(() => import('./pages/ScoreCalculator'))
-const DesmosLab = lazy(() => import('./pages/DesmosLab'))
 const SettingsPage = lazy(() => import('./pages/Settings'))
 const Onboarding = lazy(() => import('./Onboarding'))
 
@@ -41,16 +42,18 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
     items: [
       { to: '/app/tests', label: 'Practice tests', icon: ClipboardList },
       { to: '/app/papers', label: 'Exam papers', icon: FileText },
-      { to: '/app/desmos', label: 'Desmos Lab', icon: Sigma, badge: 'AI' },
-      { to: '/app/drills', label: 'Drills', icon: Target },
       { to: '/app/practice', label: 'Question bank', icon: BookOpen },
+      { to: '/app/desmos', label: 'Desmos Lab', icon: Sigma, badge: 'AI' },
       { to: '/app/vocab', label: 'Vocabulary', icon: BookMarked },
       { to: '/app/blitz', label: 'Blitz', icon: Zap },
     ],
   },
   {
     label: 'Learn',
-    items: [{ to: '/app/lessons', label: 'Lessons', icon: GraduationCap }],
+    items: [
+      { to: '/app/learn/rw', label: 'Reading & Writing', icon: GraduationCap },
+      { to: '/app/learn/math', label: 'Math & Desmos', icon: Calculator },
+    ],
   },
   {
     label: 'Progress',
@@ -58,7 +61,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
       { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
       { to: '/app/mistakes', label: 'Saved & mistakes', icon: NotebookPen },
       { to: '/app/results', label: 'My results', icon: Trophy },
-      { to: '/app/calculator', label: 'Score calculator', icon: Calculator },
+      { to: '/app/calculator', label: 'Score calculator', icon: Target },
     ],
   },
   {
@@ -69,7 +72,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
 const MOBILE = [
   { to: '/app', label: 'Home', icon: Home, end: true },
   { to: '/app/tests', label: 'Tests', icon: ClipboardList },
-  { to: '/app/drills', label: 'Drills', icon: Target },
+  { to: '/app/practice', label: 'Practice', icon: BookOpen },
   { to: '/app/vocab', label: 'Vocab', icon: BookMarked },
 ]
 
@@ -96,6 +99,18 @@ export default function AppShell() {
   const days = streak(s.activeDays)
   const [more, setMore] = useState(false)
 
+  // Appearance: system / light / dark (Settings). The landing page never gets the class.
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const apply = () => document.documentElement.classList.toggle('dark-app', s.settings.theme === 'dark' || (s.settings.theme === 'system' && mq.matches))
+    apply()
+    mq.addEventListener('change', apply)
+    return () => {
+      mq.removeEventListener('change', apply)
+      document.documentElement.classList.remove('dark-app')
+    }
+  }, [s.settings.theme])
+
   // study reminder while the app is open (phone alerts come from the Google Calendar export)
   useEffect(() => {
     if (!s.settings.reminders || !('Notification' in window) || Notification.permission !== 'granted') return
@@ -106,17 +121,18 @@ export default function AppShell() {
     at.setHours(h, m, 0, 0)
     const ms = at.getTime() - Date.now()
     if (ms < 0) return
-    const t = setTimeout(() => new Notification('Time to study with Humo', { body: `Today's plan: ${(s.plan?.days[day] ?? []).map((x) => x.title).slice(0, 3).join(' · ') || 'Daily 20 words'}`, icon: '/humo-mark.svg' }), ms)
+    const t = setTimeout(() => new Notification('Time to study with Humo', { body: `Today's plan: ${(s.plan?.days[day] ?? []).map((x) => x.title).slice(0, 3).join(' · ') || 'Daily 20 words'}`, icon: '/humo-mark.png' }), ms)
     return () => clearTimeout(t)
   }, [s.settings.reminders, s.profile.studyDays, s.profile.studyTime, s.plan])
 
   // The test runner is full-screen, like the real exam app.
-  if (/\/app\/tests\/[^/]+\/take/.test(pathname))
+  if (/\/app\/tests\/[^/]+\/take/.test(pathname) || pathname.startsWith('/app/practice/run'))
     return (
-      <div className="min-h-svh bg-white text-pine">
+      <div className="min-h-svh bg-card text-pine">
         <Suspense fallback={<PageLoading />}>
           <Routes>
             <Route path="tests/:id/take" element={<TakeTest />} />
+            <Route path="practice/run" element={<Runner />} />
           </Routes>
         </Suspense>
       </div>
@@ -125,14 +141,16 @@ export default function AppShell() {
   if (!s.onboarded)
     return (
       <Suspense fallback={<PageLoading />}>
-        <Onboarding />
+        <div className="theme-light">
+          <Onboarding />
+        </div>
       </Suspense>
     )
 
   return (
     <div className="min-h-svh bg-cream pb-20 text-pine md:pb-0 md:pl-64">
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col bg-pine p-4 text-cream md:flex">
+      <aside className="theme-light fixed inset-y-0 left-0 hidden w-64 flex-col bg-pine p-4 text-cream md:flex">
         <Link to="/" className="flex items-center gap-2.5 px-2 py-2">
           <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full ring-1 ring-white/15" />
           <span className="flex flex-col leading-none">
@@ -160,7 +178,7 @@ export default function AppShell() {
                         {isActive && <motion.span layoutId="nav-bar" className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-jg-400" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
                         <Icon className="relative size-[18px]" />
                         <span className="relative">{label}</span>
-                        {to === '/app/humo' && <img src="/humo-mark.svg" alt="" className="relative ml-auto size-5 rounded-md" />}
+                        {to === '/app/humo' && <img src="/humo-mark.png" alt="" className="relative ml-auto size-5 rounded-md" />}
                         {badge && <span className="relative ml-auto rounded-md bg-[#2d70b3] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">{badge}</span>}
                       </>
                     )}
@@ -193,7 +211,7 @@ export default function AppShell() {
       </aside>
 
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-[#ece6da] bg-cream/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-line bg-cream/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-8">
           <Link to="/" className="flex items-center gap-2 md:hidden">
             <img src="/brand/jamals-mark.png" alt="" className="size-8 rounded-full" />
@@ -201,7 +219,7 @@ export default function AppShell() {
           </Link>
           <span className="hidden md:block" />
           <div className="flex items-center gap-2">
-            <span title="Daily streak" className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-semibold ${days ? 'bg-orange-500 text-white' : 'bg-white text-moss ring-1 ring-[#e3dccf]'}`}>
+            <span title="Daily streak" className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-semibold ${days ? 'bg-orange-500 text-white' : 'bg-card text-moss ring-1 ring-line'}`}>
               <Flame className={`size-4 ${days ? 'animate-flicker' : ''}`} /> {days}
             </span>
             <Link to="/app/settings" aria-label="Settings" className="md:hidden">
@@ -216,21 +234,24 @@ export default function AppShell() {
           <motion.div key={pathname} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
           <Routes>
             <Route index element={<HomePage />} />
-            <Route path="humo" element={<HumoChat />} />
+            <Route path="humo" element={<HumoChat key="humo" />} />
             <Route path="tests" element={<Tests />} />
             <Route path="results" element={<ResultsList />} />
             <Route path="results/:attemptId" element={<Results />} />
-            <Route path="practice" element={<QuestionBank />} />
+            <Route path="practice" element={<QBankHome />} />
+            <Route path="practice/:section" element={<QBankSection />} />
             <Route path="vocab" element={<Vocabulary />} />
             <Route path="blitz" element={<Blitz />} />
             <Route path="mistakes" element={<Mistakes />} />
             <Route path="plan" element={<StudyPlan />} />
-            <Route path="drills" element={<Drills />} />
+            <Route path="drills" element={<Navigate to="/app/practice" replace />} />
             <Route path="papers" element={<ExamPapers />} />
-            <Route path="lessons" element={<Lessons />} />
+            <Route path="lessons" element={<Navigate to="/app/learn/rw" replace />} />
+            <Route path="learn/:course" element={<CoursePage />} />
+            <Route path="learn/:course/:lesson" element={<LessonPage />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="calculator" element={<ScoreCalculator />} />
-            <Route path="desmos" element={<DesmosLab />} />
+            <Route path="desmos" element={<HumoChat key="desmos" space="desmos" />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
@@ -238,10 +259,10 @@ export default function AppShell() {
         </Suspense>
       </main>
 
-      {!pathname.startsWith('/app/results/') && pathname !== '/app/humo' && <HumoFab />}
+      {!pathname.startsWith('/app/results/') && pathname !== '/app/humo' && pathname !== '/app/desmos' && <HumoFab />}
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/10 bg-pine pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="theme-light fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/10 bg-pine pb-[env(safe-area-inset-bottom)] md:hidden">
         {MOBILE.map(({ to, label, icon: Icon, end }) => (
           <NavLink key={to} to={to} end={end} onClick={() => setMore(false)} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] ${isActive && !more ? 'text-jg-400' : 'text-cream/50'}`}>
             <Icon className="size-5" />
@@ -255,7 +276,7 @@ export default function AppShell() {
       </nav>
       {more && (
         <div className="fixed inset-0 z-30 bg-pine/40 md:hidden" onClick={() => setMore(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="absolute inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] max-h-[70svh] overflow-y-auto rounded-t-[28px] bg-pine p-5 text-cream">
+          <div onClick={(e) => e.stopPropagation()} className="absolute inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] max-h-[70svh] overflow-y-auto rounded-t-[28px] bg-pine p-5 text-cream theme-light">
             {GROUPS.map((g, i) => (
               <div key={i} className="mb-4">
                 {g.label && <p className="mb-1.5 px-1 text-[11px] font-semibold text-cream/40">{g.label}</p>}
