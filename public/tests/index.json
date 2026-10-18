@@ -49,7 +49,7 @@
   },
   {
     "id": "rw-mock-1",
-    "name": "R&W Mock 1",
+    "name": "Practice Test 7",
     "type": "EBRW",
     "modules": 2,
     "questions": 54,
@@ -57,82 +57,42 @@
   },
   {
     "id": "rw-mock-2",
-    "name": "R&W Mock 2",
+    "name": "Practice Test 8",
     "type": "EBRW",
     "modules": 2,
     "questions": 54,
     "minutesPerModule": 32
   },
   {
-    "id": "rw-practice-test-1",
-    "name": "R&W Practice Test 1",
+    "id": "pt9",
+    "name": "Practice Test 9",
     "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
+    "modules": 2,
+    "questions": 54,
     "minutesPerModule": 32
   },
   {
-    "id": "rw-practice-test-2",
-    "name": "R&W Practice Test 2",
+    "id": "pt10",
+    "name": "Practice Test 10",
     "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
+    "modules": 2,
+    "questions": 54,
     "minutesPerModule": 32
   },
   {
-    "id": "rw-practice-test-3",
-    "name": "R&W Practice Test 3",
+    "id": "pt11",
+    "name": "Practice Test 11",
     "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
+    "modules": 2,
+    "questions": 54,
     "minutesPerModule": 32
   },
   {
-    "id": "rw-practice-test-3-b",
-    "name": "R&W Practice Test 3 B",
+    "id": "pt12",
+    "name": "Practice Test 12",
     "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
-    "minutesPerModule": 32
-  },
-  {
-    "id": "rw-practice-test-5",
-    "name": "R&W Practice Test 5",
-    "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
-    "minutesPerModule": 32
-  },
-  {
-    "id": "rw-practice-test-6",
-    "name": "R&W Practice Test 6",
-    "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
-    "minutesPerModule": 32
-  },
-  {
-    "id": "rw-practice-test-7",
-    "name": "R&W Practice Test 7",
-    "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
-    "minutesPerModule": 32
-  },
-  {
-    "id": "rw-practice-test-10",
-    "name": "R&W Practice Test 10",
-    "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
-    "minutesPerModule": 32
-  },
-  {
-    "id": "rw-practice-test-11-b",
-    "name": "R&W Practice Test 11 B",
-    "type": "EBRW",
-    "modules": 1,
-    "questions": 27,
+    "modules": 2,
+    "questions": 54,
     "minutesPerModule": 32
   }
 ]

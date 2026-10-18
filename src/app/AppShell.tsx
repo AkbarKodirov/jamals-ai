@@ -43,7 +43,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
       { to: '/app/tests', label: 'Practice tests', icon: ClipboardList },
       { to: '/app/papers', label: 'Exam papers', icon: FileText },
       { to: '/app/practice', label: 'Question bank', icon: BookOpen },
-      { to: '/app/desmos', label: 'Desmos Lab', icon: Sigma, badge: 'AI' },
+      { to: '/app/desmos', label: 'Desmos Lab', icon: Sigma, badge: 'New' },
       { to: '/app/vocab', label: 'Vocabulary', icon: BookMarked },
       { to: '/app/blitz', label: 'Blitz', icon: Zap },
     ],
