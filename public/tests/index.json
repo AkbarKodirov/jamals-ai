@@ -102,5 +102,13 @@
     "modules": 2,
     "questions": 54,
     "minutesPerModule": 32
+  },
+  {
+    "id": "math-pt1",
+    "name": "Practice Test 1",
+    "type": "MATH",
+    "modules": 2,
+    "questions": 44,
+    "minutesPerModule": 35
   }
 ]
