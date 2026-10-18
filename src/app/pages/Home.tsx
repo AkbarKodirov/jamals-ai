@@ -1,3 +1,4 @@
+import { KINDS } from '../plan'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookMarked, CalendarDays, CheckCircle2, Clock, NotebookPen, Pencil, Target, Trophy, Zap } from 'lucide-react'
@@ -88,7 +89,9 @@ export default function Home() {
     return !p || p.due <= Date.now()
   }).length
   const openMistakes = s.mistakes.filter((m) => !m.cleared).length
-  const plan = [
+  const todayIdx = (new Date().getDay() + 6) % 7
+  const fromPlan = s.plan?.days[todayIdx]
+  const fallback = [
     s.attempts.length === 0
       ? { icon: Trophy, title: 'Take Practice Test 1 in practice mode', sub: 'Your first full test sets your starting score.', to: '/app/tests', done: false }
       : { icon: Trophy, title: 'Full test in exam mode', sub: 'Timed, no hints — like test day.', to: '/app/tests', done: s.attempts.some((a) => new Date(a.finishedAt).toISOString().slice(0, 10) === today()) },
@@ -99,6 +102,10 @@ export default function Home() {
       ? { icon: NotebookPen, title: `Review ${openMistakes} mistake${openMistakes > 1 ? 's' : ''}`, sub: 'Fix them before they repeat on test day.', to: '/app/mistakes', done: false }
       : { icon: Zap, title: 'One Blitz run', sub: '60 seconds a question, three lives.', to: '/app/blitz', done: false },
   ]
+  const KIND_ICON = { 'drill-rw': Target, 'drill-math': Target, skill: Target, vocab: BookMarked, mistakes: NotebookPen, lesson: BookMarked, blitz: Zap, test: Trophy, review: Trophy, desmos: Target, custom: CheckCircle2 } as const
+  const plan = s.plan
+    ? (fromPlan ?? []).map((t) => ({ icon: KIND_ICON[t.kind], title: t.title, sub: `${t.min} min · ${KINDS[t.kind].label}`, to: KINDS[t.kind].to(t), done: !!s.planDone[`${today()}:${t.id}`] }))
+    : fallback
 
   return (
     <div className="space-y-5">
@@ -216,6 +223,7 @@ export default function Home() {
               Weekly plan
             </Link>
           </div>
+          {plan.length === 0 && <p className="mt-6 rounded-2xl bg-cream p-6 text-center text-[13.5px] text-moss">Rest day in your plan 🌿 — a light Daily 20 words keeps the streak alive.</p>}
           <ul className="mt-4 space-y-2.5">
             {plan.map(({ icon: Icon, title, sub, to, done }, i) => (
               <motion.li key={title} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 + i * 0.07 }}>

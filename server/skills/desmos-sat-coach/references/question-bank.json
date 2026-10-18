@@ -1,0 +1,2998 @@
+[
+  {
+    "id": "ALG-01",
+    "domain": "Algebra",
+    "skill": "Systems: infinitely many solutions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In the system below, k and c are constants.\n  kx + 3y = 9\n  4x + 6y = c\nIf the system has infinitely many solutions, what is the value of k + c?",
+    "answer": "20",
+    "hints": [
+      "Type both equations into Desmos exactly as written. Desmos will offer sliders for k and c.",
+      "Infinitely many solutions means the two lines sit exactly on top of each other. Make them parallel first (k), then slide c until they merge."
+    ],
+    "desmos": [
+      "kx + 3y = 9   (add slider for k)",
+      "4x + 6y = c   (add slider for c)",
+      "Move k until the lines are parallel: k = 2.",
+      "Move c until the lines overlap completely: c = 18."
+    ],
+    "look_for": "One single line on screen (the two graphs coincide).",
+    "why": "The second equation must be exactly 2 times the first: 2k = 4 gives k = 2, and 2(9) = c gives c = 18, so k + c = 20.",
+    "trap": "Stopping at parallel lines (that is NO solution). They must coincide.",
+    "rule": "Infinite solutions = same line. Slide slope to match, then slide intercept to match."
+  },
+  {
+    "id": "ALG-02",
+    "domain": "Algebra",
+    "skill": "Systems: no solution",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In the system below, a is a constant.\n  y = (a - 2)x + 5\n  3x - 2y = 8\nFor what value of a does the system have no solution?",
+    "answer": "3.5",
+    "hints": [
+      "Graph both equations. Put a slider on a.",
+      "No solution means parallel lines that never touch. Slide a until the lines are parallel."
+    ],
+    "desmos": [
+      "y = (a - 2)x + 5   (slider for a)",
+      "3x - 2y = 8",
+      "Slide a until the lines are parallel. Set the slider step to 0.5 to land exactly: a = 3.5."
+    ],
+    "look_for": "Two parallel lines with different y-intercepts (5 and -4).",
+    "why": "3x - 2y = 8 is y = 1.5x - 4, slope 1.5. Parallel needs a - 2 = 1.5, so a = 3.5 (7/2). Intercepts 5 and -4 differ, so no solution.",
+    "trap": "Check intercepts differ; if they matched you would get infinitely many solutions instead.",
+    "rule": "No solution = same slope, different intercept."
+  },
+  {
+    "id": "ALG-03",
+    "domain": "Algebra",
+    "skill": "Linear equation: infinitely many solutions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In the equation 3(kx - 2) - 2(x + 4) = 7x + c, k and c are constants. If the equation has infinitely many solutions, what is the value of k + c?",
+    "answer": "-11",
+    "hints": [
+      "Graph the left side as y = 3(kx - 2) - 2(x + 4) and the right side as y = 7x + c, with sliders.",
+      "Infinitely many solutions means the two graphs are the same line."
+    ],
+    "desmos": [
+      "y = 3(kx - 2) - 2(x + 4)",
+      "y = 7x + c",
+      "Slide k until the lines are parallel: k = 3.",
+      "Slide c until they overlap: c = -14."
+    ],
+    "look_for": "The two lines coincide.",
+    "why": "Left side = (3k - 2)x - 14. Matching 7x + c needs 3k - 2 = 7 (k = 3) and c = -14. So k + c = -11.",
+    "trap": "Forgetting to distribute the -2 to the +4 gives the wrong constant.",
+    "rule": "An equation in x with infinitely many solutions: graph both sides; they must be identical."
+  },
+  {
+    "id": "ALG-04",
+    "domain": "Algebra",
+    "skill": "Linear inequalities: optimization",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The point (x, y) satisfies all of the inequalities x + y <= 10, 2x + y <= 14, x >= 0, and y >= 0. What is the maximum possible value of 3x + 2y?",
+    "answer": "24",
+    "hints": [
+      "Graph all four inequalities. The overlapping (darkest) region is where (x, y) can be.",
+      "Graph 3x + 2y = m with a slider for m and push the line outward until it last touches the region."
+    ],
+    "desmos": [
+      "x + y <= 10",
+      "2x + y <= 14",
+      "x >= 0",
+      "y >= 0",
+      "3x + 2y = m   (slider for m, range 0 to 40)",
+      "Increase m until the line only just touches the shaded region: it leaves at the corner (4, 6) when m = 24."
+    ],
+    "look_for": "The last corner of the overlap region the moving line touches. Click the corners to read them: (0,0), (7,0), (4,6), (0,10).",
+    "why": "The maximum of a linear expression over a polygon happens at a corner. 3x + 2y gives 0, 21, 24, 20 at the corners; the largest is 24 at (4, 6).",
+    "trap": "Picking the corner with the biggest y (0, 10) gives only 20.",
+    "rule": "Max/min of ax + by over a region: test the corners, or slide the line ax + by = m."
+  },
+  {
+    "id": "ALG-05",
+    "domain": "Algebra",
+    "skill": "Slope with unknown coordinate",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A line passes through the points (2, k) and (k, 8). If the slope of the line is 3, what is the value of k?",
+    "answer": "3.5",
+    "hints": [
+      "Write the slope as a function of k, then use x in place of k so Desmos can graph it.",
+      "Graph y = (8 - x)/(x - 2) and y = 3 and find where they meet."
+    ],
+    "desmos": [
+      "y = (8 - x)/(x - 2)   (this is the slope when k = x)",
+      "y = 3",
+      "Click the intersection: (3.5, 3)."
+    ],
+    "look_for": "The intersection's x-coordinate is k.",
+    "why": "(8 - k)/(k - 2) = 3 gives 8 - k = 3k - 6, so 4k = 14 and k = 3.5.",
+    "trap": "Writing the slope upside down, (k - 2)/(8 - k).",
+    "rule": "'Find the constant' questions: rename the constant x, graph the condition, read the intersection."
+  },
+  {
+    "id": "ALG-06",
+    "domain": "Algebra",
+    "skill": "Absolute value inequality, counting integers",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "How many integer values of x satisfy |2x - 7| <= 9?",
+    "answer": "10",
+    "hints": [
+      "Type the inequality directly into Desmos. It shades the x-values that work.",
+      "Read the left and right edges of the shaded band, then count integers inside, including the ends."
+    ],
+    "desmos": [
+      "|2x - 7| <= 9",
+      "The shaded vertical band runs from x = -1 to x = 8 (solid edges, so both ends count)."
+    ],
+    "look_for": "The band edges at x = -1 and x = 8.",
+    "why": "-9 <= 2x - 7 <= 9 gives -1 <= x <= 8. Integers -1 through 8: that is 10 values.",
+    "trap": "Counting 8 - (-1) = 9 and forgetting to add 1 for inclusive ends.",
+    "rule": "Counting integers from m to n inclusive: n - m + 1."
+  },
+  {
+    "id": "ALG-07",
+    "domain": "Algebra",
+    "skill": "Linear model, break-even",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Plan A costs $c per month plus $0.15 per text. Plan B costs $20 per month plus $0.10 per text. The plans cost the same for 300 texts in a month. Which plan is cheaper for 500 texts, and by how many dollars? Give the dollar difference.",
+    "answer": "10",
+    "hints": [
+      "First find c: graph y = c + 0.15x and y = 20 + 0.10x with a slider on c, and make them meet at x = 300.",
+      "Then look at x = 500 (draw the line x = 500) and compare the two y-values."
+    ],
+    "desmos": [
+      "y = c + 0.15x   (slider for c)",
+      "y = 20 + 0.10x",
+      "x = 300",
+      "Slide c until the intersection is on x = 300: c = 5.",
+      "x = 500  then click where it crosses each line: A = 80, B = 70."
+    ],
+    "look_for": "The y-values of each plan on the vertical line x = 500.",
+    "why": "c + 45 = 50 gives c = 5. At 500 texts, A costs 5 + 75 = 80 and B costs 20 + 50 = 70. B is cheaper by $10.",
+    "trap": "Answering the break-even point (300) instead of the difference at 500.",
+    "rule": "Comparing two plans: graph both, use a vertical line at the given amount."
+  },
+  {
+    "id": "ALG-08",
+    "domain": "Algebra",
+    "skill": "System of equations, word problem",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A theater sold 410 tickets for a total of $4,770. Adult tickets cost $14 and student tickets cost $9. How many adult tickets were sold?",
+    "answer": "216",
+    "hints": [
+      "Let x = adult tickets, y = student tickets. Write one equation for the count and one for the money.",
+      "Graph x + y = 410 and 14x + 9y = 4770. Zoom out a lot; the intersection is far from the origin."
+    ],
+    "desmos": [
+      "x + y = 410",
+      "14x + 9y = 4770",
+      "Zoom out (or set window 0 to 500) and click the intersection: (216, 194)."
+    ],
+    "look_for": "Intersection x-coordinate = adult tickets.",
+    "why": "Substitute y = 410 - x: 14x + 9(410 - x) = 4770, so 5x = 1080 and x = 216.",
+    "trap": "Reporting 194 (the student tickets).",
+    "rule": "Big-number systems: graph them, then use the zoom-fit button so the intersection is visible."
+  },
+  {
+    "id": "ADV-01",
+    "domain": "Advanced Math",
+    "skill": "Quadratic: exactly one solution (discriminant)",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "In the equation x^2 - kx + 2k - 3 = 0, k is a constant. The equation has exactly one real solution. What is the greatest possible value of k?",
+    "answer": "6",
+    "hints": [
+      "Graph y = x^2 - kx + 2k - 3 with a slider on k. One real solution means the parabola just touches the x-axis.",
+      "Faster: the discriminant k^2 - 4(2k - 3) must equal 0. Graph it with x in place of k and read the zeros."
+    ],
+    "desmos": [
+      "Method 1: y = x^2 - kx + 2k - 3  (slider k from -10 to 10) and slide until the vertex sits on the x-axis. That happens at k = 2 and k = 6.",
+      "Method 2 (faster): y = x^2 - 4(2x - 3)  (the discriminant with k renamed x). Click the x-intercepts: x = 2 and x = 6."
+    ],
+    "look_for": "Where the discriminant graph crosses zero.",
+    "why": "b^2 - 4ac = k^2 - 8k + 12 = (k - 2)(k - 6) = 0, so k = 2 or 6. The greatest is 6.",
+    "trap": "Stopping at the first value you find (2).",
+    "rule": "'Exactly one solution' for a quadratic: discriminant = 0. Graph the discriminant as a function of the constant."
+  },
+  {
+    "id": "ADV-02",
+    "domain": "Advanced Math",
+    "skill": "Line tangent to parabola",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The line y = 2x + b intersects the parabola y = x^2 - 4x + 7 at exactly one point. What is the value of b?",
+    "answer": "-2",
+    "hints": [
+      "Graph the parabola and the line with a slider on b.",
+      "Slide b until the line just touches (is tangent to) the parabola."
+    ],
+    "desmos": [
+      "y = x^2 - 4x + 7",
+      "y = 2x + b  (slider for b)",
+      "Slide b until there is exactly one intersection: b = -2, touching at (3, 4)."
+    ],
+    "look_for": "The single touching point (3, 4).",
+    "why": "x^2 - 4x + 7 = 2x + b gives x^2 - 6x + (7 - b) = 0. One solution: 36 - 4(7 - b) = 0, so b = -2.",
+    "trap": "A slider step of 1 might jump over the exact value; set step 0.1 or confirm with the discriminant.",
+    "rule": "Tangent line + parabola: slide the intercept until one intersection, or set discriminant to 0."
+  },
+  {
+    "id": "ADV-03",
+    "domain": "Advanced Math",
+    "skill": "Absolute value equation, sum of solutions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What is the sum of all solutions to (x - 3)^2 = |2x - 6|?",
+    "answer": "9",
+    "hints": [
+      "Graph each side as its own function.",
+      "Count every intersection, including the one where both graphs touch the x-axis."
+    ],
+    "desmos": [
+      "y = (x - 3)^2",
+      "y = |2x - 6|",
+      "Click each intersection: (1, 4), (3, 0), (5, 4)."
+    ],
+    "look_for": "Three intersections; add their x-values.",
+    "why": "Let u = x - 3: u^2 = 2|u| gives u = 0 or |u| = 2, so x = 3, 1, 5. Sum = 9.",
+    "trap": "Missing x = 3 because the graphs touch at the bottom.",
+    "rule": "Equation with absolute value: graph both sides, count every intersection."
+  },
+  {
+    "id": "ADV-04",
+    "domain": "Advanced Math",
+    "skill": "Rational equation with extraneous root",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What value of x satisfies x/(x - 2) + 3/(x + 1) = 6/((x - 2)(x + 1))?",
+    "answer": "-6",
+    "hints": [
+      "Graph the left side and the right side as two separate functions.",
+      "Algebra gives two candidates, but one of them makes a denominator zero. Desmos only shows real intersections."
+    ],
+    "desmos": [
+      "y = x/(x - 2) + 3/(x + 1)",
+      "y = 6/((x - 2)(x + 1))",
+      "Click the only intersection: (-6, 0.15)."
+    ],
+    "look_for": "Only one intersection; nothing at x = 2 (both graphs are undefined there).",
+    "why": "Clearing denominators gives x^2 + 4x - 12 = 0, so x = -6 or x = 2. x = 2 makes a denominator zero, so it is extraneous. Answer -6.",
+    "trap": "Reporting x = 2, the extraneous root.",
+    "rule": "Desmos never shows extraneous roots. If algebra gives more answers than the graph, trust the graph."
+  },
+  {
+    "id": "ADV-05",
+    "domain": "Advanced Math",
+    "skill": "Radical equation with extraneous root",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What is the solution to sqrt(2x + 11) = x - 2?",
+    "answer": "7",
+    "hints": [
+      "Graph y = sqrt(2x + 11) and y = x - 2.",
+      "Read every intersection; there is only one."
+    ],
+    "desmos": [
+      "y = sqrt(2x + 11)",
+      "y = x - 2",
+      "Click the intersection: (7, 5)."
+    ],
+    "look_for": "One intersection at x = 7.",
+    "why": "Squaring: 2x + 11 = x^2 - 4x + 4, so x^2 - 6x - 7 = 0 and x = 7 or -1. At x = -1 the right side is -3 but a square root cannot be negative, so -1 is extraneous.",
+    "trap": "Choosing -1 from the squared equation.",
+    "rule": "Square-root equations: graph both sides; extraneous roots vanish."
+  },
+  {
+    "id": "ADV-06",
+    "domain": "Advanced Math",
+    "skill": "Projectile vertex",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The height of a ball, in meters, t seconds after it is thrown is h(t) = -4.9t^2 + 29.4t + 2. What is the maximum height of the ball, in meters?",
+    "answer": "46.1",
+    "hints": [
+      "Graph y = -4.9x^2 + 29.4x + 2 (use x for t).",
+      "Click the top of the parabola; Desmos marks the maximum."
+    ],
+    "desmos": [
+      "y = -4.9x^2 + 29.4x + 2",
+      "Zoom fit, then click the vertex: (3, 46.1)."
+    ],
+    "look_for": "The y-coordinate of the vertex.",
+    "why": "Vertex at t = -29.4 / (2(-4.9)) = 3. h(3) = -44.1 + 88.2 + 2 = 46.1.",
+    "trap": "Answering 3 (the time) instead of the height.",
+    "rule": "Max/min of a quadratic: graph it and click the vertex. Answer the coordinate the question asks for."
+  },
+  {
+    "id": "ADV-07",
+    "domain": "Advanced Math",
+    "skill": "Equivalent exponential form",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "The function f(x) = 5000(1.21)^(x/2) models a value x years from now. Which equivalent form shows the yearly growth factor as the base?",
+    "choices": {
+      "A": "f(x) = 5000(1.1)^x",
+      "B": "f(x) = 5000(1.21)^x",
+      "C": "f(x) = 5000(1.105)^x",
+      "D": "f(x) = 5000(2.42)^x"
+    },
+    "answer": "A",
+    "hints": [
+      "Graph the original and each choice.",
+      "The right choice lies exactly on top of the original everywhere."
+    ],
+    "desmos": [
+      "f(x) = 5000(1.21)^(x/2)",
+      "g(x) = 5000(1.1)^x",
+      "h(x) = 5000(1.105)^x",
+      "Only g overlaps f. Check by typing f(10) and g(10): both 12968.71."
+    ],
+    "look_for": "Complete overlap of graphs, or equal values in a table.",
+    "why": "(1.21)^(x/2) = ((1.21)^(1/2))^x = 1.1^x. The yearly growth is 10%.",
+    "trap": "Halving 1.21 to 1.105 (C) or doubling (D).",
+    "rule": "Equivalent forms: graph both and check they coincide, or compare f(10) with the choice at 10."
+  },
+  {
+    "id": "ADV-08",
+    "domain": "Advanced Math",
+    "skill": "Polynomial identity, find constants",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "If (ax + 3)(2x - b) = 6x^2 - 6x - 12 for all values of x, where a and b are constants, what is a + b?",
+    "answer": "7",
+    "hints": [
+      "Graph y = (ax + 3)(2x - b) with sliders and y = 6x^2 - 6x - 12.",
+      "Adjust the sliders until the two parabolas coincide."
+    ],
+    "desmos": [
+      "y = (ax + 3)(2x - b)  (sliders a, b)",
+      "y = 6x^2 - 6x - 12",
+      "Slide a to 3 (the parabolas get the same width) and b to 4 (they coincide)."
+    ],
+    "look_for": "The two parabolas become one.",
+    "why": "Leading term: 2a = 6 so a = 3. Constant: -3b = -12 so b = 4. Check middle: -ab + 6 = -12 + 6 = -6. So a + b = 7.",
+    "trap": "Matching only one coefficient without checking the middle term.",
+    "rule": "'For all values of x' means identical graphs."
+  },
+  {
+    "id": "ADV-09",
+    "domain": "Advanced Math",
+    "skill": "Factor theorem",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "p(x) = 2x^3 + kx^2 - 7x + 6, where k is a constant. If x - 2 is a factor of p(x), what is the value of k?",
+    "answer": "-2",
+    "hints": [
+      "x - 2 is a factor means p(2) = 0, so the graph passes through (2, 0).",
+      "Graph p with a slider for k and slide until it passes through (2, 0)."
+    ],
+    "desmos": [
+      "p(x) = 2x^3 + kx^2 - 7x + 6  (slider k)",
+      "(2, 0)",
+      "Slide k until the curve hits the point: k = -2.",
+      "Or: y = 2(2)^3 + x(2)^2 - 7(2) + 6 and read the x-intercept: -2."
+    ],
+    "look_for": "The graph passing through (2, 0).",
+    "why": "p(2) = 16 + 4k - 14 + 6 = 4k + 8 = 0, so k = -2.",
+    "trap": "Using p(-2) = 0 instead (wrong sign).",
+    "rule": "Factor (x - r) means the graph crosses the x-axis at x = r."
+  },
+  {
+    "id": "ADV-10",
+    "domain": "Advanced Math",
+    "skill": "Nonlinear system, count solutions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "How many solutions does the system y = x^3 - 4x and y = x + 1 have?",
+    "answer": "3",
+    "hints": [
+      "Graph both.",
+      "Zoom so you can see the whole cubic between x = -3 and 3 and count crossings."
+    ],
+    "desmos": [
+      "y = x^3 - 4x",
+      "y = x + 1",
+      "There are crossings near x = -2.13, -0.20 and 2.33."
+    ],
+    "look_for": "Number of intersection points.",
+    "why": "x^3 - 5x - 1 = 0 has three real roots (its graph crosses zero three times).",
+    "trap": "A zoomed-in window can hide an intersection; zoom out before counting.",
+    "rule": "'How many solutions' = count intersections on a well-zoomed graph."
+  },
+  {
+    "id": "ADV-11",
+    "domain": "Advanced Math",
+    "skill": "Transformations of a function",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = x^2 - 4x + 1 and g(x) = f(x - 3) + 2. The vertex of the graph of g is (h, k). What is h + k?",
+    "answer": "4",
+    "hints": [
+      "Define f in Desmos, then type g(x) = f(x - 3) + 2. Desmos handles the shift.",
+      "Click g's vertex."
+    ],
+    "desmos": [
+      "f(x) = x^2 - 4x + 1",
+      "g(x) = f(x - 3) + 2",
+      "Click the vertex of g: (5, -1)."
+    ],
+    "look_for": "Vertex of g.",
+    "why": "f has vertex (2, -3). Shifting right 3 and up 2 gives (5, -1). 5 + (-1) = 4.",
+    "trap": "Shifting left for f(x - 3).",
+    "rule": "Define the function once in Desmos, then type the transformed version with function notation."
+  },
+  {
+    "id": "ADV-12",
+    "domain": "Advanced Math",
+    "skill": "Vertex form with conditions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = a(x - 3)^2 + k, where a and k are constants. The minimum value of f is -8 and f(5) = 4. What is f(0)?",
+    "answer": "19",
+    "hints": [
+      "Minimum value -8 tells you k. Graph with a slider on a and the point (5, 4).",
+      "Once the graph hits (5, 4), type f(0)."
+    ],
+    "desmos": [
+      "f(x) = a(x - 3)^2 - 8  (slider a)",
+      "(5, 4)",
+      "Slide a until the curve passes through (5, 4): a = 3.",
+      "f(0)  shows 19."
+    ],
+    "look_for": "Value of f(0) once a is set.",
+    "why": "Minimum -8 means k = -8. f(5) = 4a - 8 = 4 gives a = 3. f(0) = 3(9) - 8 = 19.",
+    "trap": "Using k = 8 instead of -8.",
+    "rule": "Use sliders to force a graph through given points, then evaluate."
+  },
+  {
+    "id": "ADV-13",
+    "domain": "Advanced Math",
+    "skill": "Line meets circle-like curve: count",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "How many points do the graphs of y = x^2 - 6 and x^2 + y^2 = 36 have in common?",
+    "answer": "3",
+    "hints": [
+      "Graph both.",
+      "Look closely at the bottom of the circle; the parabola's vertex is there."
+    ],
+    "desmos": [
+      "y = x^2 - 6",
+      "x^2 + y^2 = 36",
+      "Intersections: (0, -6), (-3.317, 5), (3.317, 5)."
+    ],
+    "look_for": "Three intersection points, one of them a tangent touch at (0, -6).",
+    "why": "Substitute x^2 = y + 6: y^2 + y - 30 = 0, so y = 5 or y = -6. y = 5 gives two x-values; y = -6 gives x = 0 only. Total 3.",
+    "trap": "Saying 4 (assuming two y-values give four points) or 2 (missing the tangent point).",
+    "rule": "Curve-curve systems: graph and count; zoom on tangent spots."
+  },
+  {
+    "id": "ADV-14",
+    "domain": "Advanced Math",
+    "skill": "Composition of functions",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = 2x - 3 and g(x) = x^2 + 1. If f(g(a)) = 15 and a > 0, what is the value of a? (Give an exact form or a decimal.)",
+    "answer": "2.828 (2*sqrt(2))",
+    "hints": [
+      "Define f and g in Desmos and graph y = f(g(x)).",
+      "Graph y = 15 and read the positive intersection."
+    ],
+    "desmos": [
+      "f(x) = 2x - 3",
+      "g(x) = x^2 + 1",
+      "y = f(g(x))",
+      "y = 15",
+      "Positive intersection: x = 2.828."
+    ],
+    "look_for": "The intersection with x > 0.",
+    "why": "2(a^2 + 1) - 3 = 15, so a^2 = 8 and a = 2*sqrt(2) = 2.828.",
+    "trap": "Computing g(f(a)) instead.",
+    "rule": "Composition: define both functions, graph the composition, intersect with the target value."
+  },
+  {
+    "id": "ADV-15",
+    "domain": "Advanced Math",
+    "skill": "Quadratic through three points (regression)",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The parabola y = ax^2 + bx + c passes through (-1, 8), (1, 2), and (3, 4). What is the value of c?",
+    "answer": "4",
+    "hints": [
+      "Put the three points in a Desmos table (x1, y1).",
+      "Run the regression y1 ~ a x1^2 + b x1 + c and read c."
+    ],
+    "desmos": [
+      "Table: x1 = -1, 1, 3 ; y1 = 8, 2, 4",
+      "y1 ~ a x1^2 + b x1 + c",
+      "Regression output: a = 1, b = -3, c = 4 (R^2 = 1)."
+    ],
+    "look_for": "The value of c in the regression panel. R^2 = 1 confirms an exact fit.",
+    "why": "Subtracting equations gives 2b = -6 (b = -3), then a = 1 and c = 4.",
+    "trap": "Reading a + b + c (that is the y-value at x = 1, which is 2).",
+    "rule": "Unknown coefficients + given points = regression. R^2 = 1 means exact."
+  },
+  {
+    "id": "ADV-16",
+    "domain": "Advanced Math",
+    "skill": "Exponential through two points",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = a*b^x, where a and b are positive constants. If f(2) = 36 and f(5) = 972, what is f(0)?",
+    "answer": "4",
+    "hints": [
+      "Put (2, 36) and (5, 972) in a table.",
+      "Regression: y1 ~ a b^(x1). f(0) = a."
+    ],
+    "desmos": [
+      "Table: x1 = 2, 5 ; y1 = 36, 972",
+      "y1 ~ a b^(x1)",
+      "Output: a = 4, b = 3."
+    ],
+    "look_for": "a, because f(0) = a*b^0 = a.",
+    "why": "f(5)/f(2) = b^3 = 27, so b = 3. Then 9a = 36, a = 4.",
+    "trap": "Answering b.",
+    "rule": "Exponential with two points: regression with y1 ~ a b^(x1)."
+  },
+  {
+    "id": "ADV-17",
+    "domain": "Advanced Math",
+    "skill": "Roots that differ by a given amount",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The two solutions of 3x^2 + 12x + c = 0 differ by 6. What is the value of c?",
+    "answer": "-15",
+    "hints": [
+      "Graph y = 3x^2 + 12x + c with a slider on c.",
+      "The parabola is symmetric about x = -2, so the roots must be -2 - 3 and -2 + 3."
+    ],
+    "desmos": [
+      "y = 3x^2 + 12x + c  (slider c)",
+      "(-5, 0)",
+      "(1, 0)",
+      "Slide c until the parabola passes through both points: c = -15."
+    ],
+    "look_for": "x-intercepts at -5 and 1.",
+    "why": "Axis of symmetry x = -2. Roots -5 and 1. Product of roots = c/3 = -5, so c = -15.",
+    "trap": "Putting the roots at 0 and 6 (ignoring symmetry).",
+    "rule": "Roots are symmetric about the vertex x = -b/(2a)."
+  },
+  {
+    "id": "ADV-18",
+    "domain": "Advanced Math",
+    "skill": "Line-parabola system, sum of y-values",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The graphs of y = 2x^2 - 5x + 1 and y = x + 9 intersect at two points. What is the sum of the y-coordinates of those points?",
+    "answer": "21",
+    "hints": [
+      "Graph both.",
+      "Click both intersections and add the y-values."
+    ],
+    "desmos": [
+      "y = 2x^2 - 5x + 1",
+      "y = x + 9",
+      "Intersections: (-1, 8) and (4, 13)."
+    ],
+    "look_for": "The y-coordinates, not x.",
+    "why": "2x^2 - 6x - 8 = 0, x^2 - 3x - 4 = 0, x = 4 or -1. y = 13 and 8. Sum 21.",
+    "trap": "Adding x-values (3).",
+    "rule": "Read the coordinate the question asks for."
+  },
+  {
+    "id": "ADV-19",
+    "domain": "Advanced Math",
+    "skill": "Exponential decay, solve for time",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The mass of a sample, in grams, after t hours is m(t) = 800(1/2)^(t/6). After how many hours is the mass 50 grams?",
+    "answer": "24",
+    "hints": [
+      "Graph y = 800(1/2)^(x/6) and y = 50.",
+      "Zoom out horizontally to about x = 40 to find the intersection."
+    ],
+    "desmos": [
+      "y = 800(1/2)^(x/6)",
+      "y = 50",
+      "Intersection: (24, 50)."
+    ],
+    "look_for": "The x-value where the curve reaches 50.",
+    "why": "800 / 50 = 16 = 2^4, so t/6 = 4 and t = 24.",
+    "trap": "Dividing 800 by 50 and answering 16.",
+    "rule": "Exponential 'when does it reach': graph and intersect with a horizontal line."
+  },
+  {
+    "id": "ADV-20",
+    "domain": "Advanced Math",
+    "skill": "Exponential overtakes linear",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "f(x) = 100(1.08)^x and g(x) = 100 + 12x. What is the smallest positive integer x for which f(x) > g(x)?",
+    "answer": "11",
+    "hints": [
+      "Graph both and find where the curve passes the line (not at x = 0).",
+      "Check integer values on each side with a table."
+    ],
+    "desmos": [
+      "f(x) = 100(1.08)^x",
+      "g(x) = 100 + 12x",
+      "Intersection near x = 10.8.",
+      "Table with x = 10, 11: f(10) = 215.89 < g(10) = 220; f(11) = 233.16 > g(11) = 232."
+    ],
+    "look_for": "Second intersection at about x = 10.8, then the next integer.",
+    "why": "The curves cross at about 10.8. The first integer after that is 11, and the table confirms f(11) > g(11).",
+    "trap": "Rounding 10.8 down to 10.",
+    "rule": "'Smallest integer such that': find the crossing, then check integers on both sides in a table."
+  },
+  {
+    "id": "ADV-21",
+    "domain": "Advanced Math",
+    "skill": "Intercept condition with shifted vertex",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = -2(x - h)^2 + 18, where h > 1. The graph of f crosses the x-axis at x = 1. At what other x-value does it cross the x-axis?",
+    "answer": "7",
+    "hints": [
+      "Graph f with a slider on h and plot (1, 0).",
+      "Slide h (above 1) until the curve passes through (1, 0), then read the other intercept."
+    ],
+    "desmos": [
+      "f(x) = -2(x - h)^2 + 18  (slider h, from 1 to 10)",
+      "(1, 0)",
+      "h = 4 puts the curve through (1, 0). Other intercept: (7, 0)."
+    ],
+    "look_for": "The second x-intercept.",
+    "why": "-2(1 - h)^2 + 18 = 0 gives (h - 1)^2 = 9, h = 4. Intercepts are 4 ± 3, so 1 and 7.",
+    "trap": "Answering h = 4.",
+    "rule": "Use symmetry: intercepts are equally spaced around the vertex."
+  },
+  {
+    "id": "ADV-22",
+    "domain": "Advanced Math",
+    "skill": "Exactly three solutions with a parameter",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "For what value of c does the equation x^2 + 6x + c = 2|x + 3| have exactly three real solutions?",
+    "answer": "9",
+    "hints": [
+      "Graph y = x^2 + 6x + c (slider c) and y = 2|x + 3|.",
+      "Three intersections happen when the parabola passes through the corner of the V."
+    ],
+    "desmos": [
+      "y = x^2 + 6x + c  (slider c)",
+      "y = 2|x + 3|",
+      "Slide c and count intersections. At c = 9 the parabola goes through the corner (-3, 0) and crosses each arm once more: 3 points."
+    ],
+    "look_for": "The value of c giving exactly three intersections.",
+    "why": "Let u = x + 3: u^2 - 2|u| + (c - 9) = 0 is symmetric in u, so solutions come in ± pairs unless u = 0 is a solution. u = 0 needs c = 9, then u = 0, ±2: three solutions.",
+    "trap": "Making the parabola tangent to an arm (that gives 2 or 4, not 3).",
+    "rule": "Odd number of solutions to a symmetric equation means the center point must be a solution."
+  },
+  {
+    "id": "ADV-23",
+    "domain": "Advanced Math",
+    "skill": "Nonzero parameter, exactly one solution",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The system y = ax^2 + 4x + 1 and y = 2x - 3 has exactly one solution, where a is a nonzero constant. What is the value of a?",
+    "answer": "0.25",
+    "hints": [
+      "Graph both with a slider on a (step 0.01).",
+      "Slide a until the parabola just touches the line."
+    ],
+    "desmos": [
+      "y = ax^2 + 4x + 1  (slider a, step 0.01)",
+      "y = 2x - 3",
+      "At a = 0.25 the parabola touches the line once, at (-4, -11)."
+    ],
+    "look_for": "A single tangent point.",
+    "why": "ax^2 + 2x + 4 = 0 has one solution when 4 - 16a = 0, so a = 1/4.",
+    "trap": "a = 0 also gives one solution, but the question says nonzero.",
+    "rule": "Tangent = discriminant zero. Watch for the a = 0 special case."
+  },
+  {
+    "id": "ADV-24",
+    "domain": "Advanced Math",
+    "skill": "Vertex location from factored form",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "f(x) = (x - k)(x + 5), where k is a constant. The minimum of f occurs at x = -1. What is the value of k?",
+    "answer": "3",
+    "hints": [
+      "Graph f with a slider on k.",
+      "Slide k until the vertex is at x = -1 (graph x = -1 to help)."
+    ],
+    "desmos": [
+      "f(x) = (x - k)(x + 5)  (slider k)",
+      "x = -1",
+      "Slide k until the vertex sits on x = -1: k = 3."
+    ],
+    "look_for": "Vertex on the line x = -1.",
+    "why": "The vertex is halfway between the roots k and -5: (k - 5)/2 = -1, so k = 3.",
+    "trap": "Setting k = -1.",
+    "rule": "Vertex x = midpoint of the roots."
+  },
+  {
+    "id": "ADV-25",
+    "domain": "Advanced Math",
+    "skill": "Count integer parameters, no real solutions",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "For how many integer values of k does x^2 + kx + 9 = 0 have no real solutions?",
+    "answer": "11",
+    "hints": [
+      "No real solutions means discriminant < 0.",
+      "Graph y = x^2 - 36 (discriminant with k renamed x) and see where it is below zero."
+    ],
+    "desmos": [
+      "y = x^2 - 36  (discriminant k^2 - 36 with x in place of k)",
+      "Below the x-axis between x = -6 and 6 (not including them)."
+    ],
+    "look_for": "Open interval -6 < k < 6.",
+    "why": "k^2 - 36 < 0 means -6 < k < 6: integers -5 through 5, which is 11 values.",
+    "trap": "Including ±6 (those give exactly one solution).",
+    "rule": "Graph the discriminant as a function of the constant."
+  },
+  {
+    "id": "ADV-26",
+    "domain": "Advanced Math",
+    "skill": "Minimize with a constraint",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "If x + y = 10, what is the minimum possible value of x^2 + y^2?",
+    "answer": "50",
+    "hints": [
+      "Replace y with 10 - x so there is one variable.",
+      "Graph y = x^2 + (10 - x)^2 and click the vertex."
+    ],
+    "desmos": [
+      "y = x^2 + (10 - x)^2",
+      "Vertex: (5, 50)."
+    ],
+    "look_for": "Minimum y-value.",
+    "why": "2x^2 - 20x + 100 has vertex at x = 5, value 50.",
+    "trap": "Answering 5.",
+    "rule": "Constraint questions: substitute to one variable, then graph and read the vertex."
+  },
+  {
+    "id": "ADV-27",
+    "domain": "Advanced Math",
+    "skill": "Equivalent forms of a quadratic",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "f(x) = x^2 - 8x + 7. Which equivalent form shows the minimum value of f as a constant or coefficient?",
+    "choices": {
+      "A": "f(x) = (x - 1)(x - 7)",
+      "B": "f(x) = (x - 4)^2 - 9",
+      "C": "f(x) = x(x - 8) + 7",
+      "D": "f(x) = (x - 4)^2 + 7"
+    },
+    "answer": "B",
+    "hints": [
+      "Graph f and every choice; discard any that do not overlap f.",
+      "Of those that overlap, which shows the vertex y-value -9?"
+    ],
+    "desmos": [
+      "f(x) = x^2 - 8x + 7",
+      "Graph each choice. D does not overlap. The vertex of f is (4, -9).",
+      "Only B displays -9."
+    ],
+    "look_for": "Overlap, then which form contains the vertex value.",
+    "why": "Completing the square: (x - 4)^2 - 16 + 7 = (x - 4)^2 - 9. Minimum value -9 appears in B.",
+    "trap": "A is equivalent but shows the zeros, not the minimum.",
+    "rule": "Vertex form shows min/max; factored form shows zeros; standard form shows y-intercept."
+  },
+  {
+    "id": "PSD-01",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Linear regression prediction",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The table shows data: x = 1, 2, 3, 4, 5 and y = 2.1, 3.9, 6.2, 7.8, 10.1. Using the line of best fit for these data, what is the predicted y-value when x = 12? Round to the nearest whole number.",
+    "answer": "24",
+    "hints": [
+      "Put the data in a table and run a linear regression.",
+      "Then evaluate the regression line at x = 12."
+    ],
+    "desmos": [
+      "Table: x1 = 1,2,3,4,5 ; y1 = 2.1,3.9,6.2,7.8,10.1",
+      "y1 ~ m x1 + b",
+      "Output: m = 1.99, b = 0.05.",
+      "Type m*12 + b  -> 23.93."
+    ],
+    "look_for": "m and b from the regression panel.",
+    "why": "The fitted line is y = 1.99x + 0.05. At x = 12: 23.93, which rounds to 24.",
+    "trap": "Extending only the last point's pattern instead of using the fit.",
+    "rule": "'Line of best fit' with a table: use y1 ~ m x1 + b, never eyeball."
+  },
+  {
+    "id": "PSD-02",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Mean with a missing value",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The data set 4, 8, 8, 10, 15 has one more value, n, added. The mean of the new data set is 10. What is n?",
+    "answer": "15",
+    "hints": [
+      "Desmos has mean(). Use x for the unknown value.",
+      "Graph y = mean([4,8,8,10,15,x]) and y = 10."
+    ],
+    "desmos": [
+      "y = mean([4, 8, 8, 10, 15, x])",
+      "y = 10",
+      "Intersection: (15, 10)."
+    ],
+    "look_for": "x where the mean line hits 10.",
+    "why": "6 values with mean 10 total 60. The five known values total 45, so n = 15.",
+    "trap": "Dividing by 5 instead of 6.",
+    "rule": "Unknown data value: put x in the list inside mean() or median() and graph it."
+  },
+  {
+    "id": "PSD-03",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Compare standard deviations",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "Data set A: 2, 9, 9, 9, 16. Data set B: 5, 6, 9, 12, 13. Which statement is true?",
+    "choices": {
+      "A": "Both sets have the same mean, and A has the larger standard deviation.",
+      "B": "Both sets have the same mean, and B has the larger standard deviation.",
+      "C": "The sets have different means, and A has the larger standard deviation.",
+      "D": "Both sets have the same mean and the same standard deviation."
+    },
+    "answer": "A",
+    "hints": [
+      "Desmos has mean() and stdev().",
+      "Type mean and stdev for each list."
+    ],
+    "desmos": [
+      "A = [2, 9, 9, 9, 16]",
+      "B = [5, 6, 9, 12, 13]",
+      "mean(A) = 9, mean(B) = 9",
+      "stdev(A) = 4.95, stdev(B) = 3.54"
+    ],
+    "look_for": "Equal means; compare the stdev numbers.",
+    "why": "Both means are 9. A has two values 7 away from the mean; B's values are at most 4 away, so A is more spread out.",
+    "trap": "Thinking the three 9s in A make it less spread out.",
+    "rule": "Never estimate spread by eye if you can type stdev()."
+  },
+  {
+    "id": "PSD-04",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Successive percent change",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A price is increased by 20%, then decreased by 25%. By what percent must the new price be increased to return to the original price? Round to the nearest tenth of a percent.",
+    "answer": "11.1",
+    "hints": [
+      "Track the multiplier: 1.2 then 0.75.",
+      "Graph y = 1.2*0.75*(1 + x/100) and y = 1."
+    ],
+    "desmos": [
+      "y = 1.2*0.75*(1 + x/100)",
+      "y = 1",
+      "Intersection: x = 11.11."
+    ],
+    "look_for": "The x-value where the price returns to 1 (100%).",
+    "why": "1.2 * 0.75 = 0.9. Need 0.9(1 + p/100) = 1, so p = 11.1.",
+    "trap": "Answering 5 (25 - 20).",
+    "rule": "Percent chains: multiply the factors; never add percents."
+  },
+  {
+    "id": "PSD-05",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Weighted average",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A class of 20 students has a mean score of 78. A second class of 30 students has a mean score of m. The combined mean of all 50 students is 84. What is m?",
+    "answer": "88",
+    "hints": [
+      "Total points = 20*78 + 30*m.",
+      "Graph y = (20*78 + 30x)/50 and y = 84."
+    ],
+    "desmos": [
+      "y = (20*78 + 30x)/50",
+      "y = 84",
+      "Intersection: (88, 84)."
+    ],
+    "look_for": "x-value of the intersection.",
+    "why": "1560 + 30m = 4200, so m = 88.",
+    "trap": "Averaging the means directly ((78 + m)/2 = 84 gives 90).",
+    "rule": "Combined mean = total sum / total count."
+  },
+  {
+    "id": "PSD-06",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Effect of removing an outlier",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The data set is 12, 15, 15, 18, 20, 22, 70. If 70 is removed, by how much does the mean decrease? Round to the nearest tenth.",
+    "answer": "7.6",
+    "hints": [
+      "Make two lists in Desmos and use mean().",
+      "Subtract the new mean from the old."
+    ],
+    "desmos": [
+      "L = [12, 15, 15, 18, 20, 22, 70]",
+      "M = [12, 15, 15, 18, 20, 22]",
+      "mean(L) - mean(M)  -> 7.571"
+    ],
+    "look_for": "The difference 7.571.",
+    "why": "Old mean 172/7 = 24.57; new mean 102/6 = 17. Decrease 7.57, about 7.6.",
+    "trap": "Answering the new mean (17).",
+    "rule": "Outliers pull the mean far more than the median (median moves only 18 -> 16.5 here)."
+  },
+  {
+    "id": "PSD-07",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Exponential regression from a table",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A table gives x = 0, 1, 2, 3 and y = 5, 7.5, 11.25, 16.875. The relationship is exponential. What is y when x = 6? Round to the nearest whole number.",
+    "answer": "57",
+    "hints": [
+      "Run an exponential regression on the table.",
+      "Evaluate the model at 6."
+    ],
+    "desmos": [
+      "Table: x1 = 0,1,2,3 ; y1 = 5, 7.5, 11.25, 16.875",
+      "y1 ~ a b^(x1)  -> a = 5, b = 1.5",
+      "a*b^6  -> 56.95"
+    ],
+    "look_for": "a and b, then the value at x = 6.",
+    "why": "Each step multiplies by 1.5. 5(1.5)^6 = 56.95, about 57.",
+    "trap": "Treating it as linear (adding 2.5 each step).",
+    "rule": "Constant ratio = exponential; use y1 ~ a b^(x1)."
+  },
+  {
+    "id": "GEO-01",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circle: complete the square",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The graph of x^2 + y^2 - 6x + 10y + 9 = 0 is a circle. What is its radius?",
+    "answer": "5",
+    "hints": [
+      "Type the equation into Desmos exactly as given.",
+      "Click the leftmost and rightmost points; half the distance is the radius."
+    ],
+    "desmos": [
+      "x^2 + y^2 - 6x + 10y + 9 = 0",
+      "Leftmost point (-2, -5), rightmost point (8, -5). Diameter 10, radius 5."
+    ],
+    "look_for": "Width of the circle.",
+    "why": "(x - 3)^2 + (y + 5)^2 = 9 + 25 - 9 = 25. Radius 5.",
+    "trap": "Answering 25 (radius squared).",
+    "rule": "Any circle equation: graph it and read the center and extreme points."
+  },
+  {
+    "id": "GEO-02",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Line tangent to circle",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The line y = x + k, where k > 0, is tangent to the circle x^2 + y^2 = 8. What is the value of k?",
+    "answer": "4",
+    "hints": [
+      "Graph the circle and the line with a slider on k.",
+      "Slide k until the line touches the circle at exactly one point."
+    ],
+    "desmos": [
+      "x^2 + y^2 = 8",
+      "y = x + k  (slider k, from 0 to 10)",
+      "Tangent at k = 4, touching (-2, 2)."
+    ],
+    "look_for": "One touching point.",
+    "why": "Distance from the center (0, 0) to the line equals the radius: k/sqrt(2) = sqrt(8), so k = 4.",
+    "trap": "k = sqrt(8) = 2.83 (that is the radius, not the intercept).",
+    "rule": "Tangent line: slide until one touch point."
+  },
+  {
+    "id": "GEO-03",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Area from intersecting lines",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The lines y = 2x and y = -x + 9 and the x-axis form a triangle. What is the area of the triangle?",
+    "answer": "27",
+    "hints": [
+      "Graph both lines and y = 0.",
+      "Click the three corners, then use (1/2)(base)(height)."
+    ],
+    "desmos": [
+      "y = 2x",
+      "y = -x + 9",
+      "Corners: (0, 0), (3, 6), (9, 0)."
+    ],
+    "look_for": "Base 9 on the x-axis, height 6.",
+    "why": "Area = (1/2)(9)(6) = 27.",
+    "trap": "Using the slanted side as the base.",
+    "rule": "Coordinate geometry: graph, click the corners, then compute."
+  },
+  {
+    "id": "GEO-04",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Trig cofunction",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In degrees, sin((2x + 10)°) = cos((3x - 5)°). What is the smallest positive value of x?",
+    "answer": "17",
+    "hints": [
+      "Switch Desmos to degree mode (wrench icon).",
+      "Graph both sides and find the first positive intersection."
+    ],
+    "desmos": [
+      "Settings: Degrees",
+      "y = sin(2x + 10)",
+      "y = cos(3x - 5)",
+      "First positive intersection: x = 17."
+    ],
+    "look_for": "Smallest positive intersection.",
+    "why": "sin A = cos B when A + B = 90: 5x + 5 = 90 gives x = 17.",
+    "trap": "Forgetting degree mode; in radians you get nonsense.",
+    "rule": "Always check degree vs radian mode for trig."
+  },
+  {
+    "id": "GEO-05",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circle tangent to both axes",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A circle in the first quadrant is tangent to both the x-axis and the y-axis and passes through the point (2, 1). What is the greatest possible radius?",
+    "answer": "5",
+    "hints": [
+      "Tangent to both axes means the center is (a, a) and the radius is a. Graph (x - a)^2 + (y - a)^2 = a^2 with a slider on a (Desmos reserves r for polar graphs, so do not use r).",
+      "Plot (2, 1) and slide a until the circle passes through it. There are two answers."
+    ],
+    "desmos": [
+      "(x - a)^2 + (y - a)^2 = a^2  (slider a, 0 to 10)",
+      "(2, 1)",
+      "The circle passes through the point at a = 1 and a = 5."
+    ],
+    "look_for": "Both slider values, then the greater one.",
+    "why": "(2 - r)^2 + (1 - r)^2 = r^2 gives r^2 - 6r + 5 = 0, so r = 1 or 5.",
+    "trap": "Stopping at r = 1.",
+    "rule": "'Greatest possible' hints at two answers; keep sliding."
+  },
+  {
+    "id": "GEO-06",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circle from center and point",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A circle has center (2, -1) and passes through (5, 3). Its area is k*pi. What is k?",
+    "answer": "25",
+    "hints": [
+      "Graph (x - 2)^2 + (y + 1)^2 = s with a slider on s (s is r^2).",
+      "Slide until the circle hits (5, 3)."
+    ],
+    "desmos": [
+      "(x - 2)^2 + (y + 1)^2 = s  (slider s)",
+      "(5, 3)",
+      "s = 25 when the circle passes through the point."
+    ],
+    "look_for": "s, which is r^2 and equals k.",
+    "why": "r^2 = 3^2 + 4^2 = 25, and area = 25*pi.",
+    "trap": "Answering r = 5.",
+    "rule": "Slide r^2 directly when the question asks for area."
+  },
+  {
+    "id": "GEO-07",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Rectangle from perimeter and area",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A rectangle has perimeter 40 and area 96. What is the length of its longer side?",
+    "answer": "12",
+    "hints": [
+      "If one side is x, the other is 20 - x.",
+      "Graph y = x(20 - x) and y = 96."
+    ],
+    "desmos": [
+      "y = x(20 - x)",
+      "y = 96",
+      "Intersections: x = 8 and x = 12."
+    ],
+    "look_for": "The two side lengths, then the larger.",
+    "why": "x(20 - x) = 96 gives x^2 - 20x + 96 = 0, x = 8 or 12.",
+    "trap": "Using 40 - x for the other side.",
+    "rule": "Turn geometry word problems into one-variable functions and intersect."
+  },
+  {
+    "id": "ALG-09",
+    "domain": "Algebra",
+    "skill": "Linear model: day 1 is not x = 0",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A climbing gym charges a one-time sign-up fee plus the same fee every month. By the end of the 1st month a member has paid $85 in total. By the end of the 6th month the member has paid $310 in total. How many dollars is the sign-up fee?",
+    "answer": "40",
+    "hints": [
+      "Turn the two facts into two points (months, total paid) and let Desmos find the line.",
+      "The sign-up fee is what the line gives at 0 months, not at 1 month."
+    ],
+    "desmos": [
+      "Table: x1 = 1, 6 and y1 = 85, 310",
+      "y1 ~ m x1 + b   (regression gives m = 45, b = 40)",
+      "Or click where the line crosses the y-axis: (0, 40)."
+    ],
+    "look_for": "The y-intercept of the fitted line.",
+    "why": "Monthly fee = (310 - 85)/(6 - 1) = 45. Total after 1 month = fee + 45 = 85, so the fee is 40.",
+    "trap": "Answering 85. The first month already includes one monthly payment, so month 1 is the point x = 1, not the intercept.",
+    "rule": "Before using a number as the starting value, ask what x it belongs to. 'After the first ...' is x = 1."
+  },
+  {
+    "id": "ALG-10",
+    "domain": "Algebra",
+    "skill": "Two-rate pay (overtime)",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A courier is paid $18 per hour for the first 35 hours worked in a week and 1.5 times that rate for every hour after 35. Last week the courier earned $819. How many hours did the courier work in total?",
+    "answer": "42",
+    "hints": [
+      "First find what the courier earns for the full 35 regular hours.",
+      "The money left over was all paid at the higher rate. Graph the pay as a piecewise function to check."
+    ],
+    "desmos": [
+      "P(x) = {x <= 35: 18x, 630 + 27(x - 35)}",
+      "y = 819",
+      "Click the intersection: (42, 819)."
+    ],
+    "look_for": "Where the pay graph reaches 819.",
+    "why": "35 x 18 = 630. The rest, 819 - 630 = 189, was paid at 27 per hour: 189/27 = 7 extra hours. Total 35 + 7 = 42.",
+    "trap": "Answering 7 (only the overtime hours) or dividing 819 by 18.",
+    "rule": "Two-rate problems: fill the first rate completely, divide the rest by the second rate, then re-read whether they want extra or total."
+  },
+  {
+    "id": "ALG-11",
+    "domain": "Algebra",
+    "skill": "Cheaper option: round the crossing the right way",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Print shop A charges a $45 setup fee plus $0.18 per page. Print shop B charges $0.27 per page with no setup fee. What is the least whole number of pages for which shop A costs less than shop B?",
+    "answer": "501",
+    "hints": [
+      "Graph both cost lines and find where they cross.",
+      "At the crossing the costs are equal, not 'less'. Test the whole numbers next to it."
+    ],
+    "desmos": [
+      "y = 45 + 0.18x",
+      "y = 0.27x",
+      "Intersection: (500, 135).",
+      "Check x = 501: 45 + 0.18(501) = 135.18 and 0.27(501) = 135.27, so A is cheaper."
+    ],
+    "look_for": "The crossing point, then the first whole number past it where A's line is below B's.",
+    "why": "45 + 0.18p < 0.27p gives 45 < 0.09p, so p > 500. The least whole number is 501.",
+    "trap": "Answering 500. At 500 pages they cost exactly the same.",
+    "rule": "Find the crossing on the graph, then round in the direction the inequality points and test both neighbours."
+  },
+  {
+    "id": "ALG-12",
+    "domain": "Algebra",
+    "skill": "Interpret a constant after a shift",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "A water tank is being drained. The amount of water, in liters, h hours after noon is modeled by L(h) = 1200 - 85(h - 2) for 2 <= h <= 16. Which is the best interpretation of 1200 in this model?",
+    "choices": {
+      "A": "The amount of water in the tank at noon",
+      "B": "The amount of water in the tank at 2:00 p.m.",
+      "C": "The number of liters drained each hour",
+      "D": "The amount of water drained between noon and 2:00 p.m."
+    },
+    "answer": "B",
+    "hints": [
+      "Find the value of h that makes the 85(h - 2) part disappear.",
+      "Graph L and click the point where the output is 1200."
+    ],
+    "desmos": [
+      "L(x) = 1200 - 85(x - 2) {2 <= x <= 16}   (use x for h so Desmos graphs it)",
+      "L(2) gives 1200.",
+      "Note the graph does not even exist at h = 0."
+    ],
+    "look_for": "The input that gives exactly 1200.",
+    "why": "1200 is the output when h - 2 = 0, so h = 2, which is 2 hours after noon.",
+    "trap": "A: assuming every constant is the value at time 0.",
+    "rule": "To interpret a constant, find the input that makes all the other terms zero."
+  },
+  {
+    "id": "ALG-13",
+    "domain": "Algebra",
+    "skill": "f(kx) with an unknown multiplier",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The function f is defined by f(x) = 6x + 5. The function g is defined by g(x) = f(kx) - f(x), where k is a constant. If g(10) = 45, what is the value of k?",
+    "answer": "1.75",
+    "hints": [
+      "Type f, then type g exactly as defined. Put a slider on k.",
+      "Type g(10) and slide k until it shows 45, or solve g(10) = 45 as one equation."
+    ],
+    "desmos": [
+      "f(x) = 6x + 5",
+      "g(x) = f(kx) - f(x)",
+      "g(10) ~ 45   (or slide k until g(10) = 45)",
+      "k = 1.75"
+    ],
+    "look_for": "The k value where g(10) reads 45.",
+    "why": "f(10k) - f(10) = (60k + 5) - 65 = 60k - 60. Setting 60k - 60 = 45 gives k = 105/60 = 1.75.",
+    "trap": "Forgetting that f(x) is subtracted, which leads to 60k + 5 = 45.",
+    "rule": "Let Desmos build compositions for you: define f once and reuse it."
+  },
+  {
+    "id": "ALG-14",
+    "domain": "Algebra",
+    "skill": "Greatest whole number with tax",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A robotics club has $640 to spend. Each kit costs $37 plus 8% sales tax, and the club pays a single $25 shipping charge that is not taxed. What is the greatest number of kits the club can buy?",
+    "answer": "15",
+    "hints": [
+      "Write the total cost of x kits: tax multiplies the kit price by 1.08.",
+      "Graph the cost and the line y = 640. Round the crossing DOWN, since the club cannot go over budget."
+    ],
+    "desmos": [
+      "y = 37(1.08)x + 25",
+      "y = 640",
+      "Intersection at x = 15.39...",
+      "Check: x = 15 costs 624.40; x = 16 costs 664.36."
+    ],
+    "look_for": "The last whole number before the cost line rises above 640.",
+    "why": "39.96x + 25 <= 640 gives x <= 15.39. The greatest whole number is 15.",
+    "trap": "Forgetting the tax gives 16. Rounding 15.39 up also gives 16.",
+    "rule": "'Greatest number of items' means round down; 'least number' means round up. Always test the neighbours."
+  },
+  {
+    "id": "ALG-15",
+    "domain": "Algebra",
+    "skill": "Standard form, two unknown coefficients",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The graph of ax + by = 36, where a and b are constants, passes through the points (3, 8) and (6, 4). What is the value of a + b?",
+    "answer": "7",
+    "hints": [
+      "Plug each point in. Each gives one equation in a and b.",
+      "In Desmos, rename a and b to x and y and graph both equations; they meet at (a, b)."
+    ],
+    "desmos": [
+      "3x + 8y = 36   (this is the first point, with a as x and b as y)",
+      "6x + 4y = 36",
+      "Intersection: (4, 3), so a = 4 and b = 3."
+    ],
+    "look_for": "The intersection of the two condition lines.",
+    "why": "3a + 8b = 36 and 6a + 4b = 36. Doubling the first and subtracting gives 12b = 36, b = 3, then a = 4. So a + b = 7.",
+    "trap": "Plugging the point the wrong way round, (8, 3) instead of (3, 8).",
+    "rule": "Two unknown constants and two facts: each fact is a line; the answer is where the lines cross."
+  },
+  {
+    "id": "ALG-16",
+    "domain": "Algebra",
+    "skill": "Shift a function given by a table",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "For the linear function f, f(1) = 5, f(4) = 14, and f(7) = 23. The function g is defined by g(x) = f(x - 3) + 2. What is the value of g(0)?",
+    "answer": "-5",
+    "hints": [
+      "Regress the table to get f, then define g exactly as written.",
+      "g(0) means f(-3) + 2."
+    ],
+    "desmos": [
+      "Table: x1 = 1, 4, 7 and y1 = 5, 14, 23",
+      "y1 ~ m x1 + b   (m = 3, b = 2)",
+      "f(x) = mx + b",
+      "g(x) = f(x - 3) + 2",
+      "g(0) = -5"
+    ],
+    "look_for": "The value Desmos prints for g(0).",
+    "why": "f(x) = 3x + 2. g(0) = f(-3) + 2 = -9 + 2 + 2 = -5.",
+    "trap": "Shifting the wrong way and computing f(3) + 2 = 13.",
+    "rule": "Never shift by hand. Define f from the table, define g from f, and evaluate."
+  },
+  {
+    "id": "ADV-28",
+    "domain": "Advanced Math",
+    "skill": "Identity with positive integer constants",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "(ax + b)(x + c) = 3x^2 + 23x + 14 for all values of x, where a, b, and c are positive integers. What is the value of a + b + c?",
+    "answer": "12",
+    "hints": [
+      "Type it as a regression: make a list of x values and fit a, b, c.",
+      "Desmos may hand you a non-integer solution first. Add a restriction or try integer values of c until all three are positive integers."
+    ],
+    "desmos": [
+      "x1 = [1, 2, 3, 4, 5]",
+      "(a x1 + b)(x1 + c) ~ 3x1^2 + 23x1 + 14",
+      "If Desmos returns c = 2/3, b = 21 (not integers), set c to whole numbers yourself: c = 7 gives a = 3, b = 2.",
+      "Overlay y = (3x + 2)(x + 7) and y = 3x^2 + 23x + 14 to confirm they match."
+    ],
+    "look_for": "A set of constants that are all positive integers AND makes the two graphs coincide.",
+    "why": "Since the constant term is bc = 14 and the leading coefficient is a = 3, try the factor pairs: (3x + 2)(x + 7) = 3x^2 + 23x + 14. So a + b + c = 3 + 2 + 7 = 12.",
+    "trap": "Accepting the first regression output. (3x + 21)(x + 2/3) is also equal, but 2/3 is not an integer.",
+    "rule": "When the constants must be integers, check the regression's answer against the condition and steer it (restrictions or trying integers)."
+  },
+  {
+    "id": "ADV-29",
+    "domain": "Advanced Math",
+    "skill": "Greatest and least solutions of a cubic",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What is the difference between the greatest solution and the least solution of 2x^3 - 3x^2 - 11x + 6 = 0?",
+    "answer": "5",
+    "hints": [
+      "Graph y = 2x^3 - 3x^2 - 11x + 6 and click every x-intercept.",
+      "There are three. Use only the biggest and the smallest."
+    ],
+    "desmos": [
+      "y = 2x^3 - 3x^2 - 11x + 6",
+      "x-intercepts: (-2, 0), (0.5, 0), (3, 0)",
+      "3 - (-2) = 5"
+    ],
+    "look_for": "All three places the curve crosses the x-axis.",
+    "why": "2x^3 - 3x^2 - 11x + 6 = (x - 3)(2x - 1)(x + 2). The solutions are -2, 1/2, and 3, so 3 - (-2) = 5.",
+    "trap": "Using the middle root 1/2 (giving 2.5 or 3.5), or missing the negative root because the window is too small.",
+    "rule": "'Greatest solution' questions: graph, click every intercept, zoom out to be sure none are hidden."
+  },
+  {
+    "id": "ADV-30",
+    "domain": "Advanced Math",
+    "skill": "'p% more than the previous' growth",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "At the end of each week, the number of bacteria colonies on a test plate was 60% more than at the end of the previous week. At the end of week 3, there were 2,048 colonies. How many colonies were there at the start (week 0)?",
+    "answer": "500",
+    "hints": [
+      "60% more than the previous means multiply by 1 + 0.60 = 1.6 each week.",
+      "Write N(t) = a(1.6)^t and use the point (3, 2048) to find a."
+    ],
+    "desmos": [
+      "N(t) = a(1.6)^t   (slider for a)",
+      "N(3) ~ 2048   (or slide a until N(3) = 2048)",
+      "a = 500"
+    ],
+    "look_for": "The value of a that makes N(3) equal 2048.",
+    "why": "a(1.6)^3 = 2048, so a = 2048/4.096 = 500.",
+    "trap": "Using 0.6 as the factor (that would shrink the count) or dividing by 1.6 only once.",
+    "rule": "'p% more than before' = factor 1 + p/100. 'p% less' = factor 1 - p/100. 150% more is x2.5, not x1.5."
+  },
+  {
+    "id": "ADV-31",
+    "domain": "Advanced Math",
+    "skill": "Percent change per unit of an exponential",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The function f is defined by f(x) = 400(0.64)^(x/2). For every increase of 1 in x, f(x) decreases by p%. What is the value of p?",
+    "answer": "20",
+    "hints": [
+      "Compare two neighbouring outputs: compute f(x + 1)/f(x) for any x.",
+      "That ratio is the part that REMAINS. The decrease is 1 minus it."
+    ],
+    "desmos": [
+      "f(x) = 400(0.64)^(x/2)",
+      "f(3)/f(2)   (Desmos shows 0.8)",
+      "1 - 0.8 = 0.2, so p = 20"
+    ],
+    "look_for": "The ratio of consecutive outputs.",
+    "why": "f(x + 1)/f(x) = (0.64)^(1/2) = 0.8. Each step keeps 80%, so it drops by 20%.",
+    "trap": "Answering 36 (that is the drop for an increase of 2 in x) or 80 (the part that remains).",
+    "rule": "Percent change per step: divide neighbouring outputs, then subtract from 1."
+  },
+  {
+    "id": "ADV-32",
+    "domain": "Advanced Math",
+    "skill": "Rewrite a yearly growth model per half-year",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "The value of an investment t years after it was made is V(t) = 2500(1.0816)^t. Which function gives the value h half-years after it was made?",
+    "choices": {
+      "A": "W(h) = 2500(1.04)^h",
+      "B": "W(h) = 2500(1.0816)^(2h)",
+      "C": "W(h) = 2500(1.04)^(h/2)",
+      "D": "W(h) = 2500(1.0408)^h"
+    },
+    "answer": "A",
+    "hints": [
+      "Pick a number of years, say 3 years, which is 6 half-years. V(3) must equal W(6).",
+      "Type V(3) and each choice at h = 6; keep the one that matches."
+    ],
+    "desmos": [
+      "V(t) = 2500(1.0816)^t",
+      "V(3) = 3163.30",
+      "A at h = 6: 2500(1.04)^6 = 3163.30",
+      "B at h = 6 is far too big, C and D are too small."
+    ],
+    "look_for": "The choice whose value at h = 6 equals V(3).",
+    "why": "h half-years is t = h/2 years. (1.0816)^(h/2) = (1.0816^(1/2))^h = 1.04^h.",
+    "trap": "B uses 2h, which runs time twice as fast; D halves the growth rate instead of taking a square root.",
+    "rule": "Changing time units: pick a real time, convert it to both units, and check which model gives the same value."
+  },
+  {
+    "id": "ADV-33",
+    "domain": "Advanced Math",
+    "skill": "Remainder theorem with an unknown coefficient",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The polynomial p(x) = x^3 - kx^2 + 5x - 6, where k is a constant, leaves a remainder of 4 when divided by x - 2. What is the remainder when p(x) is divided by x + 1?",
+    "answer": "-14",
+    "hints": [
+      "The remainder after dividing by x - c is just p(c).",
+      "Use p(2) = 4 to find k, then evaluate p(-1)."
+    ],
+    "desmos": [
+      "p(x) = x^3 - kx^2 + 5x - 6   (slider for k)",
+      "p(2) ~ 4   (gives k = 2)",
+      "p(-1) = -14"
+    ],
+    "look_for": "The value Desmos prints for p(-1) once k is fixed.",
+    "why": "p(2) = 8 - 4k + 10 - 6 = 12 - 4k = 4, so k = 2. Then p(-1) = -1 - 2 - 5 - 6 = -14.",
+    "trap": "Dividing by x + 1 means plugging in -1, not +1.",
+    "rule": "Remainder when dividing by (x - c) = p(c). No long division needed."
+  },
+  {
+    "id": "ADV-34",
+    "domain": "Advanced Math",
+    "skill": "Cubic from zeros and one point",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A cubic function f has zeros at x = -1, x = 2, and x = 5, and its graph passes through (0, 20). What is the value of f(3)?",
+    "answer": "-16",
+    "hints": [
+      "The zeros give the factors. One more point fixes the stretch.",
+      "Or put all four points in a table and regress a cubic."
+    ],
+    "desmos": [
+      "Table: x1 = -1, 2, 5, 0 and y1 = 0, 0, 0, 20",
+      "y1 ~ a(x1 + 1)(x1 - 2)(x1 - 5)   (a = 2)",
+      "f(x) = a(x + 1)(x - 2)(x - 5)",
+      "f(3) = -16"
+    ],
+    "look_for": "The fitted a, then f(3).",
+    "why": "f(x) = a(x + 1)(x - 2)(x - 5). f(0) = 10a = 20, so a = 2. f(3) = 2(4)(1)(-2) = -16.",
+    "trap": "Forgetting the stretch a (using a = 1 gives -8).",
+    "rule": "A zero is just a point with y = 0. Put zeros and other points in one table and regress."
+  },
+  {
+    "id": "ADV-35",
+    "domain": "Advanced Math",
+    "skill": "Table of a shifted function",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The table gives values of g(x) = f(x) - 6, where f is a quadratic function.\n  x:    1   2   3\n  g(x): -2  3   12\nWhat is the y-intercept of the graph of y = f(x)? (Give the y-coordinate.)",
+    "answer": "3",
+    "hints": [
+      "Regress a quadratic through the table. That gives g, not f.",
+      "f(x) = g(x) + 6. Evaluate f(0)."
+    ],
+    "desmos": [
+      "Table: x1 = 1, 2, 3 and y1 = -2, 3, 12",
+      "y1 ~ a x1^2 + b x1 + c   (a = 2, b = -1, c = -3)",
+      "f(x) = a x^2 + b x + c + 6",
+      "f(0) = 3"
+    ],
+    "look_for": "f(0), after undoing the shift.",
+    "why": "g(x) = 2x^2 - x - 3, so g(0) = -3. f(0) = g(0) + 6 = 3.",
+    "trap": "Reading -3 straight off the regression. That is the y-intercept of g.",
+    "rule": "If the table belongs to a transformed function, fit it first, then undo the transformation before answering."
+  },
+  {
+    "id": "ADV-36",
+    "domain": "Advanced Math",
+    "skill": "Rectangle with a 'longer than' relation",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The length of a rectangular garden is 3 feet longer than twice its width. The area of the garden is 152 square feet. What is the length of the garden, in feet?",
+    "answer": "19",
+    "hints": [
+      "Write the area using the width w only: w(2w + 3) = 152.",
+      "Graph both sides and keep the intersection with positive x."
+    ],
+    "desmos": [
+      "y = x(2x + 3)",
+      "y = 152",
+      "Intersections at x = -9.5 and x = 8. Width must be positive: 8.",
+      "Length = 2(8) + 3 = 19"
+    ],
+    "look_for": "The positive intersection, then convert width to length.",
+    "why": "2w^2 + 3w - 152 = 0 factors as (2w + 19)(w - 8) = 0, so w = 8 and the length is 19.",
+    "trap": "Answering 8, which is the width.",
+    "rule": "After solving, re-read which dimension they asked for. Use {x > 0} to hide impossible negative answers."
+  },
+  {
+    "id": "ADV-37",
+    "domain": "Advanced Math",
+    "skill": "Sum of solutions controlled by a constant",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The solutions of (x^2 - 16)(x + 2k - 1) = 0 have a sum of 11, where k is a constant. What is the value of k?",
+    "answer": "-5",
+    "hints": [
+      "Graph y = (x^2 - 16)(x + 2k - 1) with a slider for k and watch which zeros move.",
+      "Two zeros (4 and -4) never move and cancel in the sum, so the moving zero must be 11."
+    ],
+    "desmos": [
+      "y = (x^2 - 16)(x + 2k - 1)   (slider for k)",
+      "Zeros at -4 and 4 stay fixed.",
+      "Slide k until the third zero sits at x = 11: k = -5."
+    ],
+    "look_for": "The moving x-intercept landing at 11.",
+    "why": "Solutions: 4, -4, and 1 - 2k. Sum = 1 - 2k = 11, so k = -5.",
+    "trap": "Adding 4 + 4 instead of 4 + (-4).",
+    "rule": "Slider on the constant: see which zeros depend on it. The fixed ones are often there to distract."
+  },
+  {
+    "id": "ADV-38",
+    "domain": "Advanced Math",
+    "skill": "Parabola from vertex and one x-intercept",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A parabola has its vertex at (3, -20) and crosses the x-axis at x = -2. At what y-value does it cross the y-axis?",
+    "answer": "-12.8",
+    "hints": [
+      "Use vertex form y = a(x - 3)^2 - 20 and find a from the intercept.",
+      "Or remember the other x-intercept is the mirror image: 3 + 5 = 8."
+    ],
+    "desmos": [
+      "y = a(x - 3)^2 - 20   (slider for a)",
+      "Slide a until the graph passes through (-2, 0): a = 0.8",
+      "Click the y-intercept: (0, -12.8)."
+    ],
+    "look_for": "The y-intercept after the curve is pinned through (-2, 0).",
+    "why": "a(-5)^2 - 20 = 0 gives a = 0.8. At x = 0: 0.8(9) - 20 = -12.8.",
+    "trap": "Answering -20 (that is the vertex) or 8 (the other x-intercept).",
+    "rule": "Vertex form with one unknown: slide or regress a until the curve hits the known point, then click what is asked."
+  },
+  {
+    "id": "ADV-39",
+    "domain": "Advanced Math",
+    "skill": "Isolate a variable in a formula",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "The formula T = (2m + n)/(m - p) relates the positive quantities T, m, n, and p, where m does not equal p and T does not equal 2. Which equation correctly gives m in terms of T, n, and p?",
+    "choices": {
+      "A": "m = (n + Tp)/(T - 2)",
+      "B": "m = (n - Tp)/(T - 2)",
+      "C": "m = (n + Tp)/(T + 2)",
+      "D": "m = (Tp - n)/(2 - T)"
+    },
+    "answer": "A",
+    "hints": [
+      "Pick numbers: m = 5, n = 4, p = 3. Then T = (10 + 4)/2 = 7.",
+      "Put T = 7, n = 4, p = 3 into each choice. The right one gives m = 5."
+    ],
+    "desmos": [
+      "m = 5, n = 4, p = 3   (sliders)",
+      "T = (2m + n)/(m - p)   (shows 7)",
+      "A: (n + Tp)/(T - 2) = 25/5 = 5",
+      "B gives -17/5, C gives 25/9, D gives 17/(-5)"
+    ],
+    "look_for": "The choice that returns your starting m.",
+    "why": "T(m - p) = 2m + n, so Tm - 2m = n + Tp, so m(T - 2) = n + Tp.",
+    "trap": "Sign slips when moving Tp across (B and D).",
+    "rule": "Literal equations: choose distinct, non-zero numbers, compute the other variable, and test each choice."
+  },
+  {
+    "id": "ADV-40",
+    "domain": "Advanced Math",
+    "skill": "Equivalent expression with fractional exponents",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "For positive numbers x and y, which expression is equivalent to (x^(3/2) y^(-1/3))^6 / (x^4 y)?",
+    "choices": {
+      "A": "x^5 / y^3",
+      "B": "x^5 / y",
+      "C": "x^(1/2) y^(-4/3)",
+      "D": "x^13 / y^3"
+    },
+    "answer": "A",
+    "hints": [
+      "Give x and y slider values, like x = 2 and y = 3. Call y something else (y1) so Desmos does not treat it as a graph.",
+      "Compute the original as a number and compare it with each choice."
+    ],
+    "desmos": [
+      "x1 = 2,  y1 = 3",
+      "(x1^(3/2) y1^(-1/3))^6 / (x1^4 y1)   (shows 1.185...)",
+      "A: x1^5 / y1^3 = 32/27 = 1.185  (match)",
+      "Move the sliders: A still matches."
+    ],
+    "look_for": "The choice that keeps matching as the sliders move.",
+    "why": "(x^(3/2))^6 = x^9 and (y^(-1/3))^6 = y^(-2). Dividing by x^4 y gives x^5 y^(-3).",
+    "trap": "B forgets to subtract the y in the denominator; D adds exponents instead of subtracting.",
+    "rule": "Equivalent expressions: plug in test values (respecting 'positive'), then move them to be sure."
+  },
+  {
+    "id": "ADV-41",
+    "domain": "Advanced Math",
+    "skill": "Revenue maximum: price vs revenue",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A theater sells 900 tickets per show when the price is $12. For every $1 increase in price, it sells 30 fewer tickets. What ticket price, in dollars, gives the greatest revenue?",
+    "answer": "21",
+    "hints": [
+      "Revenue = price x tickets sold. Tickets sold at price x is 900 - 30(x - 12).",
+      "Graph the revenue and click the top of the parabola. The question wants the x-coordinate."
+    ],
+    "desmos": [
+      "y = x(900 - 30(x - 12))",
+      "Click the maximum: (21, 13230)."
+    ],
+    "look_for": "The vertex. Price is its x-coordinate; revenue is its y-coordinate.",
+    "why": "R = x(1260 - 30x). The zeros are 0 and 42, so the vertex is at x = 21.",
+    "trap": "Answering 13230, the maximum revenue, instead of the price.",
+    "rule": "Max/min word problems: decide which coordinate is asked before clicking the vertex."
+  },
+  {
+    "id": "ADV-42",
+    "domain": "Advanced Math",
+    "skill": "Smallest positive constant for a shared zero",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The functions f(x) = (x - k)(x - 2k) and g(x) = (x - 6)(x + 2)(x - 9) are defined for all x, where k is a constant. What is the smallest positive value of k for which the graphs of f and g share an x-intercept?",
+    "answer": "3",
+    "hints": [
+      "Graph g once. Then graph f with a slider for k and watch f's two intercepts, k and 2k.",
+      "Slide k up from 0 and stop the first time either intercept of f lands on 6, -2, or 9."
+    ],
+    "desmos": [
+      "y = (x - 6)(x + 2)(x - 9)",
+      "y = (x - k)(x - 2k)   (slider k from 0 to 10, step 0.5)",
+      "At k = 3 the intercept 2k = 6 lands on g's intercept."
+    ],
+    "look_for": "The first positive k where an intercept of f sits on an intercept of g.",
+    "why": "Shared intercept: k or 2k is in {6, -2, 9}. Positive options: k = 6, 9, 3, 4.5. The smallest is 3.",
+    "trap": "Only checking k itself (giving 6) and forgetting the 2k intercept, or taking k = -1.",
+    "rule": "Slider on the constant, then watch every intercept it controls. Honour 'positive'."
+  },
+  {
+    "id": "ADV-43",
+    "domain": "Advanced Math",
+    "skill": "Maximum of a transformed function",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The function f is defined by f(x) = -2(x - 1)^2 + 8. The function g is defined by g(x) = 3f(x + 4) - 5. What is the maximum value of g(x)?",
+    "answer": "19",
+    "hints": [
+      "Define f, then define g from f. Do not shift by hand.",
+      "Click the top of g. 'Maximum value' means the y-coordinate."
+    ],
+    "desmos": [
+      "f(x) = -2(x - 1)^2 + 8",
+      "g(x) = 3f(x + 4) - 5",
+      "Click g's maximum: (-3, 19)."
+    ],
+    "look_for": "The y-coordinate of g's peak.",
+    "why": "The max of f is 8. The inside shift only moves it left; 3(8) - 5 = 19.",
+    "trap": "Answering -3 (where the max happens) or 8 (the max of f).",
+    "rule": "Value = y. 'Where' or 'for what x' = x."
+  },
+  {
+    "id": "ADV-44",
+    "domain": "Advanced Math",
+    "skill": "Exponential with unknown base from a table",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "For the function f(x) = a(b)^x, where a and b are positive constants, f(2) = 36 and f(4) = 81. For what value of x does f(x) = 182.25?",
+    "answer": "6",
+    "hints": [
+      "Put the two points in a table and regress y1 ~ a b^x1.",
+      "Then graph y = 182.25 and click where it meets f."
+    ],
+    "desmos": [
+      "Table: x1 = 2, 4 and y1 = 36, 81",
+      "y1 ~ a b^(x1)   (a = 16, b = 1.5)",
+      "f(x) = a b^x",
+      "y = 182.25   intersection at x = 6"
+    ],
+    "look_for": "The intersection's x-coordinate.",
+    "why": "b^2 = 81/36 = 2.25 so b = 1.5, and a = 36/2.25 = 16. 16(1.5)^x = 182.25 gives 1.5^x = 11.390625 = 1.5^6.",
+    "trap": "Assuming the outputs grow by a fixed amount each step (linear thinking).",
+    "rule": "Exponential from two points: table + exponential regression, then intersect with the target."
+  },
+  {
+    "id": "ADV-45",
+    "domain": "Advanced Math",
+    "skill": "One unknown constant from one function value",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The function p is defined by p(x) = kx^2 - 3x + 7, where k is a constant. If p(4) = 39, what is the value of p(-2)?",
+    "answer": "24",
+    "hints": [
+      "Define p with a slider for k and use p(4) = 39 to fix k.",
+      "Type p(4) ~ 39 and Desmos solves for k."
+    ],
+    "desmos": [
+      "p(x) = kx^2 - 3x + 7",
+      "p(4) ~ 39   (k = 2.75)",
+      "p(-2) = 24"
+    ],
+    "look_for": "p(-2) after k is fixed.",
+    "why": "16k - 12 + 7 = 39 gives k = 2.75. p(-2) = 2.75(4) + 6 + 7 = 24.",
+    "trap": "Squaring -2 as -4.",
+    "rule": "One unknown and one fact: let the ~ regression solve it, then evaluate."
+  },
+  {
+    "id": "PSD-08",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Percent breakdown with a leftover count",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In a survey, every student named exactly one way of getting to school: 35% said bus, 25% said bike, 22% said car, and the remaining 54 students said they walk. How many more students said bus than said car?",
+    "answer": "39",
+    "hints": [
+      "First find what percent walked: 100 minus the other three.",
+      "That percent of the total is 54. Solve for the total, then take 35% and 22% of it."
+    ],
+    "desmos": [
+      "w = 100 - 35 - 25 - 22   (shows 18)",
+      "T = 54/(w/100)   (shows 300)",
+      "0.35T - 0.22T   (shows 39)"
+    ],
+    "look_for": "The real total (300), then the difference.",
+    "why": "Walkers are 18% of the total, so the total is 54/0.18 = 300. Bus 105, car 66, difference 39.",
+    "trap": "Treating the percents as counts out of 100 (answering 13).",
+    "rule": "Leftover count + leftover percent gives the total. Everything else is a percent of that total."
+  },
+  {
+    "id": "PSD-09",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Two-way table with an unknown cell",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A school club records members by year and whether they joined the robotics team.\n  Juniors: joined = x, did not join = 36\n  Seniors: joined = 30, did not join = 20\nIf a junior is chosen at random, the probability that the junior joined is 0.4. If a member who joined is chosen at random, what is the probability that the member is a senior? (Round to three decimal places.)",
+    "answer": "0.556",
+    "hints": [
+      "The junior probability uses the whole junior row: x/(x + 36) = 0.4. Solve for x.",
+      "Then 'given joined' means the denominator is everyone who joined: x + 30."
+    ],
+    "desmos": [
+      "y = x/(x + 36)",
+      "y = 0.4",
+      "Intersection at x = 24.",
+      "30/(24 + 30)   (shows 0.5556)"
+    ],
+    "look_for": "x from the intersection, then the new fraction.",
+    "why": "x/(x + 36) = 0.4 gives x = 24. Joined total = 54, seniors who joined = 30, so 30/54 = 5/9, about 0.556.",
+    "trap": "Dividing by the senior row (30/50 = 0.6) answers a different question: the chance a senior joined.",
+    "rule": "'Given ___' tells you which row or column is the denominator. Write the fraction with the unknown and solve it on the graph."
+  },
+  {
+    "id": "PSD-10",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Largest missing value with a whole-number mean",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A student's first five quiz scores are 82, 91, 77, 88, and 95. After a sixth quiz, the mean of all six scores is a whole number greater than 87. Every score is a whole number less than 100. What is the greatest possible sixth score?",
+    "answer": "95",
+    "hints": [
+      "Put the five scores in a list and use total(). The sixth score v makes the mean (total + v)/6.",
+      "Start at 99 and go down until (total + v)/6 is a whole number."
+    ],
+    "desmos": [
+      "A = [82, 91, 77, 88, 95]",
+      "total(A)   (shows 433)",
+      "M = (total(A) + v)/6   (slider v from 90 to 99, step 1)",
+      "v = 99, 98, 97, 96 give decimals; v = 95 gives 88."
+    ],
+    "look_for": "The largest slider value that makes M a whole number above 87.",
+    "why": "433 + v must be divisible by 6. 433 leaves remainder 1, so v leaves remainder 5: v = 95 is the largest under 100. Mean = 528/6 = 88 > 87.",
+    "trap": "Answering 99, the biggest score allowed, without checking the whole-number condition.",
+    "rule": "Mean conditions: work with the total. Test candidates from the boundary inward."
+  },
+  {
+    "id": "PSD-11",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Find the removed value from two means",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The mean of 12 numbers is 46. When one of the numbers is removed, the mean of the remaining 11 numbers is 44. What number was removed?",
+    "answer": "68",
+    "hints": [
+      "Turn each mean into a total: total = mean x count.",
+      "The removed number is the difference of the two totals."
+    ],
+    "desmos": [
+      "12*46   (552)",
+      "11*44   (484)",
+      "552 - 484   (68)"
+    ],
+    "look_for": "The drop in the total, not the drop in the mean.",
+    "why": "Totals are 552 and 484. The removed number is 552 - 484 = 68.",
+    "trap": "Answering 2 (the change in the mean) or 46 - 44 times something random.",
+    "rule": "Means are hard to compare; totals are easy. Convert first."
+  },
+  {
+    "id": "PSD-12",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Spread the tails of symmetric data",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "A data set of 15 different values is symmetric about its median. A new data set is made by adding 5 to every value greater than the median and subtracting 5 from every value less than the median; the median value itself is unchanged. Compared with the original data set, which of the following is true about the new data set?",
+    "choices": {
+      "A": "Only the mean is different.",
+      "B": "Only the median is different.",
+      "C": "Only the standard deviation is different.",
+      "D": "The mean and the standard deviation are both different."
+    },
+    "answer": "C",
+    "hints": [
+      "Try it on a small symmetric list in Desmos: A = [1, 2, 3, 4, 5].",
+      "Build B by pushing the outer values away by 5 and compare mean, median, and stdev."
+    ],
+    "desmos": [
+      "A = [1, 2, 3, 4, 5]",
+      "B = [-4, -3, 3, 9, 10]",
+      "mean(A) = mean(B) = 3, median(A) = median(B) = 3",
+      "stdev(A) = 1.58, stdev(B) = 6.29"
+    ],
+    "look_for": "Which of the three numbers changes between A and B.",
+    "why": "The +5 and -5 changes cancel in the total, so the mean stays. The middle value is untouched, so the median stays. Values move farther from the center, so the standard deviation grows.",
+    "trap": "D: thinking any change to the data must move the mean.",
+    "rule": "Statistics questions: build a tiny example list in Desmos and let mean(), median(), stdev() answer."
+  },
+  {
+    "id": "PSD-13",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Margin of error wording",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "A random sample of 400 adults living in a town was asked whether they support building a new library. Of those sampled, 62% said yes. The survey's margin of error is 4 percentage points. Which conclusion is best supported?",
+    "choices": {
+      "A": "It is plausible that between 58% and 66% of all adults in the town support the library.",
+      "B": "Exactly 62% of all adults in the town support the library.",
+      "C": "Between 58% and 66% of the 400 adults sampled support the library.",
+      "D": "It is impossible that fewer than 58% of adults in the town support the library."
+    },
+    "answer": "A",
+    "hints": [
+      "The margin of error is about the whole population, not the people already asked.",
+      "Reject any choice that sounds absolutely certain."
+    ],
+    "desmos": [
+      "(No graph needed.) 62 - 4 = 58 and 62 + 4 = 66 give the plausible range."
+    ],
+    "look_for": "The choice that uses 'plausible' AND talks about the whole town.",
+    "why": "62% is known exactly for the sample. The margin gives a likely range for all town adults: 58% to 66%.",
+    "trap": "C applies the range to the sample (whose value is known); D uses 'impossible'.",
+    "rule": "Margin of error: population, plausible, range. Never 'exactly' or 'impossible'."
+  },
+  {
+    "id": "PSD-14",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Scale drawing after enlargement",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "On a hiking map, 1 inch represents 2.5 miles. The map is reprinted so that every length on it is 25% longer. On the reprinted map, how many miles does 1 inch represent?",
+    "answer": "2",
+    "hints": [
+      "Pick a trail that is 1 inch on the old map. How many real miles is it, and how long is it on the new map?",
+      "New scale = real miles / new inches."
+    ],
+    "desmos": [
+      "old = 1 inch -> 2.5 miles",
+      "new length = 1*1.25 = 1.25 inches (still 2.5 miles)",
+      "2.5/1.25   (shows 2)"
+    ],
+    "look_for": "Real distance stays the same; only the drawing grows.",
+    "why": "The real 2.5 miles now takes 1.25 inches, so 1 inch represents 2.5/1.25 = 2 miles.",
+    "trap": "Multiplying the miles by 1.25 too (3.125). The ground did not get bigger.",
+    "rule": "Enlarging a drawing changes inches, never real distance."
+  },
+  {
+    "id": "PSD-15",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Working back through repeated doubling",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The number of birds in a reserve doubled every 3 years from 2009 to 2024. In 2024 there were 12,800 birds. How many birds were there in 2009?",
+    "answer": "400",
+    "hints": [
+      "Count the 3-year steps between 2009 and 2024: (2024 - 2009)/3.",
+      "Solve x * 2^steps = 12800."
+    ],
+    "desmos": [
+      "n = (2024 - 2009)/3   (shows 5)",
+      "x*2^n ~ 12800   (x = 400)"
+    ],
+    "look_for": "The number of doublings (5), not the number of years listed.",
+    "why": "15 years / 3 = 5 doublings. 12800/2^5 = 400.",
+    "trap": "Counting the years 2009, 2012, ..., 2024 as 6 doublings gives 200.",
+    "rule": "Steps between two dates = difference / step length. Do not count the endpoints."
+  },
+  {
+    "id": "PSD-16",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Percents of a reference quantity",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The number a is 20% greater than c, and the number b is 40% less than c, where c > 0. If a + b = kc, what is the value of k?",
+    "answer": "1.8",
+    "hints": [
+      "Choose an easy value for c, like 100.",
+      "Find a and b, add them, and divide by c."
+    ],
+    "desmos": [
+      "c = 100",
+      "a = 1.2c   (120)",
+      "b = 0.6c   (60)",
+      "(a + b)/c   (shows 1.8)"
+    ],
+    "look_for": "The ratio (a + b)/c; change c to check it stays 1.8.",
+    "why": "a = 1.2c and b = 0.6c, so a + b = 1.8c.",
+    "trap": "Using 0.4c for b (that is the amount removed, not what is left), which gives 1.6.",
+    "rule": "When all quantities are percents of one reference, set the reference to 100."
+  },
+  {
+    "id": "PSD-17",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "One percent change defined by another",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A store raised the price of a jacket by p% in January. In February it raised the new price again, this time by half as many percent as in January. Over the two months the price rose by 32% in total. What was the percent increase in February?",
+    "answer": "10",
+    "hints": [
+      "January multiplies by (1 + p/100) and February by (1 + p/200).",
+      "Graph y = (1 + x/100)(1 + x/200) and y = 1.32 and find the positive crossing."
+    ],
+    "desmos": [
+      "y = (1 + x/100)(1 + x/200)",
+      "y = 1.32",
+      "Positive intersection at x = 20 (January).",
+      "February = 20/2 = 10"
+    ],
+    "look_for": "The positive intersection; then halve it.",
+    "why": "(1 + p/100)(1 + p/200) = 1.32 gives p = 20. February's increase is 10%. Check: 1.2 x 1.1 = 1.32.",
+    "trap": "Answering 20 (January), or splitting 32 into 21.3 and 10.7 by adding percents.",
+    "rule": "Successive percent changes multiply. Graph the product against the total factor."
+  },
+  {
+    "id": "PSD-18",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Ordered data with unknown values",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Five numbers are listed in increasing order: 3, a, 10, b, c. The range of the numbers is 17, the mean is 11, and b is 8 more than a. What is the value of b?",
+    "answer": "15",
+    "hints": [
+      "Range = biggest minus smallest, so c - 3 = 17.",
+      "Use the mean to get a + b, then use b = a + 8. Desmos can solve all of it with one regression."
+    ],
+    "desmos": [
+      "[c - 3, mean([3, a, 10, b, c]), b - a] ~ [17, 11, 8]   (Desmos fits a, b, c at once)",
+      "Result: c = 20, a = 7, b = 15"
+    ],
+    "look_for": "The fitted b.",
+    "why": "c = 20. The total is 55, so a + b = 55 - 33 = 22. With b = a + 8: a = 7, b = 15. The order 3 <= 7 <= 10 <= 15 <= 20 holds.",
+    "trap": "Treating 10 as the mean because it is in the middle. 10 is the median.",
+    "rule": "Several stats facts about one list: write each as an equation and let one list regression solve them together."
+  },
+  {
+    "id": "PSD-19",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Square-unit conversion",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A room measures 6 yards by 4.5 yards. Carpet costs $3.50 per square foot. How many dollars does it cost to carpet the whole room? (1 yard = 3 feet)",
+    "answer": "850.5",
+    "hints": [
+      "Convert each side to feet first, or multiply square yards by 3^2 = 9.",
+      "A square yard is 9 square feet, not 3."
+    ],
+    "desmos": [
+      "(6*3)(4.5*3)   (243 square feet)",
+      "243*3.5   (850.5)"
+    ],
+    "look_for": "Area in square feet before multiplying by the price.",
+    "why": "18 ft x 13.5 ft = 243 sq ft. 243 x 3.50 = 850.50.",
+    "trap": "Using 27 sq yd x 3 = 81 sq ft (converting area with 3 instead of 9), giving 283.50.",
+    "rule": "Area conversions use the factor squared; volume conversions use it cubed."
+  },
+  {
+    "id": "PSD-20",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Density with mixed units",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A stone block measures 20 cm by 15 cm by 0.5 m. The stone has a density of 2.7 grams per cubic centimeter. What is the mass of the block, in kilograms?",
+    "answer": "40.5",
+    "hints": [
+      "Put every length in centimeters first: 0.5 m = 50 cm.",
+      "Mass = density x volume, then divide grams by 1000."
+    ],
+    "desmos": [
+      "V = 20*15*50   (15000 cm^3)",
+      "2.7V   (40500 g)",
+      "2.7V/1000   (40.5 kg)"
+    ],
+    "look_for": "Volume in cm^3 with every side in cm.",
+    "why": "Volume 15,000 cm^3 x 2.7 g/cm^3 = 40,500 g = 40.5 kg.",
+    "trap": "Using 0.5 as if it were centimeters (giving 0.405 kg), or forgetting to change grams to kilograms.",
+    "rule": "Write the units next to each number and convert before multiplying."
+  },
+  {
+    "id": "PSD-21",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Replace one value to shift the mean",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Data set A is 12, 15, 19, 22, 27. Data set B is the same except that 27 is replaced by x. The mean of B is 3 more than the mean of A. What is the value of x?",
+    "answer": "42",
+    "hints": [
+      "Make both lists in Desmos and use mean().",
+      "Fit mean(B) ~ mean(A) + 3 with x as the unknown."
+    ],
+    "desmos": [
+      "A = [12, 15, 19, 22, 27]",
+      "B = [12, 15, 19, 22, x_1]",
+      "mean(B) ~ mean(A) + 3   (x_1 = 42)"
+    ],
+    "look_for": "The fitted x_1.",
+    "why": "The mean goes up by 3 across 5 values, so the total rises by 15. x = 27 + 15 = 42.",
+    "trap": "Adding just 3 to 27 (giving 30).",
+    "rule": "A change in the mean times the count = the change in the total."
+  },
+  {
+    "id": "PSD-22",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "When exponential passes linear",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Account A starts with $5,000 and earns 4% interest compounded once per year. Account B starts with $5,000 and gains $230 at the end of each year. After how many whole years will account A first have more money than account B?",
+    "answer": "8",
+    "hints": [
+      "Graph A(x) = 5000(1.04)^x and B(x) = 5000 + 230x.",
+      "B starts ahead. Find where the curves cross, then the first whole year past it."
+    ],
+    "desmos": [
+      "y = 5000(1.04)^x",
+      "y = 5000 + 230x",
+      "Crossing near x = 7.9 (zoom far in near y = 6800)",
+      "Check x = 7: A = 6579.66, B = 6610.  x = 8: A = 6842.85, B = 6840."
+    ],
+    "look_for": "The first whole number of years where the curve is above the line.",
+    "why": "The linear account leads at first; the exponential one grows faster later. At 8 years A = 6842.85 > 6840 = B; at 7 years A is still behind.",
+    "trap": "Thinking A is ahead from year 1 because 4% of 5000 is 200 (it is less than 230), or rounding 7.9 down to 7.",
+    "rule": "Exponential vs linear: graph both, zoom on the crossing, and test the whole numbers on each side."
+  },
+  {
+    "id": "PSD-23",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Chained 'of those' percents and the complement",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Of 800 people surveyed, 45% own a pet. Of the pet owners, 60% own a dog. Of the dog owners, 25% walk their dog every day. How many of the 800 people surveyed are NOT dog owners who walk their dog every day?",
+    "answer": "746",
+    "hints": [
+      "Multiply down the chain: 800 x 0.45 x 0.60 x 0.25.",
+      "The question asks for everyone else."
+    ],
+    "desmos": [
+      "800*0.45*0.6*0.25   (54)",
+      "800 - 54   (746)"
+    ],
+    "look_for": "The last count in the chain, then the complement.",
+    "why": "360 own pets, 216 own dogs, 54 walk daily. 800 - 54 = 746.",
+    "trap": "Stopping at 54, or subtracting only from the dog owners (216 - 54 = 162).",
+    "rule": "'Of those' means multiply. Then re-read for NOT."
+  },
+  {
+    "id": "GEO-08",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circle with a common coefficient",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A circle in the xy-plane has equation 3x^2 + 3y^2 - 12x + 18y = 9. What is the radius of the circle?",
+    "answer": "4",
+    "hints": [
+      "Type the equation as given; Desmos draws the circle.",
+      "Click the top and bottom points of the circle and take half their distance."
+    ],
+    "desmos": [
+      "3x^2 + 3y^2 - 12x + 18y = 9",
+      "Click the top and bottom: a = (2, 1), b = (2, -7)",
+      "distance(a, b)/2   (4)"
+    ],
+    "look_for": "Half the vertical distance across the circle.",
+    "why": "Divide by 3: x^2 + y^2 - 4x + 6y = 3. Completing squares: (x - 2)^2 + (y + 3)^2 = 3 + 4 + 9 = 16, so r = 4.",
+    "trap": "Completing the square without dividing by 3 first gives sqrt(9 + 12 + 27) or other wrong values.",
+    "rule": "Circle radius or center: let Desmos draw it and measure, or divide out the x^2 coefficient before completing the square."
+  },
+  {
+    "id": "GEO-09",
+    "domain": "Geometry and Trigonometry",
+    "skill": "General form of a circle from center and radius",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A circle has center (-3, 5) and radius 6. Its equation can be written as x^2 + y^2 + 6x - 10y + c = 0, where c is a constant. What is the value of c?",
+    "answer": "-2",
+    "hints": [
+      "Put a few points of the circle in a table, then fit the general form.",
+      "Or expand (x + 3)^2 + (y - 5)^2 = 36 and move 36 to the left."
+    ],
+    "desmos": [
+      "(x + 3)^2 + (y - 5)^2 = 36",
+      "Table of points on it: (3, 5), (-3, 11), (-9, 5)",
+      "x_1^2 + y_1^2 + 6x_1 - 10y_1 + c ~ 0   (c = -2)"
+    ],
+    "look_for": "The fitted c.",
+    "why": "x^2 + 6x + 9 + y^2 - 10y + 25 = 36, so x^2 + y^2 + 6x - 10y - 2 = 0.",
+    "trap": "Answering -36. c is h^2 + k^2 - r^2 = 9 + 25 - 36.",
+    "rule": "To find constants in a circle equation, give Desmos points on the circle and regress."
+  },
+  {
+    "id": "GEO-10",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Concentric circle with a larger radius",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Circle P has equation (x - 1)^2 + (y + 4)^2 = 20.25. Circle Q has the same center as circle P, and its radius is 2 more than the radius of circle P. The equation of circle Q is (x - 1)^2 + (y + 4)^2 = k. What is the value of k?",
+    "answer": "42.25",
+    "hints": [
+      "Take the square root of 20.25 to get P's radius.",
+      "Add 2 to the radius, then square it."
+    ],
+    "desmos": [
+      "sqrt(20.25)   (4.5)",
+      "(4.5 + 2)^2   (42.25)",
+      "Graph both circles: they share a center and are 2 units apart everywhere."
+    ],
+    "look_for": "Two circles with the same center, 2 units apart.",
+    "why": "r = 4.5, new radius 6.5, so k = 6.5^2 = 42.25.",
+    "trap": "Adding 2 to 20.25 (giving 22.25). The right side is r^2, not r.",
+    "rule": "Change the radius, then square. Never change r^2 directly."
+  },
+  {
+    "id": "GEO-11",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Other end of a diameter",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A circle has center (2, -1). One endpoint of a diameter is (7, 3). If the other endpoint is (p, q), what is p + q?",
+    "answer": "-8",
+    "hints": [
+      "The center is the midpoint of the diameter.",
+      "Other end = 2 x center - known end."
+    ],
+    "desmos": [
+      "C = (2, -1),  P = (7, 3)",
+      "Q = 2C - P   (shows (-3, -5))",
+      "Check: midpoint(P, Q) = (2, -1)"
+    ],
+    "look_for": "The point Q opposite P through the center.",
+    "why": "Moving from (7, 3) to the center is (-5, -4). Do it again: (-3, -5). Sum -8.",
+    "trap": "Averaging the center and the endpoint (giving the midpoint of a radius).",
+    "rule": "Opposite point through a center = 2(center) - point."
+  },
+  {
+    "id": "GEO-12",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Arc length with an isosceles step",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Points A and B lie on a circle with center O and radius 9. In triangle OAB, angle OAB measures 25 degrees. The length of minor arc AB is k*pi. What is the value of k?",
+    "answer": "6.5",
+    "hints": [
+      "OA and OB are both radii, so triangle OAB is isosceles: angle OBA is also 25 degrees.",
+      "Central angle = 180 - 2(25). Arc = (angle/360) x 2*pi*9."
+    ],
+    "desmos": [
+      "A_c = 180 - 2*25   (130)",
+      "(A_c/360)*2*9   (6.5, the coefficient of pi)"
+    ],
+    "look_for": "The central angle first (130), then the fraction of the circumference.",
+    "why": "Central angle 130 degrees. Arc = (130/360)(18 pi) = 6.5 pi.",
+    "trap": "Using 25 or 50 degrees as the central angle.",
+    "rule": "Arc questions: get the central angle, then arc/circumference = angle/360."
+  },
+  {
+    "id": "GEO-13",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Cosine of a large radian angle",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What is the value of cos(14pi/3)?",
+    "answer": "-0.5",
+    "hints": [
+      "Make sure Desmos is in radian mode, then just type it.",
+      "14pi/3 = 4pi + 2pi/3, and adding full turns does not change cosine."
+    ],
+    "desmos": [
+      "(radian mode) cos(14pi/3)   (shows -0.5)",
+      "Point (cos(14pi/3), sin(14pi/3)) lands at (-0.5, 0.866) on the unit circle."
+    ],
+    "look_for": "The decimal -0.5.",
+    "why": "14pi/3 - 4pi = 2pi/3, which is 120 degrees. cos 120 degrees = -1/2.",
+    "trap": "Typing it in degree mode (gives a meaningless 0.99...).",
+    "rule": "Check the angle mode in the settings wrench before any trig."
+  },
+  {
+    "id": "GEO-14",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Cofunction with linear angles",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In a right triangle, the two acute angles measure (3x + 12) degrees and (2x - 7) degrees. Also, sin((3x + 12) degrees) = cos((2x - 7) degrees). What is the value of x?",
+    "answer": "17",
+    "hints": [
+      "sin of an angle equals cos of its complement, so the two angles add to 90.",
+      "In degree mode you can also fit sin(3x_1 + 12) ~ cos(2x_1 - 7) and check both angles are acute."
+    ],
+    "desmos": [
+      "(degree mode) 3x_1 + 12 + 2x_1 - 7 ~ 90   (x_1 = 17)",
+      "Check: sin(63) = cos(27) = 0.891"
+    ],
+    "look_for": "x that makes the two angles add to 90.",
+    "why": "5x + 5 = 90 gives x = 17. The angles are 63 and 27 degrees.",
+    "trap": "Setting the angles equal (3x + 12 = 2x - 7).",
+    "rule": "sin A = cos B with acute angles means A + B = 90."
+  },
+  {
+    "id": "GEO-15",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Altitude to the hypotenuse",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Right triangle ABC has legs AC = 15 and BC = 20. The altitude from C meets hypotenuse AB at D. What is the length of AD?",
+    "answer": "9",
+    "hints": [
+      "Find AB first, then the altitude CD from the two ways of writing the area.",
+      "Then use the right triangle ACD: AD^2 + CD^2 = 15^2."
+    ],
+    "desmos": [
+      "AB = sqrt(15^2 + 20^2)   (25)",
+      "15*20/2 ~ AB*h/2   (h = 12)",
+      "sqrt(15^2 - 12^2)   (9)"
+    ],
+    "look_for": "AD, the piece of the hypotenuse next to the shorter leg.",
+    "why": "Area = 150 = (1/2)(25)(h), so h = 12. AD = sqrt(225 - 144) = 9. (Also AD = AC^2/AB = 225/25.)",
+    "trap": "Answering 16 (that is DB) or 12 (the altitude).",
+    "rule": "Altitude to the hypotenuse: area two ways gives the altitude; small triangles are similar to the big one."
+  },
+  {
+    "id": "GEO-16",
+    "domain": "Geometry and Trigonometry",
+    "skill": "30-60-90 from a perimeter",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A 30-60-90 triangle has a perimeter of 18 + 6*sqrt(3). What is the length of its longest side?",
+    "answer": "12",
+    "hints": [
+      "Sides are x, x*sqrt(3), and 2x. Their sum is the perimeter.",
+      "Fit x ~ with one regression, then remember the longest side is 2x."
+    ],
+    "desmos": [
+      "3x_1 + x_1*sqrt(3) ~ 18 + 6sqrt(3)   (x_1 = 6)",
+      "2x_1   (12)"
+    ],
+    "look_for": "The hypotenuse 2x.",
+    "why": "x(3 + sqrt 3) = 6(3 + sqrt 3), so x = 6 and the hypotenuse is 12.",
+    "trap": "Answering 6*sqrt(3) (about 10.39), the long leg. The hypotenuse is always the longest side.",
+    "rule": "Special triangles: write all sides from one letter, solve, then pick the side they asked for."
+  },
+  {
+    "id": "GEO-17",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Triangle area from two sides and the angle between them",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In triangle PQR, PQ = 10, PR = 14, and angle QPR measures 30 degrees. What is the area of triangle PQR?",
+    "answer": "35",
+    "hints": [
+      "Drop a height from Q to side PR. In degree mode the height is 10 sin(30).",
+      "Area = (1/2)(base)(height)."
+    ],
+    "desmos": [
+      "(degree mode) h = 10sin(30)   (5)",
+      "14*h/2   (35)"
+    ],
+    "look_for": "The height from the angle, then half base times height.",
+    "why": "Height = 10 sin 30 = 5. Area = (1/2)(14)(5) = 35.",
+    "trap": "Forgetting the 1/2 (70) or using 10 as the height (70).",
+    "rule": "Area with an angle = (1/2) a b sin C. Degree mode!"
+  },
+  {
+    "id": "GEO-18",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Area of a triangle from three points",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "What is the area of the triangle with vertices (-2, 1), (5, 3), and (1, 8)?",
+    "answer": "21.5",
+    "hints": [
+      "Type the three points into polygon( ) in Desmos.",
+      "Desmos shows the area when you click the shaded triangle (or use the box-minus-corners method)."
+    ],
+    "desmos": [
+      "polygon((-2, 1), (5, 3), (1, 8))",
+      "Area shown: 21.5"
+    ],
+    "look_for": "The area label on the polygon.",
+    "why": "Box 7 by 7 = 49. Corner triangles: (1/2)(7)(2) = 7, (1/2)(4)(5) = 10, (1/2)(3)(7) = 10.5. 49 - 27.5 = 21.5.",
+    "trap": "Arithmetic slips in the box method. Let polygon() do it.",
+    "rule": "Shapes from coordinates: polygon() for area, distance() for lengths."
+  },
+  {
+    "id": "GEO-19",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Parallel segment: area of the trapezoid",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "In triangle ABC, point D is on AB and point E is on AC so that DE is parallel to BC. AD = 6 and DB = 4. The area of triangle ADE is 54. What is the area of the region DBCE (between DE and BC)?",
+    "answer": "96",
+    "hints": [
+      "Triangle ADE is similar to triangle ABC with scale 6/10.",
+      "Areas scale by the square: area ABC = 54 x (10/6)^2."
+    ],
+    "desmos": [
+      "54*(10/6)^2   (150)",
+      "150 - 54   (96)"
+    ],
+    "look_for": "The big triangle's area minus the small one's.",
+    "why": "Scale factor 10/6, area factor 100/36. 54 x 100/36 = 150. 150 - 54 = 96.",
+    "trap": "Using the linear scale (54 x 10/6 = 90) or using DB/AD = 4/6.",
+    "rule": "Similar figures: lengths scale by k, areas by k^2, volumes by k^3."
+  },
+  {
+    "id": "GEO-20",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Similar solids: area ratio to volume ratio",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Two cones are similar. The ratio of their surface areas is 9 to 16. The smaller cone has a volume of 54 cubic inches. What is the volume of the larger cone, in cubic inches?",
+    "answer": "128",
+    "hints": [
+      "Surface area ratio = k^2, so k = sqrt(16/9) = 4/3.",
+      "Volume ratio = k^3."
+    ],
+    "desmos": [
+      "k = sqrt(16/9)",
+      "54k^3   (128)"
+    ],
+    "look_for": "k first, then cube it.",
+    "why": "k = 4/3. Volume = 54 x 64/27 = 128.",
+    "trap": "Multiplying by 16/9 (giving 96).",
+    "rule": "Area ratio -> square root -> length ratio -> cube for volume."
+  },
+  {
+    "id": "GEO-21",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Scaled cylinder volume",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The radius of a cylinder is increased by 50% and its height is decreased by 20%. By what percent does the volume increase?",
+    "answer": "80",
+    "hints": [
+      "Use any starting cylinder, like radius 1 and height 1, so the volume is pi.",
+      "New volume = pi(1.5)^2(0.8)."
+    ],
+    "desmos": [
+      "V(a, h) = pi a^2 h   (use a for the radius; r is reserved in Desmos)",
+      "V(1.5, 0.8)/V(1, 1)   (1.8)",
+      "1.8 - 1 = 0.8 -> 80%"
+    ],
+    "look_for": "The volume factor 1.8.",
+    "why": "Factor = 1.5^2 x 0.8 = 2.25 x 0.8 = 1.8, an 80% increase.",
+    "trap": "Adding percents (50 - 20 = 30) or not squaring the radius factor (1.5 x 0.8 = 1.2, 20%).",
+    "rule": "Scale factors multiply, and a factor on the radius gets squared."
+  },
+  {
+    "id": "GEO-22",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Square pyramid height from surface areas",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A right pyramid has a square base. Its total surface area is 384 square meters and its lateral surface area (the four triangles only) is 240 square meters. What is the height of the pyramid, in meters?",
+    "answer": "8",
+    "hints": [
+      "Base area = total - lateral, so the base side is its square root.",
+      "Each triangle has area 60 = (1/2)(side)(slant height). Then height^2 + (side/2)^2 = slant^2."
+    ],
+    "desmos": [
+      "s = sqrt(384 - 240)   (12)",
+      "240/4 ~ (1/2)s*l_1   (l_1 = 10)",
+      "sqrt(l_1^2 - (s/2)^2)   (8)"
+    ],
+    "look_for": "Slant height first, then the true height.",
+    "why": "Base 144, side 12. Slant height 60/(6) = 10. Height = sqrt(100 - 36) = 8.",
+    "trap": "Reporting the slant height 10 as the height, or using the full side 12 instead of half.",
+    "rule": "Pyramids: the slant height lives on a face; the height drops through the inside. Connect them with half the base side."
+  },
+  {
+    "id": "GEO-23",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Slope of a tangent line to a circle",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A circle has center (1, 2) and passes through the point (4, 6). What is the slope of the line tangent to the circle at (4, 6)?",
+    "answer": "-0.75",
+    "hints": [
+      "The radius to (4, 6) has slope (6 - 2)/(4 - 1).",
+      "A tangent is perpendicular to the radius: negative reciprocal."
+    ],
+    "desmos": [
+      "(x - 1)^2 + (y - 2)^2 = 25",
+      "y - 6 = m(x - 4)   (slider m)",
+      "Slide m until the line only touches the circle: m = -0.75"
+    ],
+    "look_for": "The line that touches the circle at exactly one point.",
+    "why": "Radius slope 4/3, so tangent slope -3/4.",
+    "trap": "Answering 4/3 (the radius slope) or 3/4 (forgetting the sign).",
+    "rule": "Tangent to a circle is perpendicular to the radius at the touch point."
+  },
+  {
+    "id": "GEO-24",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Which point is not inside a circle",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "The circle (x - 2)^2 + (y + 1)^2 = 25 is graphed in the xy-plane. Which point does NOT lie in the interior of the circle?",
+    "choices": {
+      "A": "(5, 2)",
+      "B": "(-1, -4)",
+      "C": "(6, 2)",
+      "D": "(0, 3)"
+    },
+    "answer": "C",
+    "hints": [
+      "Plot the circle and the four points.",
+      "A point exactly on the circle is not in the interior. Check with (x - 2)^2 + (y + 1)^2 for each point."
+    ],
+    "desmos": [
+      "(x - 2)^2 + (y + 1)^2 = 25",
+      "(5, 2), (-1, -4), (6, 2), (0, 3)",
+      "Values: 18, 18, 25, 20. Only (6, 2) reaches 25."
+    ],
+    "look_for": "The point sitting on the curve, not inside it.",
+    "why": "(6 - 2)^2 + (2 + 1)^2 = 16 + 9 = 25, so (6, 2) is on the circle. The others give less than 25.",
+    "trap": "Thinking a point on the circle counts as inside.",
+    "rule": "Inside: value < r^2. On: = r^2. Outside: > r^2."
+  },
+  {
+    "id": "GEO-25",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Circle constant from a given radius",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The graph of x^2 + y^2 - 8x + 2y = k in the xy-plane is a circle with radius 5. What is the value of k?",
+    "answer": "8",
+    "hints": [
+      "Type it with a slider for k (widen the slider range).",
+      "Click the top and bottom of the circle and slide k until distance(a, b)/2 = 5."
+    ],
+    "desmos": [
+      "x^2 + y^2 - 8x + 2y = k   (slider k from -20 to 40)",
+      "Slide until the circle is 10 units tall: k = 8"
+    ],
+    "look_for": "A circle exactly 10 units across.",
+    "why": "(x - 4)^2 + (y + 1)^2 = k + 16 + 1 = 25, so k = 8.",
+    "trap": "Answering 25 (that is r^2, after completing the square).",
+    "rule": "Completing the square adds the same numbers to the right side; let a slider find k if unsure."
+  },
+  {
+    "id": "GEO-26",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Similar right triangles with a tangent ratio",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "Right triangles ABC and DEF are similar, with right angles at C and F, and A corresponds to D. If tan A = 8/15 and DE = 51, what is the length of EF?",
+    "answer": "24",
+    "hints": [
+      "tan A = 8/15 means legs 8 and 15, so the hypotenuse is 17.",
+      "EF is opposite D (like BC is opposite A). Scale by 51/17."
+    ],
+    "desmos": [
+      "sqrt(8^2 + 15^2)   (17)",
+      "8*(51/17)   (24)"
+    ],
+    "look_for": "The side opposite the matching angle, times the scale.",
+    "why": "sin D = sin A = 8/17. EF = 51 x 8/17 = 24.",
+    "trap": "Using the adjacent side (45) or the wrong triangle's labels.",
+    "rule": "Similar triangles share trig ratios; match vertices in order first."
+  },
+  {
+    "id": "GEO-27",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Unknown coordinate on a circle",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The point (6, k), where k > 0, lies on the circle x^2 + y^2 = 85. What is the value of k?",
+    "answer": "7",
+    "hints": [
+      "Fit distance((6, k), (0, 0)) ~ sqrt(85).",
+      "Or graph the circle and x = 6 and click the top crossing."
+    ],
+    "desmos": [
+      "x^2 + y^2 = 85",
+      "x = 6",
+      "Top intersection: (6, 7)"
+    ],
+    "look_for": "The crossing with positive y.",
+    "why": "36 + k^2 = 85 gives k^2 = 49, k = 7.",
+    "trap": "Answering -7 or sqrt(85).",
+    "rule": "Points on a circle: plug the known coordinate in, or intersect with a vertical line."
+  },
+  {
+    "id": "PSD-24",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Best-fit slope over a multi-unit change",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A tutor recorded hours of practice x and test score y for four students: (2, 51), (5, 58.5), (9, 68.5), (12, 76). A line of best fit models the data. According to the line, by how many points does the predicted score increase for every 6 additional hours of practice?",
+    "answer": "15",
+    "hints": [
+      "Put the points in a table and regress y_1 ~ m x_1 + b.",
+      "The slope is the change for 1 hour. The question asks about 6 hours."
+    ],
+    "desmos": [
+      "Table: x_1 = 2, 5, 9, 12 and y_1 = 51, 58.5, 68.5, 76",
+      "y_1 ~ m x_1 + b   (m = 2.5, b = 46)",
+      "6m   (15)"
+    ],
+    "look_for": "The slope, then multiplied by 6.",
+    "why": "The points lie on y = 2.5x + 46. Each hour adds 2.5 points, so 6 hours add 15.",
+    "trap": "Answering 2.5 (the per-hour slope) or 61 (the predicted score at x = 6).",
+    "rule": "Slope is per ONE unit of x. For a block of k units, multiply by k."
+  },
+  {
+    "id": "PSD-25",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Sampling bias: voluntary response",
+    "difficulty": "hard",
+    "type": "mcq",
+    "question": "A radio station asked listeners to call in and say whether they support a new city stadium. Of the 2,400 people who called, 81% said yes. Which statement best explains why the result should not be used to estimate support among all adults in the city?",
+    "choices": {
+      "A": "The sample of 2,400 is too small for a city.",
+      "B": "The callers chose themselves, so they were not a random sample of the city's adults.",
+      "C": "The station did not allow enough time for people to call.",
+      "D": "81% is too high to be a reliable estimate."
+    },
+    "answer": "B",
+    "hints": [
+      "Ask how the people in the sample were chosen.",
+      "Size can't fix a sample that was not random."
+    ],
+    "desmos": [
+      "(No graph needed.) Check: was the sample chosen at random from the group you want to describe?"
+    ],
+    "look_for": "The choice about how the sample was selected.",
+    "why": "People who call in pick themselves and tend to feel strongly; that is voluntary-response bias. A bigger sample of the same kind is still biased.",
+    "trap": "A: blaming the sample size. 2,400 is plenty if it were random.",
+    "rule": "Generalize only from a random sample, and only to the group it was drawn from."
+  },
+  {
+    "id": "PSD-26",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Ratio mixing as a multiple",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A paint color is mixed using blue and yellow paint in the ratio 3 to 5. A first batch uses 12 cups of blue paint. A second batch, mixed in the same ratio, uses 35 cups of yellow paint. The amount of blue paint in the second batch is how many times the amount of blue paint in the first batch?",
+    "answer": "1.75",
+    "hints": [
+      "Find the blue in batch 2 from 3/5 = blue/35.",
+      "Then divide by the 12 cups of batch 1."
+    ],
+    "desmos": [
+      "3/5 ~ b_2/35   (b_2 = 21)",
+      "21/12   (1.75)"
+    ],
+    "look_for": "Blue in batch 2, compared with 12.",
+    "why": "Blue = 35 x 3/5 = 21. 21/12 = 1.75.",
+    "trap": "Comparing yellow amounts (35/20), or putting yellow on top on one side and blue on the other.",
+    "rule": "Proportions: keep the same item on top on both sides, then answer the comparison they asked for."
+  },
+  {
+    "id": "PSD-27",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Compare yearly gains, not balances",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Account A starts with $4,000 and earns 6% interest compounded once a year. Account B starts with $5,000 and gains exactly $250 each year. In which year (1st, 2nd, 3rd, ...) does account A first gain more money during that year than account B gains? Give the year number.",
+    "answer": "2",
+    "hints": [
+      "A's gain in year n is 4000(1.06)^(n - 1) x 0.06. B's gain is always 250.",
+      "Type the gains for n = 1, 2, 3 or graph the gain function against y = 250."
+    ],
+    "desmos": [
+      "G(x) = 4000(1.06)^(x - 1)*0.06",
+      "y = 250",
+      "G(1) = 240, G(2) = 254.4"
+    ],
+    "look_for": "The first whole year where G is above 250.",
+    "why": "Year 1 A gains 240 < 250. Year 2 A gains 254.40 > 250. (A's balance is still smaller than B's, which is a different question.)",
+    "trap": "Comparing balances instead of yearly gains, which gives a much later year.",
+    "rule": "Read whether the question compares totals or amounts gained per period."
+  },
+  {
+    "id": "GEO-28",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Rectangle from diagonal and side difference",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The diagonal of a rectangle is 29 inches long. One side of the rectangle is 1 inch longer than the other. What is the length of the longer side, in inches?",
+    "answer": "21",
+    "hints": [
+      "Call the short side x; the long side is x + 1.",
+      "Fit x_1^2 + (x_1 + 1)^2 ~ 29^2 or graph both sides and take the positive crossing."
+    ],
+    "desmos": [
+      "y = x^2 + (x + 1)^2",
+      "y = 841",
+      "Positive intersection: x = 20",
+      "Longer side = 20 + 1 = 21"
+    ],
+    "look_for": "The positive intersection, then add 1.",
+    "why": "x^2 + (x + 1)^2 = 841 gives 2x^2 + 2x - 840 = 0, x^2 + x - 420 = 0, (x - 20)(x + 21) = 0. Sides 20 and 21.",
+    "trap": "Answering 20, the shorter side.",
+    "rule": "Set the unknown as the short side, solve, then re-read which side is asked."
+  },
+  {
+    "id": "GEO-29",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Midline of a triangle (which must be true)",
+    "difficulty": "very hard",
+    "type": "mcq",
+    "question": "In triangle ABC, D is the midpoint of AB. Point E lies on AC so that DE is parallel to BC, and point F lies on BC so that EF is parallel to AB. If BC = 18, which of the following must be true?\n  I. DE = 9\n  II. AE = EC\n  III. BF = 9",
+    "choices": {
+      "A": "I only",
+      "B": "I and II only",
+      "C": "II and III only",
+      "D": "I, II, and III"
+    },
+    "answer": "D",
+    "hints": [
+      "A segment from a midpoint, parallel to a side, lands on the midpoint of the third side and is half that side.",
+      "Use it twice: once for DE (from D) and once for EF (from E)."
+    ],
+    "desmos": [
+      "Build an example: A = (0, 8), B = (-6, 0), C = (12, 0) (BC = 18)",
+      "D = midpoint(A, B), E = midpoint(A, C)",
+      "distance(D, E)   (9)",
+      "F = midpoint(B, C); check slope of EF equals slope of AB",
+      "distance(B, F)   (9)"
+    ],
+    "look_for": "All three statements hold in the example; move A around and they still hold.",
+    "why": "DE is parallel to BC from the midpoint of AB, so E is the midpoint of AC (II) and DE = 18/2 = 9 (I). EF is parallel to AB from the midpoint E of AC, so F is the midpoint of BC and BF = 9 (III).",
+    "trap": "Eyeballing the figure or assuming only the first statement follows. Test each statement on its own.",
+    "rule": "Parallel + midpoint means midpoint + half length. Build an example in Desmos with midpoint() and move the points."
+  },
+  {
+    "id": "GEO-30",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Shape made of equilateral triangles",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A logo is a large equilateral triangle with perimeter 48 cm. Segments joining the midpoints of its sides divide it into 4 congruent equilateral triangles, and the 3 corner triangles are shaded. The total shaded area is k*sqrt(3) square centimeters. What is the value of k?",
+    "answer": "48",
+    "hints": [
+      "Large side = 48/3 = 16, so each small triangle has side 8.",
+      "Area of an equilateral triangle with side s is (sqrt(3)/4)s^2."
+    ],
+    "desmos": [
+      "s = 48/3/2   (8)",
+      "3*(1/4)s^2   (48, the coefficient of sqrt(3))"
+    ],
+    "look_for": "The coefficient in front of sqrt(3).",
+    "why": "Each small triangle has area (sqrt 3/4)(64) = 16 sqrt 3. Three of them: 48 sqrt 3.",
+    "trap": "Using side 16 for the small triangles, or shading all 4.",
+    "rule": "Equilateral: height = (s/2)sqrt(3), area = (sqrt(3)/4)s^2. Count only the shaded pieces."
+  },
+  {
+    "id": "GEO-31",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Sum of four of the eight angles at parallel lines",
+    "difficulty": "very hard",
+    "type": "mcq",
+    "question": "Two parallel lines are cut by a transversal, forming eight angles. One of the eight angles measures 52 degrees. Which of the following could NOT be the sum of the measures of four of the eight angles, in degrees?",
+    "choices": {
+      "A": "284",
+      "B": "360",
+      "C": "400",
+      "D": "512"
+    },
+    "answer": "C",
+    "hints": [
+      "The eight angles have only two sizes: 52 and 180 - 52 = 128, four of each.",
+      "A sum of four is j(52) + (4 - j)(128) for j = 0 to 4. List those five values."
+    ],
+    "desmos": [
+      "L = [0, 1, 2, 3, 4]",
+      "52L + 128(4 - L)   (shows [512, 436, 360, 284, 208])"
+    ],
+    "look_for": "Which choice is missing from the list of possible sums.",
+    "why": "The only possible sums are 512, 436, 360, 284 and 208. 400 is not one of them.",
+    "trap": "Assuming all eight angles are 52 degrees, or forgetting that sums can mix the two sizes.",
+    "rule": "Parallel lines cut by a transversal make only two angle sizes: an angle and its supplement."
+  },
+  {
+    "id": "GEO-32",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Tangent of the other acute angle",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "In right triangle ABC, angle C is the right angle and tan A = 7/24. Triangle DEF is similar to triangle ABC, with D, E, and F corresponding to A, B, and C. What is the value of tan E? (Round to three decimal places.)",
+    "answer": "3.429",
+    "hints": [
+      "E matches B, the other acute angle of triangle ABC.",
+      "The tangent of the other acute angle is the reciprocal: opposite and adjacent swap."
+    ],
+    "desmos": [
+      "tan A = 7/24 means legs 7 (opposite A) and 24 (adjacent to A).",
+      "tan B = 24/7   (3.4286)"
+    ],
+    "look_for": "The reciprocal of 7/24.",
+    "why": "Similar triangles share angles, so tan E = tan B = 24/7, about 3.429.",
+    "trap": "Answering 7/24 (that is tan D) or 7/25 (a sine).",
+    "rule": "The two acute angles of a right triangle have reciprocal tangents. Similar triangles share every trig ratio."
+  },
+  {
+    "id": "GEO-33",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Cube edge ratio to surface-area ratio",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The edge lengths of two cubes are in the ratio 2 to 5. The smaller cube has a surface area of 96 square inches. What is the surface area of the larger cube, in square inches?",
+    "answer": "600",
+    "hints": [
+      "Surface areas scale by the square of the edge ratio.",
+      "Or: smaller edge = sqrt(96/6) = 4, larger edge = 10, area = 6(10)^2."
+    ],
+    "desmos": [
+      "96*(5/2)^2   (600)",
+      "Check: s = sqrt(96/6) = 4, 4*(5/2) = 10, 6*10^2 = 600"
+    ],
+    "look_for": "The area factor (5/2)^2 = 6.25.",
+    "why": "Area factor 25/4. 96 x 25/4 = 600.",
+    "trap": "Multiplying by 5/2 (240) or by (5/2)^3 (1500).",
+    "rule": "Edges x k, areas x k^2, volumes x k^3."
+  },
+  {
+    "id": "GEO-34",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Scaled cylinder from a known volume",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A cylinder has a volume of 120*pi cubic meters. A second cylinder has 3 times the radius and 1/4 the height of the first. The volume of the second cylinder is k*pi cubic meters. What is the value of k?",
+    "answer": "270",
+    "hints": [
+      "Pick any radius for the first cylinder, find the height that gives 120*pi, then build the second one.",
+      "Or multiply 120 by 3^2 x 1/4."
+    ],
+    "desmos": [
+      "a = 2   (any radius)",
+      "a^2 h_1 ~ 120   (h_1 = 30, pi cancels)",
+      "(3a)^2 (h_1/4)   (270)",
+      "Change a to 5: the result is still 270."
+    ],
+    "look_for": "The same answer for two different starting radii.",
+    "why": "Volume factor = 3^2 x 1/4 = 9/4. 120 x 9/4 = 270.",
+    "trap": "Using 3 x 1/4 = 3/4 (forgetting to square the radius), giving 90.",
+    "rule": "When factors confuse you, plug real numbers and check with a second set."
+  },
+  {
+    "id": "GEO-35",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Parallel segment in a right triangle: leftover piece",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "Right triangle ABC has its right angle at C, AC = 12, and an area of 54. Point D is on AC and point E is on AB so that DE is parallel to BC and DE = 6. What is the length of DC?",
+    "answer": "4",
+    "hints": [
+      "Use the area to find BC: (1/2)(12)(BC) = 54.",
+      "Triangle ADE is similar to ABC: AD/AC = DE/BC. Then DC = AC - AD."
+    ],
+    "desmos": [
+      "(1/2)(12)b_1 ~ 54   (b_1 = 9)",
+      "a_1/12 ~ 6/9   (a_1 = 8)",
+      "12 - 8   (4)"
+    ],
+    "look_for": "AD from the ratio, then the leftover piece.",
+    "why": "BC = 9. AD = 12 x 6/9 = 8. DC = 12 - 8 = 4.",
+    "trap": "Answering 8 (that is AD).",
+    "rule": "Parallel-segment questions often want the leftover piece: subtract at the end."
+  },
+  {
+    "id": "ALG-17",
+    "domain": "Algebra",
+    "skill": "Percent chain solved as one list regression",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The number u is 120% of the number v, and v is 45% of the positive number w. If u is k% of w, what is the value of k?",
+    "answer": "54",
+    "hints": [
+      "Every fact is one equation. Put the left sides in one list and the right sides in another.",
+      "Type [u, v, k% of w] ~ [120% of v, 45% of w, u]. Desmos sets the free number w to 1, which is fine for a ratio."
+    ],
+    "desmos": [
+      "[u, v, k% of w] ~ [120% of v, 45% of w, u]",
+      "Regression panel: u = 0.54, v = 0.45, k = 54"
+    ],
+    "look_for": "k in the regression panel.",
+    "why": "u = 1.2(0.45w) = 0.54w, so u is 54% of w.",
+    "trap": "Adding the percents (165) or multiplying 120 by 45 without converting to decimals.",
+    "rule": "A chain of 'is __% of' facts: one list ~ one list, with Desmos's 'of' syntax. The unknown percent drops out of the regression."
+  },
+  {
+    "id": "ALG-18",
+    "domain": "Algebra",
+    "skill": "Answer in terms of one quantity: let the free unknown be 1",
+    "difficulty": "very hard",
+    "type": "mcq",
+    "question": "The speed of runner A is 250% of the speed of runner B, and the speed of runner B is 0.8% of the speed of car C. Which expression gives the sum of the speeds of runner A and car C in terms of B, the speed of runner B?",
+    "choices": {
+      "A": "2.58B",
+      "B": "27.5B",
+      "C": "127.5B",
+      "D": "1250B"
+    },
+    "answer": "C",
+    "hints": [
+      "Write each fact with 'of': A = 250% of B, B = 0.8% of C. The question wants A + C = kB.",
+      "Type [A, B, A + C] ~ [250% of B, 0.8% of C, kB] and read k."
+    ],
+    "desmos": [
+      "[A, B, A + C] ~ [250% of B, 0.8% of C, k B]",
+      "Regression panel: k = 127.5"
+    ],
+    "look_for": "k. The other numbers depend on the free speed Desmos picked; k does not.",
+    "why": "A = 2.5B and C = B/0.008 = 125B, so A + C = 127.5B.",
+    "trap": "Reading 0.8% as 0.8 (answer A) or multiplying instead of dividing to get C.",
+    "rule": "'In terms of X' means a ratio. Add 'kX' to the list and let Desmos find k."
+  },
+  {
+    "id": "GEO-36",
+    "domain": "Geometry and Trigonometry",
+    "skill": "Solid from a slant height: chain the definitions in one list",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "A right pyramid has a square base with edge 10 inches. The slant height of each triangular face (from the middle of a base edge to the top) is 13 inches. What is the volume of the pyramid, in cubic inches?",
+    "answer": "400",
+    "hints": [
+      "The height, half the base edge, and the slant height form a right triangle.",
+      "Type [s, l, h] ~ [10, 13, sqrt(l^2 - (s/2)^2)], then compute (1/3)s^2 h."
+    ],
+    "desmos": [
+      "[s, l, h] ~ [10, 13, sqrt(l^2 - (s/2)^2)]   (h = 12)",
+      "(1/3)s^2 h   (shows 400)"
+    ],
+    "look_for": "h from the regression, then the volume line.",
+    "why": "h = sqrt(13^2 - 5^2) = 12. V = (1/3)(100)(12) = 400.",
+    "trap": "Using the slant height 13 as the height (433.3), or the full edge 10 in the right triangle.",
+    "rule": "Solids: put every given length and every 'hidden' length into one list regression, then type the formula."
+  },
+  {
+    "id": "ADV-46",
+    "domain": "Advanced Math",
+    "skill": "Roots given in terms of a constant: list of roots",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The equation x^2 - 14x + c = 0, where c is a constant, has solutions k + 2√5 and k - 2√5, where k is a constant. What is the value of c?",
+    "answer": "29",
+    "hints": [
+      "Both solutions must make the equation true. Put them in a list.",
+      "Type x_1 = [k + 2sqrt(5), k - 2sqrt(5)] and x_1^2 - 14x_1 + c ~ 0."
+    ],
+    "desmos": [
+      "x_1 = [k + 2sqrt(5), k - 2sqrt(5)]",
+      "x_1^2 - 14x_1 + c ~ 0",
+      "Regression panel: k = 7, c = 29"
+    ],
+    "look_for": "c in the regression panel (RMSE 0 means both roots fit).",
+    "why": "The roots add to 14, so 2k = 14 and k = 7. Their product is 49 - 20 = 29 = c.",
+    "trap": "Taking c = 49 (forgetting the √5 part) or c = 20.",
+    "rule": "When the roots are written with an unknown, list them as x_1 and regress the equation ~ 0."
+  },
+  {
+    "id": "ADV-47",
+    "domain": "Advanced Math",
+    "skill": "Identity for all x: list of inputs",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "For all values of x, (2x + a)(x - 3) + b = 2x^2 + 4x - 1, where a and b are constants. What is the value of ab?",
+    "answer": "290",
+    "hints": [
+      "'For all x' means any x works. Give Desmos several x values at once.",
+      "Type x_1 = [1, 2, 3, 4, 5] and (2x_1 + a)(x_1 - 3) + b ~ 2x_1^2 + 4x_1 - 1."
+    ],
+    "desmos": [
+      "x_1 = [1, 2, 3, 4, 5]",
+      "(2x_1 + a)(x_1 - 3) + b ~ 2x_1^2 + 4x_1 - 1",
+      "Regression panel: a = 10, b = 29",
+      "ab   (shows 290)"
+    ],
+    "look_for": "a and b with RMSE 0, then their product.",
+    "why": "Expanding gives 2x^2 + (a - 6)x - 3a + b. So a - 6 = 4 and -3a + b = -1: a = 10, b = 29.",
+    "trap": "Matching only the x terms and forgetting the -3a inside the constant term.",
+    "rule": "An identity is a regression on a list of x values. Use 5 inputs so every unknown is pinned."
+  },
+  {
+    "id": "ADV-48",
+    "domain": "Advanced Math",
+    "skill": "Function on a list of inputs with a restriction",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "The function f is defined by f(x) = a·b^x, where a and b are positive constants. For a constant k, f(k) = 20 and f(k + 2) = 45. What is the value of f(k + 1)?",
+    "answer": "30",
+    "hints": [
+      "Feed f a list: f([k, k + 2]) ~ [20, 45]. Restrict a > 0 so Desmos keeps the positive branch.",
+      "Then type f(k + 1). There are more unknowns than facts, but f(k + 1) comes out the same for every fit."
+    ],
+    "desmos": [
+      "f(x) = a b^x {a > 0}",
+      "f([k, k + 2]) ~ [20, 45]",
+      "f(k + 1)   (shows 30)"
+    ],
+    "look_for": "f(k + 1) and b = 1.5. Change the starting values if Desmos does not converge; the answer stays 30.",
+    "why": "f(k + 2)/f(k) = b^2 = 45/20, so b = 1.5 and f(k + 1) = 20(1.5) = 30.",
+    "trap": "Averaging 20 and 45 (32.5): exponential growth multiplies, it does not add.",
+    "rule": "Several values of one function: f([inputs]) ~ [outputs]. Add {a > 0} when a sign is given."
+  },
+  {
+    "id": "ADV-49",
+    "domain": "Advanced Math",
+    "skill": "No real solutions: read the discriminant inequality",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The equation 3x^2 + bx + 12 = 0, where b is an integer, has no real solutions. What is the greatest possible value of b?",
+    "answer": "11",
+    "hints": [
+      "No real solutions means the discriminant is negative: b^2 - 4(3)(12) < 0.",
+      "Type it with x standing for b and read the shaded band."
+    ],
+    "desmos": [
+      "x^2 - 4(3)(12) < 0",
+      "The shading runs from x = -12 to x = 12, both dashed (not included).",
+      "Largest integer inside: 11"
+    ],
+    "look_for": "The right edge of the shaded band and whether it is dashed.",
+    "why": "b^2 < 144 gives -12 < b < 12. The greatest integer is 11.",
+    "trap": "Answering 12: the edge is dashed, so 12 gives exactly one solution.",
+    "rule": "Integer + inequality: graph the inequality with x as the unknown, then step inside the boundary."
+  },
+  {
+    "id": "ADV-50",
+    "domain": "Advanced Math",
+    "skill": "Percent change per step from an exponential",
+    "difficulty": "hard",
+    "type": "spr",
+    "question": "The function f is defined by f(x) = 50(1.21)^(x/2). For every increase of 1 in x, f(x) increases by p%. What is the value of p?",
+    "answer": "10",
+    "hints": [
+      "An increase of p% means multiply by (1 + p/100).",
+      "Type f(3) ~ (1 + p/100)f(2). Any two inputs 1 apart work."
+    ],
+    "desmos": [
+      "f(x) = 50(1.21)^(x/2)",
+      "f(3) ~ (1 + p/100)f(2)",
+      "Regression panel: p = 10"
+    ],
+    "look_for": "p in the regression panel.",
+    "why": "Each step of 1 multiplies by 1.21^(1/2) = 1.1, a 10% increase.",
+    "trap": "Answering 21: that is the increase for a step of 2.",
+    "rule": "Growth per step: compare two outputs one step apart with ~ and read p."
+  },
+  {
+    "id": "PSD-28",
+    "domain": "Problem-Solving and Data Analysis",
+    "skill": "Mean equals median: graph both",
+    "difficulty": "very hard",
+    "type": "spr",
+    "question": "A data set consists of the five numbers 4, 7, 9, 12, and x. The mean of the data set is equal to its median. What is the greatest possible value of x?",
+    "answer": "13",
+    "hints": [
+      "Let x be the graph variable and graph the mean and the median as two curves.",
+      "Type y = mean([4, 7, 9, 12, x]) and y = median([4, 7, 9, 12, x]) and click every intersection."
+    ],
+    "desmos": [
+      "y = mean([4, 7, 9, 12, x])",
+      "y = median([4, 7, 9, 12, x])",
+      "Intersections at x = 3, 8, and 13"
+    ],
+    "look_for": "All three intersections; the question asks for the largest.",
+    "why": "If x ≤ 7 the median is 7, so x = 3. If 7 ≤ x ≤ 9 the median is x, so x = 8. If x ≥ 9 the median is 9, so x = 13.",
+    "trap": "Assuming the median is always 9 and stopping at one case, or finding only x = 8.",
+    "rule": "When the unknown moves the median, graph mean and median as functions of x and read every crossing."
+  }
+]

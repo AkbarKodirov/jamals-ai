@@ -1,0 +1,98 @@
+{
+  "skill": "desmos-sat-coach",
+  "test_cases": [
+    {
+      "name": "linear_infinite",
+      "input": "Solve with Desmos: for what s does 2x + s = 2x + 4 have infinitely many solutions?",
+      "assertions": [
+        "names the infinitely-many-solutions pattern",
+        "graphs both sides with a slider on s",
+        "answers s = 4 (the lines coincide)"
+      ]
+    },
+    {
+      "name": "both_sides",
+      "input": "Use Desmos to solve x^2 = 3x + 4 and explain like a tutor",
+      "assertions": [
+        "graphs y = x^2 and y = 3x + 4",
+        "reports x = -1 and x = 4",
+        "includes a plug-back check",
+        "ends with a next-time rule"
+      ]
+    },
+    {
+      "name": "lesson_mode",
+      "input": "Teach me how to use a slider when an SAT question has a constant k",
+      "assertions": [
+        "gives ordered Desmos lines to type",
+        "says what to look for on the graph",
+        "offers one practice question from the bank with the answer hidden"
+      ]
+    },
+    {
+      "name": "predicted_question",
+      "input": "send me a predicted SAT question",
+      "assertions": [
+        "serves one bank question with its ID",
+        "does not reveal the answer, hints or Desmos steps",
+        "notes the questions are original SAT-style, not official",
+        "invites the user to answer or ask for a hint"
+      ]
+    },
+    {
+      "name": "hint_then_solve",
+      "input": "(after being served GEO-05) hint ... still stuck, solve it",
+      "assertions": [
+        "first reply gives Hint 1 only",
+        "solve reply uses a slider letter other than r",
+        "final answer is 5 and mentions the other value 1"
+      ]
+    },
+    {
+      "name": "extraneous",
+      "input": "Solve sqrt(2x + 11) = x - 2 with Desmos",
+      "assertions": [
+        "graphs both sides",
+        "answers 7",
+        "explains -1 is extraneous and Desmos does not show it"
+      ]
+    },
+    {
+      "name": "list_regression_geometry",
+      "input": "A cone has slant height 17 and height 15. Find its volume using Desmos.",
+      "assertions": [
+        "uses one [ ] ~ [ ] list regression that names the radius with a letter other than r",
+        "shows a Desmos screen with the regression parameters (radius 8)",
+        "answers 320\u03c0 \u2248 1005.31"
+      ]
+    },
+    {
+      "name": "desmos_picture",
+      "input": "Solve x^2 - 4x - 5 = 0 in Desmos and show me the Desmos screen as a picture",
+      "assertions": [
+        "builds the picture from this question (no stored images)",
+        "picture shows the expression list and the graph with (-1, 0) and (5, 0) labeled",
+        "uses the screen script, a Desmos embed page, or a text screen when neither is possible"
+      ]
+    },
+    {
+      "name": "no_fake_image",
+      "input": "(on Grok) Find the line through (6, 45) and (42, 21) with Desmos and generate a Desmos image of it",
+      "assertions": [
+        "does not use an image generator; explains in one line why",
+        "gives a real Desmos page, a script-drawn picture, or a text screen",
+        "shows m = -2/3 (-0.666667) and b = 49, with the points at (6, 45) and (42, 21)",
+        "adds no numbers or boxes that were not typed"
+      ]
+    },
+    {
+      "name": "picture_every_time",
+      "input": "(second question in the same chat) Solve: what is 40% of 120? ... then: generate image also",
+      "assertions": [
+        "includes the desmos_screen.py picture on the second solve without being asked",
+        "answers 'generate image' with the script picture again",
+        "never adds a hand-drawn or 'mock-up' Desmos screen or a Desmos logo"
+      ]
+    }
+  ]
+}

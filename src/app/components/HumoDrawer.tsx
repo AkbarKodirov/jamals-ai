@@ -4,6 +4,31 @@ import { Send, X } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
 import { askHumo, HumoOffline, type ChatMsg } from '../humo'
 import { RichText } from './RichText'
+import { DesmosScreen } from '../../desmos/DesmosScreen'
+import { PlanProposal } from './PlanProposal'
+
+/** Humo's text with its checked Desmos screens and plan proposals placed where Humo put them. */
+export function HumoReply({ msg }: { msg: ChatMsg }) {
+  const parts = msg.text.split(/(\[\[(?:desmos:\d+|plan)\]\])/g)
+  const used = new Set<number>()
+  return (
+    <>
+      {parts.map((part, i) => {
+        const d = part.match(/^\[\[desmos:(\d+)\]\]$/)
+        if (d) {
+          const sc = msg.desmos?.[Number(d[1])]
+          if (!sc) return null
+          used.add(Number(d[1]))
+          return <DesmosScreen key={i} screen={sc} />
+        }
+        if (part === '[[plan]]') return msg.plan ? <PlanProposal key={i} plan={msg.plan} /> : null
+        return part.trim() ? <RichText key={i} text={part.replace(/^\n+|\n+$/g, '')} /> : null
+      })}
+      {msg.desmos?.map((sc, i) => (used.has(i) ? null : <DesmosScreen key={`x${i}`} screen={sc} />))}
+      {msg.plan && !msg.text.includes('[[plan]]') && <PlanProposal plan={msg.plan} />}
+    </>
+  )
+}
 
 export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean }) {
   const end = useRef<HTMLDivElement>(null)
@@ -22,8 +47,8 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
           className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}
         >
           {m.role === 'humo' && <img src="/humo-mark.svg" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
-          <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'bg-pine text-cream' : 'border border-[#ece6da] bg-white text-pine'}`}>
-            {m.role === 'humo' ? <RichText text={m.text} /> : m.text}
+          <div className={`rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'max-w-[82%] bg-pine text-cream' : `border border-[#ece6da] bg-white text-pine ${m.desmos?.length || m.plan ? 'w-full max-w-[94%]' : 'max-w-[82%]'}`}`}>
+            {m.role === 'humo' ? <HumoReply msg={m} /> : m.text}
           </div>
         </motion.div>
       ))}
@@ -45,26 +70,37 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
   )
 }
 
-export function useHumoChat(greeting: string, context?: string) {
+export function useHumoChat(greeting: string, context?: string, opts: { initial?: ChatMsg[]; onChange?: (msgs: ChatMsg[]) => void } = {}) {
   const { token } = useAuth()
-  const [msgs, setMsgs] = useState<ChatMsg[]>([{ role: 'humo', text: greeting }])
+  const [msgs, setMsgsRaw] = useState<ChatMsg[]>(() => opts.initial ?? [{ role: 'humo', text: greeting }])
   const [busy, setBusy] = useState(false)
+  const onChange = useRef(opts.onChange)
+  onChange.current = opts.onChange
+  const setMsgs = (fn: (m: ChatMsg[]) => ChatMsg[]) =>
+    setMsgsRaw((m) => {
+      const next = fn(m)
+      queueMicrotask(() => onChange.current?.(next))
+      return next
+    })
   async function send(text: string) {
     const t = text.trim()
     if (!t || busy) return
-    const history = [...msgs, { role: 'user' as const, text: t }]
-    setMsgs(history)
+    const history = [...msgs, { role: 'user' as const, text: t, at: Date.now() }]
+    setMsgs(() => history)
     setBusy(true)
     try {
-      const reply = await askHumo(history, token, context)
-      setMsgs((m) => [...m, { role: 'humo', text: reply }])
+      const r = await askHumo(history, token, context)
+      setMsgs((m) => [...m, { role: 'humo', text: r.reply, desmos: r.desmos?.length ? r.desmos : undefined, plan: r.plan ?? undefined, at: Date.now() }])
     } catch (e) {
-      setMsgs((m) => [...m, { role: 'humo', text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message }])
+      setMsgs((m) => [...m, { role: 'humo', text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() }])
     } finally {
       setBusy(false)
     }
   }
-  return { msgs, busy, send }
+  function reset(next: ChatMsg[]) {
+    setMsgsRaw(next)
+  }
+  return { msgs, busy, send, reset }
 }
 
 /** Slide-over chat with Humo that already knows the test the student just took. */

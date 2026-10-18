@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { HumoDrawer } from './HumoDrawer'
 import { useStore } from '../store'
+import { studentContext } from '../humoContext'
 
 const PAGES: Record<string, { name: string; tips: string[] }> = {
   '/app': { name: 'their dashboard', tips: ['What should I do today?', 'How far am I from my target?', 'Make me a plan until my test'] },
-  '/app/plan': { name: 'their study plan', tips: ['Is this plan realistic?', 'I only have 1 hour a day', 'What if I miss a day?'] },
+  '/app/plan': { name: 'their study plan', tips: ['Make my weekends lighter', 'I only have 1 hour a day', 'Add more Math on Tuesday'] },
+  '/app/desmos': { name: 'the Desmos Lab', tips: ['Teach me list regression', 'How do sliders work?', 'Solve x^2 = 3x + 4 with Desmos'] },
   '/app/tests': { name: 'the practice tests list', tips: ['Which mode should I pick?', 'How do modules work?', 'How do I pace a module?'] },
   '/app/drills': { name: 'drills', tips: ['Which skill should I drill?', 'How many questions a day?'] },
   '/app/vocab': { name: 'vocabulary practice', tips: ['Quiz me on 5 hard words', 'How do I remember words faster?', 'Words-in-context strategy'] },
@@ -20,13 +22,7 @@ export function HumoFab() {
   const { pathname } = useLocation()
   const s = useStore()
   const page = PAGES[pathname] ?? { name: 'the Jamals AI app', tips: ['What should I study today?', 'Explain a hard SAT topic'] }
-  const last = s.attempts[s.attempts.length - 1]
-  const context = [
-    `The student is on ${page.name}.`,
-    `Goal: target ${s.profile.target}${s.profile.current ? `, current ${s.profile.current}` : ''}${s.profile.testDate ? `, SAT on ${s.profile.testDate}` : ', no test date set'}.`,
-    last ? `Last test: ${last.testName}, ${last.raw}/${last.total} (${last.scaled}).` : 'No tests yet.',
-    `${s.mistakes.filter((m) => !m.cleared).length} open mistakes; ${Object.values(s.vocab).filter((v) => v.reps >= 3).length} vocab words mastered.`,
-  ].join(' ')
+  const context = studentContext(s, page.name)
 
   return (
     <>

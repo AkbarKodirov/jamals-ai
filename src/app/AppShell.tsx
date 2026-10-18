@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
+import { Settings as SettingsIcon, Sigma, Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
 import { HumoFab } from './components/HumoFab'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/auth'
@@ -22,8 +22,11 @@ const ExamPapers = lazy(() => import('./pages/ExamPapers'))
 const Lessons = lazy(() => import('./pages/Lessons'))
 const Analytics = lazy(() => import('./pages/Analytics'))
 const ScoreCalculator = lazy(() => import('./pages/ScoreCalculator'))
+const DesmosLab = lazy(() => import('./pages/DesmosLab'))
+const SettingsPage = lazy(() => import('./pages/Settings'))
+const Onboarding = lazy(() => import('./Onboarding'))
 
-type Item = { to: string; label: string; icon: typeof Home; end?: boolean }
+type Item = { to: string; label: string; icon: typeof Home; end?: boolean; badge?: string }
 const GROUPS: { label: string | null; items: Item[] }[] = [
   {
     label: null,
@@ -38,6 +41,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
     items: [
       { to: '/app/tests', label: 'Practice tests', icon: ClipboardList },
       { to: '/app/papers', label: 'Exam papers', icon: FileText },
+      { to: '/app/desmos', label: 'Desmos Lab', icon: Sigma, badge: 'AI' },
       { to: '/app/drills', label: 'Drills', icon: Target },
       { to: '/app/practice', label: 'Question bank', icon: BookOpen },
       { to: '/app/vocab', label: 'Vocabulary', icon: BookMarked },
@@ -56,6 +60,10 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
       { to: '/app/results', label: 'My results', icon: Trophy },
       { to: '/app/calculator', label: 'Score calculator', icon: Calculator },
     ],
+  },
+  {
+    label: 'Account',
+    items: [{ to: '/app/settings', label: 'Settings', icon: SettingsIcon }],
   },
 ]
 const MOBILE = [
@@ -88,6 +96,20 @@ export default function AppShell() {
   const days = streak(s.activeDays)
   const [more, setMore] = useState(false)
 
+  // study reminder while the app is open (phone alerts come from the Google Calendar export)
+  useEffect(() => {
+    if (!s.settings.reminders || !('Notification' in window) || Notification.permission !== 'granted') return
+    const day = (new Date().getDay() + 6) % 7
+    if (!(s.profile.studyDays ?? [0, 1, 2, 3, 4, 5]).includes(day)) return
+    const [h, m] = (s.profile.studyTime ?? '18:00').split(':').map(Number)
+    const at = new Date()
+    at.setHours(h, m, 0, 0)
+    const ms = at.getTime() - Date.now()
+    if (ms < 0) return
+    const t = setTimeout(() => new Notification('Time to study with Humo', { body: `Today's plan: ${(s.plan?.days[day] ?? []).map((x) => x.title).slice(0, 3).join(' · ') || 'Daily 20 words'}`, icon: '/humo-mark.svg' }), ms)
+    return () => clearTimeout(t)
+  }, [s.settings.reminders, s.profile.studyDays, s.profile.studyTime, s.plan])
+
   // The test runner is full-screen, like the real exam app.
   if (/\/app\/tests\/[^/]+\/take/.test(pathname))
     return (
@@ -98,6 +120,13 @@ export default function AppShell() {
           </Routes>
         </Suspense>
       </div>
+    )
+
+  if (!s.onboarded)
+    return (
+      <Suspense fallback={<PageLoading />}>
+        <Onboarding />
+      </Suspense>
     )
 
   return (
@@ -116,7 +145,7 @@ export default function AppShell() {
             <div key={i}>
               {g.label && <p className="mb-1.5 px-3 text-[11px] font-semibold text-cream/35">{g.label}</p>}
               <div className="space-y-0.5">
-                {g.items.map(({ to, label, icon: Icon, end }) => (
+                {g.items.map(({ to, label, icon: Icon, end, badge }) => (
                   <NavLink
                     key={to}
                     to={to}
@@ -132,6 +161,7 @@ export default function AppShell() {
                         <Icon className="relative size-[18px]" />
                         <span className="relative">{label}</span>
                         {to === '/app/humo' && <img src="/humo-mark.svg" alt="" className="relative ml-auto size-5 rounded-md" />}
+                        {badge && <span className="relative ml-auto rounded-md bg-[#2d70b3] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">{badge}</span>}
                       </>
                     )}
                   </NavLink>
@@ -142,10 +172,13 @@ export default function AppShell() {
         </nav>
         <div className="mt-4 flex items-center gap-3 rounded-2xl bg-white/[0.06] p-2.5">
           <Avatar />
-          <div className="min-w-0 flex-1">
+          <Link to="/app/settings" className="min-w-0 flex-1">
             <p className="truncate text-[13px] font-medium">{user?.name}</p>
             <p className="truncate text-[11px] text-cream/40">{user?.email}</p>
-          </div>
+          </Link>
+          <Link to="/app/settings" aria-label="Settings" className="rounded-lg p-1.5 text-cream/45 hover:bg-white/[0.08] hover:text-cream">
+            <SettingsIcon className="size-4" />
+          </Link>
           <button
             aria-label="Log out"
             onClick={() => {
@@ -171,9 +204,9 @@ export default function AppShell() {
             <span title="Daily streak" className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-semibold ${days ? 'bg-orange-500 text-white' : 'bg-white text-moss ring-1 ring-[#e3dccf]'}`}>
               <Flame className={`size-4 ${days ? 'animate-flicker' : ''}`} /> {days}
             </span>
-            <span className="md:hidden">
+            <Link to="/app/settings" aria-label="Settings" className="md:hidden">
               <Avatar />
-            </span>
+            </Link>
           </div>
         </div>
       </header>
@@ -197,6 +230,8 @@ export default function AppShell() {
             <Route path="lessons" element={<Lessons />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="calculator" element={<ScoreCalculator />} />
+            <Route path="desmos" element={<DesmosLab />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
           </motion.div>

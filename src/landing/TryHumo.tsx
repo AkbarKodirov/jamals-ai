@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, X } from 'lucide-react'
+import { Check, Sparkles, X } from 'lucide-react'
+import { DesmosScreen } from '../desmos/DesmosScreen'
+import type { DesmosScreen as Screen } from '../../shared/desmos-render.js'
+import sample from './desmosSample.json'
+
+const SAMPLE = { ...(sample as unknown as Screen), title: 'Graph both sides · 3(x − 2) = 2x + 5' }
 
 type Choice = { label: string; value: string; correct?: boolean; humo: string[] }
 
@@ -74,6 +79,30 @@ function Typed({ lines }: { lines: string[] }) {
   )
 }
 
+/** After Humo's words: the same question solved on a Desmos screen (computed and checked, not drawn by hand). */
+function DesmosReveal() {
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 2300)
+    return () => clearTimeout(t)
+  }, [])
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div initial={{ opacity: 0, y: 14, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className="mt-5">
+          <div className="mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-white/60">
+            <span className="font-semibold text-sky-200">Solved with Desmos</span>
+            <span className="font-mono text-white/70">1 │ y = 3(x − 2)</span>
+            <span className="font-mono text-white/70">2 │ y = 2x + 5</span>
+            <span>→ click the intersection: <b className="text-white">x = 11</b></span>
+          </div>
+          <DesmosScreen screen={SAMPLE} compact />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 export function TryHumo() {
   const [picked, setPicked] = useState<Choice | null>(null)
 
@@ -81,10 +110,27 @@ export function TryHumo() {
     <section id="try" className="scroll-mt-20 border-t border-white/[0.07] py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <div className="lg:pt-6">
-          <h2 className="display text-[clamp(2.1rem,4.4vw,3.5rem)]">Pick an answer. Humo tells you why.</h2>
+          <motion.p initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center gap-2 rounded-full border border-[#2d70b3]/40 bg-[#2d70b3]/15 px-3.5 py-1.5 text-[12.5px] font-semibold text-sky-200">
+            <span className="grid size-5 place-items-center rounded-md bg-[#2d70b3] text-[10px] font-bold text-white">D</span> The only Desmos AI tutor in Uzbekistan
+          </motion.p>
+          <h2 className="display mt-5 text-[clamp(2.1rem,4.4vw,3.5rem)]">Pick an answer. Humo tells you why.</h2>
           <p className="mt-5 max-w-md text-[16px] leading-relaxed text-white/55">
-            Most prep sites show the right answer and move on. Humo finds the exact step where your thinking went off, then builds practice around it.
+            Most prep sites show the right answer and move on. Humo finds the exact step where your thinking went off — then solves it the Desmos way, on a real Desmos screen, the same calculator you get in Bluebook.
           </p>
+          <ul className="mt-7 space-y-3 text-[14px] text-white/70">
+            {[
+              ['Desmos solves', 'Humo types the lines into Desmos for you and every number on the screen is computed and checked.'],
+              ['132-question Desmos Lab', 'Hard, verified Math questions with a hint ladder and live Desmos.'],
+              ['Knows your plan', 'Ask Humo to change your study week and it rewrites it for you.'],
+            ].map(([t, b], i) => (
+              <motion.li key={t} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 + i * 0.08 }} className="flex gap-3">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-jg-400" />
+                <span>
+                  <span className="font-semibold text-white">{t}.</span> {b}
+                </span>
+              </motion.li>
+            ))}
+          </ul>
           <p className="mt-8 text-[13px] text-white/40">Try a wrong answer on purpose — that's where Humo is most useful.</p>
         </div>
 
@@ -144,6 +190,7 @@ export function TryHumo() {
                       <Typed lines={picked.humo} />
                     </div>
                   </div>
+                  <DesmosReveal key={`d-${picked.value}`} />
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <button onClick={() => setPicked(null)} className="text-[13px] text-white/50 hover:text-white">
                       Try another answer

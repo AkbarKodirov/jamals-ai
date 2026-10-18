@@ -1,12 +1,45 @@
 import { useEffect, useState } from 'react'
 import { RotateCw } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
-import { explain, HumoOffline } from '../humo'
+import { desmosSolve, explain, HumoOffline, questionPayload, type DesmosSolve } from '../humo'
+import { HumoReply } from './HumoDrawer'
 import type { TestQuestion } from '../store'
 import { RichText } from './RichText'
 
 /** Humo's explanation card — shown above each question in review, and after "Check answer" in practice mode. */
-export function HumoExplain({ testId, qKey, q, compact = false, onAsk }: { testId: string; qKey: string; q: TestQuestion; compact?: boolean; onAsk?: () => void }) {
+/** Humo's Desmos walkthrough with a checked Desmos screen for a math question. */
+export function DesmosSolvePanel({ id, q }: { id: string; q: TestQuestion }) {
+  const { token } = useAuth()
+  const [st, setSt] = useState<{ data?: DesmosSolve; error?: string; busy?: boolean }>({})
+  async function go() {
+    setSt({ busy: true })
+    try {
+      setSt({ data: await desmosSolve({ id: `desmos:${id}`, ...questionPayload(q, null) }, token) })
+    } catch (e) {
+      setSt({ error: (e as Error).message })
+    }
+  }
+  if (st.data)
+    return (
+      <div className="mt-3 rounded-2xl border border-[#2d70b3]/20 bg-white p-4 text-[14px] leading-relaxed text-pine">
+        <p className="mb-2 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wide text-[#2d70b3]">
+          <span className="grid size-5 place-items-center rounded-md bg-[#2d70b3] text-[10px] font-bold text-white">D</span> Solved with Desmos
+        </p>
+        <HumoReply msg={{ role: 'humo', text: st.data.text, desmos: st.data.desmos }} />
+      </div>
+    )
+  return (
+    <div className="mt-3">
+      <button onClick={go} disabled={st.busy} className="inline-flex items-center gap-2 rounded-full bg-[#2d70b3] px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:bg-[#245d96] disabled:opacity-70">
+        {st.busy ? <span className="size-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <span className="grid size-4 place-items-center rounded bg-white text-[9px] font-bold text-[#2d70b3]">D</span>}
+        {st.busy ? 'Humo is solving it in Desmos…' : 'Solve it with Desmos'}
+      </button>
+      {st.error && <p className="mt-2 text-[12.5px] text-moss">{st.error}</p>}
+    </div>
+  )
+}
+
+export function HumoExplain({ testId, qKey, q, compact = false, onAsk, math = false }: { testId: string; qKey: string; q: TestQuestion; compact?: boolean; onAsk?: () => void; math?: boolean }) {
   const { token } = useAuth()
   const [state, setState] = useState<{ text?: string; error?: string; offline?: boolean }>({})
   const [n, setN] = useState(0)
@@ -55,6 +88,7 @@ export function HumoExplain({ testId, qKey, q, compact = false, onAsk }: { testI
             <div className="h-2.5 w-2/3 skeleton rounded-full" />
           </div>
         )}
+        {math && <DesmosSolvePanel id={`${testId}:${qKey}`} q={q} />}
       </div>
     </div>
   )

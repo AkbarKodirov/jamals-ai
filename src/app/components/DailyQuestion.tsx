@@ -32,7 +32,7 @@ export function DailyQuestion() {
     setValue(String(k))
     const ok = isCorrect(item!.q, String(k))
     setStore((x) => ({ ...x, planDone: { ...x.planDone, [`daily:${day}`]: true, [`daily:${day}:ok`]: ok }, practice: { solved: x.practice.solved + 1, correct: x.practice.correct + (ok ? 1 : 0) } }))
-    markActive(60)
+    markActive(60, 'daily')
   }
 
   return (

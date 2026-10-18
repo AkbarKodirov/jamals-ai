@@ -1,0 +1,12 @@
+{
+  "skill": "desmos-sat-coach",
+  "test_cases": [
+    {"input": "solve this SAT math question in Desmos", "should_trigger": true},
+    {"input": "give me predicted SAT questions", "should_trigger": true},
+    {"input": "quiz me on hard SAT math", "should_trigger": true},
+    {"input": "how do I slider a constant for infinite solutions", "should_trigger": true},
+    {"input": "teach me regression in desmos", "should_trigger": true},
+    {"input": "write a python web scraper", "should_trigger": false},
+    {"input": "help me with my SAT reading passage", "should_trigger": false}
+  ]
+}

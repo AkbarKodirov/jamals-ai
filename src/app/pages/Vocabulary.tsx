@@ -92,7 +92,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
     setPicked(null)
     setTyped('')
     setI((x) => x + 1)
-    if (i + 1 >= items.length) markActive(items.length * 12)
+    if (i + 1 >= items.length) markActive(items.length * 12, 'vocab')
   }
 
   if (done)
@@ -217,7 +217,7 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
     setFlip(false)
     setDoneN((n) => n + 1)
     setQueue((q) => (r === 0 ? [...q.slice(1), q[0]] : q.slice(1)))
-    if (queue.length === 1 && r !== 0) markActive(words.length * 8)
+    if (queue.length === 1 && r !== 0) markActive(words.length * 8, 'vocab')
   }
 
   if (!card)

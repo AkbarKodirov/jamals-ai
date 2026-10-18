@@ -21,7 +21,7 @@ export default function Drills() {
   const s = useStore()
   const [params] = useSearchParams()
   const initialSkill = (SKILLS as readonly string[]).includes(params.get('skill') ?? '') ? (params.get('skill') as Skill) : null
-  const [subject, setSubject] = useState<'EBRW' | 'MATH'>(initialSkill && SKILLS.indexOf(initialSkill) >= 8 ? 'MATH' : 'EBRW')
+  const [subject, setSubject] = useState<'EBRW' | 'MATH'>(initialSkill ? (SKILLS.indexOf(initialSkill) >= 8 ? 'MATH' : 'EBRW') : params.get('subject') === 'MATH' ? 'MATH' : 'EBRW')
   const [skill, setSkill] = useState<Skill | null>(initialSkill)
   const [n, setN] = useState(10)
   const [items, setItems] = useState<Item[] | null>(null)
@@ -53,7 +53,7 @@ export default function Drills() {
     if (i + 1 >= items.length) {
       const secs = Math.round((Date.now() - started.current) / 1000)
       setStore((x) => ({ ...x, drills: [...x.drills, { at: Date.now(), subject, n: items.length, correct: right, seconds: secs }], practice: { solved: x.practice.solved + items.length, correct: x.practice.correct + right } }))
-      markActive(secs)
+      markActive(secs, 'drill', subject)
       setI(items.length)
       return
     }
@@ -207,7 +207,7 @@ export default function Drills() {
           ) : (
             <div className="space-y-4">
               <p className={`text-[14px] font-semibold ${ok ? 'text-emerald-600' : 'text-red-600'}`}>{ok ? 'Correct!' : it.q.format === 'sa' ? `Not quite — the answer is ${it.q.answer}.` : 'Not quite.'}</p>
-              <HumoExplain testId={it.testId} qKey={it.key} q={it.q} compact />
+              <HumoExplain testId={it.testId} qKey={it.key} q={it.q} compact math={subject === 'MATH'} />
               <button onClick={next} className="btn btn-dark h-10 px-5 text-[14px]">
                 {i + 1 < items.length ? 'Next question' : 'Finish drill'}
               </button>

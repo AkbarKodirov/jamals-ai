@@ -1,0 +1,330 @@
+import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Bell, CalendarPlus, Check, Download, Languages, LogOut, RotateCcw, Sigma, Trash2, Upload, UserRound } from 'lucide-react'
+import { useAuth } from '../../lib/auth'
+import { getStore, resetStore, setStore, useStore, type Settings as SettingsT, type Profile } from '../store'
+import { DAY_NAMES, downloadIcs, generatePlan } from '../plan'
+import { Avatar } from '../AppShell'
+
+function Section({ icon: Icon, title, sub, children }: { icon: typeof Bell; title: string; sub?: string; children: React.ReactNode }) {
+  return (
+    <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} className="card p-6">
+      <div className="flex items-start gap-3">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-cream text-pine">
+          <Icon className="size-5" />
+        </span>
+        <div>
+          <h2 className="text-[16px] font-semibold">{title}</h2>
+          {sub && <p className="text-[12.5px] text-moss">{sub}</p>}
+        </div>
+      </div>
+      <div className="mt-5">{children}</div>
+    </motion.section>
+  )
+}
+
+function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boolean) => void; label: string; sub?: string }) {
+  return (
+    <button onClick={() => onChange(!on)} className="flex w-full items-center gap-4 rounded-xl py-2 text-left">
+      <span className="flex-1">
+        <span className="block text-[14px] font-medium">{label}</span>
+        {sub && <span className="block text-[12px] text-moss">{sub}</span>}
+      </span>
+      <span className={`relative h-6 w-11 rounded-full transition-colors ${on ? 'bg-jg-500' : 'bg-[#ddd5c5]'}`}>
+        <motion.span layout transition={{ type: 'spring', stiffness: 600, damping: 32 }} className={`absolute top-0.5 size-5 rounded-full bg-white shadow ${on ? 'right-0.5' : 'left-0.5'}`} />
+      </span>
+    </button>
+  )
+}
+
+function Seg<T extends string>({ value, options, onChange }: { value: T; options: [T, string][]; onChange: (v: T) => void }) {
+  return (
+    <div className="inline-flex rounded-xl bg-cream p-1">
+      {options.map(([v, l]) => (
+        <button key={v} onClick={() => onChange(v)} className={`relative rounded-lg px-3.5 py-1.5 text-[13px] font-medium ${value === v ? 'text-pine' : 'text-moss'}`}>
+          {value === v && <motion.span layoutId={`seg-${options.map((o) => o[0]).join()}`} className="absolute inset-0 rounded-lg bg-white shadow-sm" />}
+          <span className="relative">{l}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export default function Settings() {
+  const { user, token, signOut } = useAuth()
+  const s = useStore()
+  const nav = useNavigate()
+  const file = useRef<HTMLInputElement>(null)
+  const [saved, setSaved] = useState(false)
+  const [danger, setDanger] = useState<null | 'reset' | 'delete'>(null)
+  const [typed, setTyped] = useState('')
+  const p = s.profile
+
+  const flash = () => {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 1400)
+  }
+  const prof = (x: Partial<Profile>) => {
+    setStore((st) => ({ ...st, profile: { ...st.profile, ...x } }))
+    flash()
+  }
+  const set = (x: Partial<SettingsT>) => {
+    setStore((st) => ({ ...st, settings: { ...st.settings, ...x } }))
+    flash()
+  }
+
+  function exportData() {
+    const blob = new Blob([JSON.stringify({ app: 'Jamals AI', exportedAt: new Date().toISOString(), user: { name: user?.name, email: user?.email }, progress: getStore() }, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `jamals-ai-progress-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+  }
+  async function importData(f: File) {
+    try {
+      const j = JSON.parse(await f.text())
+      const prog = j.progress ?? j
+      if (!Array.isArray(prog.attempts)) throw new Error()
+      setStore((st) => ({ ...st, ...prog }))
+      flash()
+    } catch {
+      alert('That file is not a Jamals AI progress export.')
+    }
+  }
+  async function deleteAccount() {
+    try {
+      await fetch('/api/me', { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+    } catch {
+      /* offline: local data is still removed */
+    }
+    resetStore()
+    try {
+      localStorage.removeItem(`jamals.progress.${user?.id}`)
+    } catch {
+      /* ignore */
+    }
+    signOut()
+    nav('/')
+  }
+
+  return (
+    <div className="mx-auto max-w-3xl">
+      <div className="flex items-end justify-between">
+        <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Settings</h1>
+        <AnimatePresence>
+          {saved && (
+            <motion.span initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="inline-flex items-center gap-1.5 rounded-full bg-jg-50 px-3 py-1 text-[12.5px] font-medium text-jg-700">
+              <Check className="size-3.5" /> Saved
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        <Section icon={UserRound} title="Profile" sub="From your Google account">
+          <div className="flex items-center gap-4">
+            <Avatar size="size-16" />
+            <div>
+              <p className="text-[17px] font-semibold">{user?.name}</p>
+              <p className="text-[13px] text-moss">{user?.email}</p>
+              <p className="mt-1 text-[12px] text-moss">Signed in with {user?.provider === 'google' ? 'Google' : 'email'}</p>
+            </div>
+          </div>
+        </Section>
+
+        <Section icon={Check} title="SAT goal" sub="Humo plans and predicts against these">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="block">
+              <span className="flex justify-between text-[13px] text-moss">
+                Target score <span className="font-serif text-[22px] text-pine">{p.target}</span>
+              </span>
+              <input type="range" min={900} max={1600} step={10} value={p.target} onChange={(e) => prof({ target: Number(e.target.value) })} className="mt-2 w-full accent-[#48ae4f]" />
+            </label>
+            <label className="block">
+              <span className="text-[13px] text-moss">Test date</span>
+              <input type="date" value={p.testDate ?? ''} onChange={(e) => prof({ testDate: e.target.value || null })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none" />
+            </label>
+            <label className="block">
+              <span className="text-[13px] text-moss">Current / latest total score</span>
+              <input type="number" min={400} max={1600} step={10} value={p.current ?? ''} placeholder="Not set" onChange={(e) => prof({ current: e.target.value ? Number(e.target.value) : null })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none" />
+            </label>
+            <label className="block">
+              <span className="text-[13px] text-moss">Aim</span>
+              <select value={p.aim ?? ''} onChange={(e) => prof({ aim: e.target.value })} className="mt-1.5 w-full rounded-xl border border-[#e3dccf] bg-white px-3 py-2.5 text-[14px] focus:border-jg-500 focus:outline-none">
+                <option value="">Not set</option>
+                {['Top US university', 'Scholarship abroad', 'University in Uzbekistan', 'Just exploring'].map((a) => (
+                  <option key={a}>{a}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </Section>
+
+        <Section icon={CalendarPlus} title="Study schedule & Google Calendar" sub="Used for your plan, reminders and calendar events">
+          <p className="text-[13px] text-moss">Study days</p>
+          <div className="mt-2 grid grid-cols-7 gap-1.5">
+            {DAY_NAMES.map((d, i) => {
+              const on = (p.studyDays ?? [0, 1, 2, 3, 4, 5]).includes(i)
+              return (
+                <button key={d} onClick={() => prof({ studyDays: on ? (p.studyDays ?? [0, 1, 2, 3, 4, 5]).filter((x) => x !== i) : [...(p.studyDays ?? []), i].sort() })} className={`rounded-xl py-2 text-[12.5px] font-semibold ${on ? 'bg-pine text-cream' : 'bg-cream text-moss'}`}>
+                  {d.slice(0, 3)}
+                </button>
+              )
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <Seg value={String(p.minutesPerDay ?? 60)} options={['30', '45', '60', '90', '120'].map((m) => [m, `${m}m`])} onChange={(v) => prof({ minutesPerDay: Number(v) })} />
+            <label className="flex items-center gap-2 text-[13px] text-moss">
+              Start at
+              <input type="time" value={p.studyTime ?? '18:00'} onChange={(e) => prof({ studyTime: e.target.value })} className="rounded-lg border border-[#e3dccf] bg-white px-2 py-1.5 text-[14px] text-pine" />
+            </label>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                setStore((st) => ({ ...st, plan: generatePlan(st.profile, st.weakSkills) }))
+                flash()
+              }}
+              className="btn btn-ghost h-10 px-4 text-[13px]"
+            >
+              <RotateCcw className="size-4" /> Rebuild plan from this schedule
+            </button>
+            <button onClick={() => downloadIcs(s.plan ?? generatePlan(p, s.weakSkills), p)} className="btn btn-dark h-10 px-4 text-[13px]">
+              <Download className="size-4" /> Add plan to Google Calendar (.ics)
+            </button>
+          </div>
+          <p className="mt-2 text-[11.5px] text-moss">In Google Calendar: Settings → Import & export → Import the file. Works with Apple Calendar and Outlook too. No access to your Google account is needed.</p>
+        </Section>
+
+        <Section icon={Languages} title="Humo" sub="How your tutor talks to you">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="text-[14px] font-medium">Reply language</span>
+              <Seg
+                value={s.settings.language}
+                options={[
+                  ['en', 'English'],
+                  ['uz', "O'zbekcha"],
+                  ['ru', 'Русский'],
+                ]}
+                onChange={(v) => set({ language: v })}
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="text-[14px] font-medium">When I ask about a question</span>
+              <Seg
+                value={s.settings.humoStyle}
+                options={[
+                  ['hint', 'Hint first'],
+                  ['full', 'Full solution'],
+                ]}
+                onChange={(v) => set({ humoStyle: v })}
+              />
+            </div>
+            <Toggle on={s.settings.desmosFirst} onChange={(v) => set({ desmosFirst: v })} label="Desmos-first Math" sub="Humo solves math the Desmos way with a checked Desmos screen" />
+          </div>
+        </Section>
+
+        <Section icon={Bell} title="Goals & reminders">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-[14px] font-medium">Daily question goal</span>
+            <Seg value={String(s.settings.dailyGoal)} options={['10', '20', '40', '60'].map((n) => [n, n])} onChange={(v) => set({ dailyGoal: Number(v) })} />
+          </div>
+          <div className="mt-3 divide-y divide-[#efe9de]">
+            <Toggle
+              on={s.settings.reminders}
+              onChange={async (v) => {
+                if (v && 'Notification' in window && Notification.permission === 'default') await Notification.requestPermission()
+                set({ reminders: v })
+              }}
+              label="Study reminder"
+              sub={`A nudge at ${p.studyTime ?? '18:00'} on study days while Jamals AI is open. For phone alerts, add the plan to Google Calendar.`}
+            />
+            <Toggle on={s.settings.sounds} onChange={(v) => set({ sounds: v })} label="Sounds" sub="Soft sounds for correct answers and streaks" />
+          </div>
+        </Section>
+
+        <Section icon={Sigma} title="Your data" sub="Progress is saved on this device. Take it with you.">
+          <div className="flex flex-wrap gap-2">
+            <button onClick={exportData} className="btn btn-ghost h-10 px-4 text-[13px]">
+              <Download className="size-4" /> Export progress
+            </button>
+            <button onClick={() => file.current?.click()} className="btn btn-ghost h-10 px-4 text-[13px]">
+              <Upload className="size-4" /> Import progress
+            </button>
+            <input ref={file} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
+            <button
+              onClick={() => {
+                setStore((st) => ({ ...st, chats: [] }))
+                flash()
+              }}
+              className="btn btn-ghost h-10 px-4 text-[13px]"
+            >
+              Clear chat history ({s.chats.length})
+            </button>
+          </div>
+          <p className="mt-3 text-[12px] text-moss">
+            {s.attempts.length} tests · {s.drills.length} drills · {Object.keys(s.vocab).length} words studied · {s.chats.length} Humo chats
+          </p>
+        </Section>
+
+        <section className="card border-red-200 p-6">
+          <h2 className="text-[16px] font-semibold">Account</h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                signOut()
+                nav('/')
+              }}
+              className="btn btn-ghost h-10 px-4 text-[13px]"
+            >
+              <LogOut className="size-4" /> Sign out
+            </button>
+            <button onClick={() => setDanger('reset')} className="btn h-10 border border-red-200 px-4 text-[13px] text-red-600 hover:bg-red-50">
+              <RotateCcw className="size-4" /> Reset progress
+            </button>
+            <button onClick={() => setDanger('delete')} className="btn h-10 border border-red-200 px-4 text-[13px] text-red-600 hover:bg-red-50">
+              <Trash2 className="size-4" /> Delete account
+            </button>
+          </div>
+          <AnimatePresence>
+            {danger && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                <div className="mt-4 rounded-2xl bg-red-50 p-4 text-[13.5px] text-red-900">
+                  {danger === 'reset' ? 'This erases your tests, drills, vocabulary, plan and chats on this device.' : 'This deletes your Jamals AI account and all progress. It cannot be undone.'} Type <b>DELETE</b> to confirm.
+                  <div className="mt-3 flex gap-2">
+                    <input value={typed} onChange={(e) => setTyped(e.target.value)} className="w-36 rounded-lg border border-red-200 bg-white px-3 py-2 text-[14px] focus:outline-none" />
+                    <button
+                      disabled={typed !== 'DELETE'}
+                      onClick={() => {
+                        if (danger === 'reset') {
+                          resetStore()
+                          setDanger(null)
+                          setTyped('')
+                          nav('/app')
+                        } else deleteAccount()
+                      }}
+                      className="btn h-10 bg-red-600 px-4 text-[13px] text-white disabled:opacity-40"
+                    >
+                      {danger === 'reset' ? 'Reset everything' : 'Delete my account'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setDanger(null)
+                        setTyped('')
+                      }}
+                      className="px-3 text-[13px] text-red-900/70"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+      </div>
+    </div>
+  )
+}

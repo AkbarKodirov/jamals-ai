@@ -7,6 +7,7 @@ import { GoogleGenAI } from '@google/genai'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3001
@@ -116,6 +117,16 @@ app.get('/api/me', auth, (req, res) => {
   res.json({ user: publicUser(u) })
 })
 
+app.delete('/api/me', auth, (req, res) => {
+  const users = loadUsers()
+  const key = Object.keys(users).find((k) => users[k].id === req.user.sub)
+  if (key) {
+    delete users[key]
+    saveUsers(users)
+  }
+  res.json({ ok: true })
+})
+
 /* ---------- Humo ---------- */
 const HUMO_SYSTEM = `You are Humo, the AI tutor of Jamals AI, the exam platform of Jamals Academy in Tashkent.
 You are an expert Digital SAT tutor with a warm, precise, encouraging style.
@@ -123,24 +134,157 @@ You are an expert Digital SAT tutor with a warm, precise, encouraging style.
 - When a student is practising, give a hint first; give the full solution only if they ask.
 - Explain step by step and name the exact mistake or trap.
 - When asked for a study plan, ask for (or use) test date, target score and weak areas, then give a week-by-week plan.
-- Keep answers short and scannable; use plain text, not markdown tables.
+- Keep answers short and scannable; use plain text, not markdown tables. Write math in plain text (x², √2, 7/2, ≤), never LaTeX or $…$ delimiters; put Desmos lines in \`backticks\`.
 - Never claim to be affiliated with the College Board.
 - When you recommend practice, point to the Jamals AI features by name: Practice tests (Exam / Practice / Sprint mode), Drills (choose a skill), Lessons, Vocabulary (Daily 20, Spell it, own words), Blitz, Study plan, Saved & mistakes, Analytics.
 - Digital SAT skills: Words in context, Transitions, Standard English conventions, Rhetorical synthesis, Command of evidence, Central ideas & details, Text structure & purpose, Inferences, Algebra, Advanced math, Problem solving & data, Geometry & trigonometry.`
 
+const PLAN_GUIDE = `STUDY PLAN EDITS
+The student's current weekly study plan is in the context as JSON (days[0] = Monday … days[6] = Sunday).
+When the student asks you to build, change, lighten, move or rebalance their plan, reply with one or two sentences about what you changed,
+then (as the LAST thing in your reply) a fenced code block with the language "plan" holding the WHOLE new week as JSON:
+\`\`\`plan
+{"days":[[{"kind":"drill-rw","title":"Drill: Reading & Writing, 20 questions","min":30}],[],[],[],[],[],[]]}
+\`\`\`
+Allowed kinds: drill-rw, drill-math, skill (add "skill" with one Digital SAT skill name), vocab, mistakes, lesson, blitz, test (full practice test),
+review (review last test), desmos (Desmos Lab), custom (any other task). 0–5 tasks per day, 5–180 minutes each. Keep tasks the student did not ask to change.
+The app shows your plan as a card with an "Apply" button right after your words; never claim it is already applied and don't write anything after the block.`
+
+const HUMO_FULL = `${HUMO_SYSTEM}\n\n${DESMOS_GUIDE}\n\n${PLAN_GUIDE}`
 const NO_KEY = 'Humo needs a Gemini API key. Add GEMINI_API_KEY to .env (free at aistudio.google.com) and restart the server.'
+
+/* ---------- Humo replies: pull out checked Desmos screens and plan proposals ---------- */
+const PLAN_KINDS = new Set(['drill-rw', 'drill-math', 'skill', 'vocab', 'mistakes', 'lesson', 'blitz', 'test', 'review', 'desmos', 'custom'])
+export function cleanPlan(p) {
+  if (!p || !Array.isArray(p.days) || p.days.length !== 7) return null
+  const days = p.days.map((d) =>
+    (Array.isArray(d) ? d : [])
+      .filter((t) => t && PLAN_KINDS.has(t.kind))
+      .slice(0, 6)
+      .map((t) => ({ id: crypto.randomUUID().slice(0, 8), kind: t.kind, title: String(t.title || '').slice(0, 90) || t.kind, min: Math.max(5, Math.min(180, Math.round(Number(t.min) || 20))), ...(t.skill ? { skill: String(t.skill).slice(0, 40) } : {}) })),
+  )
+  return { days }
+}
+
+async function repairDesmos(spec, errors, question) {
+  const out = await gemini.models.generateContent({
+    contents: [{ role: 'user', parts: [{ text: `${question ? `Question:\n${question}\n\n` : ''}This Desmos screen spec was refused by the checker:\n${JSON.stringify(spec)}\n\nErrors:\n- ${errors.join('\n- ')}\n\nRecompute the math and return ONLY the corrected spec as JSON (same format).` }] }],
+    config: { systemInstruction: DESMOS_GUIDE, temperature: 0.1, responseMimeType: 'application/json' },
+  })
+  return JSON.parse(out.text)
+}
+
+/** Replaces each ```desmos block with [[desmos:N]] (checked screen) and a ```plan block with [[plan]]. */
+async function finishReply(text, { expect, question } = {}) {
+  const desmos = []
+  let plan = null
+  const blocks = [...text.matchAll(/```desmos\s*([\s\S]*?)```/g)].slice(0, 3)
+  for (const m of blocks) {
+    let marker = ''
+    try {
+      let spec = JSON.parse(m[1])
+      let r = prepareScreen(spec, { expect })
+      if (r.errors.length && gemini) {
+        spec = await repairDesmos(spec, r.errors, question)
+        r = prepareScreen(spec, { expect })
+      }
+      if (!r.errors.length) {
+        marker = `[[desmos:${desmos.length}]]`
+        desmos.push(r.screen)
+      } else console.warn('Desmos screen refused:', r.errors)
+    } catch (e) {
+      console.warn('Desmos block unreadable:', e.message)
+    }
+    text = text.replace(m[0], marker)
+  }
+  const pm = text.match(/```plan\s*([\s\S]*?)```/)
+  if (pm) {
+    try {
+      plan = cleanPlan(JSON.parse(pm[1]))
+    } catch {
+      plan = null
+    }
+    text = text.replace(pm[0], plan ? '[[plan]]' : '')
+  }
+  return { text: text.replace(/\n{3,}/g, '\n\n').trim(), desmos, plan }
+}
 
 app.post('/api/chat', async (req, res) => {
   const { messages = [], context } = req.body || {}
   if (!gemini) return res.status(503).json({ error: NO_KEY })
   try {
     const contents = messages.slice(-20).map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: String(m.text).slice(0, 8000) }] }))
-    const system = context ? `${HUMO_SYSTEM}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 12000)}` : HUMO_SYSTEM
-    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.6 } })
-    res.json({ reply: out.text, tutor: 'Humo' })
+    const system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
+    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.5 } })
+    const last = messages.filter((m) => m.role === 'user').pop()?.text
+    const r = await finishReply(out.text || '', { question: last })
+    res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
   } catch (e) {
     console.error(e)
     res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+  }
+})
+
+/* ---------- Desmos solves (Desmos Lab bank + any math question), cached for every student ---------- */
+const BANK_FILE = [join(__dirname, '..', 'dist', 'desmos', 'bank.json'), join(__dirname, '..', 'public', 'desmos', 'bank.json')].find((f) => existsSync(f))
+const BANK = BANK_FILE ? Object.fromEntries(JSON.parse(readFileSync(BANK_FILE, 'utf8')).map((q) => [q.id, q])) : {}
+const SOLVE_FILE = join(DATA_DIR, 'desmos-solves.json')
+const solveCache = existsSync(SOLVE_FILE) ? JSON.parse(readFileSync(SOLVE_FILE, 'utf8')) : {}
+const solving = new Map()
+
+app.post('/api/desmos/solve', async (req, res) => {
+  const b = req.body || {}
+  const bank = b.bankId ? BANK[b.bankId] : null
+  const id = bank ? `bank:${bank.id}` : b.id
+  if (!id || (!bank && !b.question)) return res.status(400).json({ error: 'Missing question.' })
+  if (solveCache[id]) return res.json({ ...solveCache[id], cached: true })
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
+  const question = bank ? `${bank.question}${bank.choices ? `\nChoices:\n${Object.entries(bank.choices).map(([k, v]) => `${k}) ${v}`).join('\n')}` : ''}` : `${b.passage ? `${b.passage}\n` : ''}${b.question}${b.options?.length ? `\nChoices:\n${b.options.join('\n')}` : ''}`
+  const correct = bank ? bank.answer : b.correct
+  const letter = /^[A-D]$/.test(String(correct ?? ''))
+  const correctValue = !letter ? correct : bank?.choices ? bank.choices[correct] : String(b.options?.['ABCD'.indexOf(correct)] ?? '').replace(/^[A-D]\)\s*/, '')
+  const expect = answerValue(String(correctValue ?? '').replace(/^.*=\s*/, ''))
+  try {
+    if (!solving.has(id)) {
+      const prompt = `Solve this Digital SAT math question the Desmos way.\n\n${question}\n\nVerified answer: ${correct}${bank ? `\nVerified Desmos route (follow it): ${bank.desmos.join(' | ')}\nLook for: ${bank.look_for}\nWhy: ${bank.why}\nTrap: ${bank.trap}\nRule: ${bank.rule}` : ''}\n\nUse the 8-part reply shape and include exactly one desmos block. The screen must show the answer${expect != null ? ` ${expect}` : ''} as a result, parameter or labeled point. Under 220 words besides the block. English.`
+      solving.set(
+        id,
+        gemini.models
+          .generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: `${HUMO_SYSTEM}\n\n${DESMOS_GUIDE}`, temperature: 0.2 } })
+          .then((o) => finishReply(o.text || '', { expect: expect ?? undefined, question }))
+          .then((r) => {
+            const v = { text: r.text, desmos: r.desmos }
+            if (r.desmos.length) {
+              solveCache[id] = v
+              writeFileSync(SOLVE_FILE, JSON.stringify(solveCache))
+            }
+            return v
+          })
+          .finally(() => solving.delete(id)),
+      )
+    }
+    res.json(await solving.get(id))
+  } catch (e) {
+    console.error(e)
+    res.status(502).json({ error: 'Humo could not finish the Desmos solve. Try again in a moment.' })
+  }
+})
+
+/* ---------- Humo edits the study plan ---------- */
+app.post('/api/plan', async (req, res) => {
+  const { plan, profile, instruction } = req.body || {}
+  if (!instruction) return res.status(400).json({ error: 'Tell Humo what to change.' })
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
+  try {
+    const prompt = `Student profile: ${JSON.stringify(profile || {}).slice(0, 2000)}\nCurrent plan: ${JSON.stringify(plan || {}).slice(0, 8000)}\n\nThe student says: "${String(instruction).slice(0, 600)}"\n\nReturn JSON: {"note": "one or two friendly sentences on what you changed", "days": [7 arrays of tasks]}.`
+    const out = await gemini.models.generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: `${HUMO_SYSTEM}\n\n${PLAN_GUIDE}`, temperature: 0.4, responseMimeType: 'application/json' } })
+    const j = JSON.parse(out.text)
+    const p = cleanPlan(j)
+    if (!p) return res.status(502).json({ error: 'Humo returned a plan the app could not read. Try rephrasing.' })
+    res.json({ plan: p, note: String(j.note || '').slice(0, 400) })
+  } catch (e) {
+    console.error(e)
+    res.status(502).json({ error: 'Humo could not change the plan right now. Try again.' })
   }
 })
 

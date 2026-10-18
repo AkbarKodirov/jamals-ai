@@ -1,5 +1,8 @@
 import { Flag } from 'lucide-react'
 import { Reveal, Spotlight } from '../components/motion'
+import { DesmosScreen } from '../desmos/DesmosScreen'
+import type { DesmosScreen as Screen } from '../../shared/desmos-render.js'
+import sample from './desmosSample.json'
 
 function Card({ className = '', title, body, children }: { className?: string; title: string; body: string; children?: React.ReactNode }) {
   return (
@@ -56,6 +59,19 @@ export function Features() {
         </Reveal>
 
         <div className="mt-14 grid gap-3 md:grid-cols-6">
+          <Card className="md:col-span-6 border-[#2d70b3]/30" title="Humo solves Math the Desmos way — only in Uzbekistan" body="Send any Math question. Humo turns it into Desmos lines, graphs it on a real Desmos screen and checks every number before you see it. Open it live in one click, or train on 132 hard questions in the Desmos Lab.">
+            <div className="grid items-center gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+              <ol className="space-y-2 font-mono text-[13px] text-white/75">
+                {['1  y = 3(x − 2)', '2  y = 2x + 5', '→  intersection (11, 27)', '✓  x = 11, checked by plugging back'].map((l, i) => (
+                  <li key={l} className={`rounded-xl border px-3.5 py-2.5 ${i === 3 ? 'border-jg-500/40 bg-jg-500/10 text-jg-200' : 'border-white/[0.08] bg-white/[0.03]'}`}>
+                    {l}
+                  </li>
+                ))}
+              </ol>
+              <DesmosScreen screen={{ ...(sample as unknown as Screen), title: 'Humo · Desmos solve' }} compact />
+            </div>
+          </Card>
+
           <Card
             className="md:col-span-4 md:row-span-2"
             title="Full Digital SAT mocks"
@@ -90,7 +106,7 @@ export function Features() {
             </ul>
           </Card>
 
-          <Card className="md:col-span-3" title="A study plan built from your weak spots" body="Tell Humo your test date and target. It lays out each week and reshuffles when you improve.">
+          <Card className="md:col-span-3" title="A study plan Humo can rewrite" body="Answer six questions and Humo builds your week. Edit any task, ask Humo to change it in your own words, and send it to Google Calendar.">
             <div className="grid grid-cols-7 gap-1.5 text-center text-[11px]">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => (
                 <div key={d} className={`rounded-xl border px-1 py-2.5 ${i === 2 ? 'border-jg-500/50 bg-jg-500/10' : 'border-white/[0.07]'}`}>
@@ -101,7 +117,7 @@ export function Features() {
             </div>
           </Card>
 
-          <Card className="md:col-span-3" title="Analytics that tell you what to fix" body="Accuracy and time per question for every test, your score trend, and the skills costing you the most points.">
+          <Card className="md:col-span-3" title="Analytics that tell you what to fix" body="Predicted score, accuracy by domain and skill, pacing, study time and a practice calendar — every chart free, no Pro wall.">
             <div className="space-y-2.5">
               {[
                 ['Words in context', 82],

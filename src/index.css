@@ -131,6 +131,14 @@
   .prose-q table { border-collapse: collapse; margin: .5em 0; font-size: .92em; }
   .prose-q th, .prose-q td { border: 1px solid #d8d0bf; padding: .35em .6em; }
   .prose-q u { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  /* Reading & Writing highlights (Bluebook-style) */
+  mark.hl { color: inherit; border-radius: 3px; padding: 0 1px; cursor: pointer; transition: background-color .2s; }
+  mark.hl-yellow { background: #fde68a; }
+  mark.hl-blue { background: #bfdbfe; }
+  mark.hl-pink { background: #fbcfe8; }
+  mark.hl-underline { background: transparent; text-decoration: underline; text-decoration-color: #2a652e; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  mark.hl-note { box-shadow: inset 0 -2px 0 #d97706; }
+  .select-text ::selection, .select-text::selection { background: #fde68a; color: inherit; }
   .panel {
     background: linear-gradient(180deg, rgb(37 55 49 / 0.55), rgb(27 41 37 / 0.25));
     border: 1px solid rgb(250 247 241 / 0.08);

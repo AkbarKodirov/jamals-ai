@@ -112,7 +112,7 @@ export default function Blitz() {
       () => {
         if (!ok && lives - 1 <= 0) {
           setPhase('over')
-          markActive(Math.round((Date.now() - started.current) / 1000))
+          markActive(Math.round((Date.now() - started.current) / 1000), 'blitz')
           return
         }
         setPicked(null)

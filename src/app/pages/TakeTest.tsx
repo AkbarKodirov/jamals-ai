@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, Sigma, X } from 'lucide-react'
+import { Highlighter, Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, LogOut, Sigma, X } from 'lucide-react'
 import { isCorrect, loadTest, markActive, scaleSection, setStore, useAsync, type Attempt, type Mode, type Test, type TestQuestion } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
+import { Highlightable } from '../components/Highlightable'
 import { RichText } from '../components/RichText'
 import { askHumo, questionPayload } from '../humo'
 import { useAuth } from '../../lib/auth'
@@ -46,10 +47,10 @@ function HintButton({ q, value }: { q: TestQuestion; value: string | null }) {
     const p = questionPayload(q, value)
     try {
       setHint(
-        await askHumo(
-          [{ role: 'user', text: `Give me ONE short hint (max 2 sentences) for this question. Do NOT reveal the answer or say which letter is correct.\n${p.passage ? `Text: ${p.passage}\n` : ''}Question: ${p.question}\n${p.options.join('\n')}${p.chosen ? `\nI'm leaning towards ${p.chosen}.` : ''}` }],
+        (await askHumo(
+          [{ role: 'user', text: `Give me ONE short hint (max 2 sentences) for this question. Do NOT reveal the answer or say which letter is correct. No Desmos screen block.\n${p.passage ? `Text: ${p.passage}\n` : ''}Question: ${p.question}\n${p.options.join('\n')}${p.chosen ? `\nI'm leaning towards ${p.chosen}.` : ''}` }],
           token,
-        ),
+        )).reply,
       )
     } catch (e) {
       setHint((e as Error).message)
@@ -91,6 +92,8 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
   const [confirmExit, setConfirmExit] = useState(false)
   const [calc, setCalc] = useState(false)
   const [refSheet, setRefSheet] = useState(false)
+  const [annotate, setAnnotate] = useState(true)
+  const isRW = test.type !== 'MATH'
   const started = useRef(Date.now())
   const qStart = useRef(Date.now())
 
@@ -150,7 +153,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
             .map((f) => ({ key: `${test.id}:${f.module}:${f.index}`, testId: test.id, module: f.module, index: f.index, addedAt: Date.now(), cleared: false })),
         ],
       }))
-      markActive(Math.round((Date.now() - started.current) / 1000))
+      markActive(Math.round((Date.now() - started.current) / 1000), 'test', test.type)
       nav(`/app/results/${attempt.id}`, { replace: true })
     },
     [mode, nav, test],
@@ -307,6 +310,11 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                 </button>
               </>
             )}
+            {isRW && (
+              <button onClick={() => setAnnotate((v) => !v)} aria-pressed={annotate} title="Highlights & notes: select text in the passage" className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-semibold ${annotate ? 'border-amber-300 bg-amber-100 text-amber-900' : 'border-[#e3dccf] text-moss hover:bg-cream'}`}>
+                <Highlighter className="size-4" /> <span className="hidden lg:inline">Highlight</span>
+              </button>
+            )}
             <button
               onClick={() => setEliminate((v) => !v)}
               aria-pressed={eliminate}
@@ -329,7 +337,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
           <div className={`mx-auto grid h-full ${hasPassage ? 'max-w-7xl lg:grid-cols-2' : 'max-w-3xl'}`}>
             {hasPassage && (
               <motion.section key={`p-${mod}-${idx}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="border-b border-[#efe9de] px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
-                <Passage html={q.passage!} />
+                {isRW ? <Highlightable html={q.passage!} storeKey={`${test.id}:${mod}:${idx}:p`} enabled={annotate} className="prose-q font-serif text-[17px] leading-[1.75] text-pine" /> : <Passage html={q.passage!} />}
               </motion.section>
             )}
             <motion.section key={`${mod}-${idx}`} initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }} className="px-5 py-8 sm:px-10 lg:max-h-[calc(100svh-8.5rem)] lg:overflow-y-auto">
@@ -339,7 +347,8 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                   <Bookmark className={`size-4 ${a.flagged ? 'fill-red-500 text-red-500' : ''}`} /> Mark for review
                 </button>
               </div>
-              <QuestionBody q={q} className="mt-5" />
+              {isRW ? <Highlightable text={q.question} storeKey={`${test.id}:${mod}:${idx}:q`} enabled={annotate} className="mt-5 whitespace-pre-wrap text-[16.5px] font-medium leading-relaxed" /> : <QuestionBody q={q} className="mt-5" />}
+              {isRW && annotate && idx === 0 && mod === 0 && <p className="mt-2 text-[11.5px] text-moss">Tip: select any words in the text to highlight, underline or add a note.</p>}
 
               {q.format === 'mc' ? (
                 <div className="mt-6 space-y-2.5">
@@ -406,7 +415,7 @@ function Runner({ test, mode }: { test: Test; mode: Mode }) {
                       <HintButton q={q} value={a.value} />
                     </>
                   ) : (
-                    <HumoExplain testId={test.id} qKey={`${mod}:${idx}`} q={q} />
+                    <HumoExplain testId={test.id} qKey={`${mod}:${idx}`} q={q} math={test.type === 'MATH'} />
                   )}
                 </div>
               )}

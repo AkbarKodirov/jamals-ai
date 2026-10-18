@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { DesmosScreen as DesmosScreenData } from '../../shared/desmos-render.js'
 
 /* ---------------- types ---------------- */
 
@@ -34,7 +35,30 @@ export type Attempt = {
 
 export type VocabProgress = { ease: number; interval: number; reps: number; due: number; seen: number; correct: number }
 
-export type Profile = { target: number; current: number | null; testDate: string | null }
+export type Profile = {
+  target: number
+  current: number | null
+  testDate: string | null
+  aim?: string
+  level?: 'new' | 'some' | 'retake'
+  rw?: number | null
+  math?: number | null
+  studyDays?: number[] // 0 = Monday … 6 = Sunday
+  minutesPerDay?: number
+  studyTime?: string // "18:00"
+  focus?: string[]
+}
+
+export type PlanKind = 'drill-rw' | 'drill-math' | 'skill' | 'vocab' | 'mistakes' | 'lesson' | 'blitz' | 'test' | 'review' | 'desmos' | 'custom'
+export type PlanTask = { id: string; kind: PlanKind; title: string; min: number; skill?: string }
+export type WeekPlan = { days: PlanTask[][] }
+
+export type ChatMsg = { role: 'user' | 'humo'; text: string; desmos?: DesmosScreenData[]; plan?: WeekPlan | null; at?: number }
+export type Chat = { id: string; title: string; createdAt: number; updatedAt: number; pinned?: boolean; msgs: ChatMsg[] }
+
+export type Highlight = { start: number; end: number; color: 'yellow' | 'blue' | 'pink' | 'underline'; note?: string }
+export type Session = { at: number; seconds: number; kind: string; subject?: 'EBRW' | 'MATH' }
+export type Settings = { language: 'en' | 'uz' | 'ru'; humoStyle: 'hint' | 'full'; dailyGoal: number; reminders: boolean; sounds: boolean; desmosFirst: boolean }
 
 type State = {
   profile: Profile
@@ -50,6 +74,13 @@ type State = {
   weakSkills: string[]
   planDone: Record<string, boolean>
   drills: { at: number; subject: 'EBRW' | 'MATH'; n: number; correct: number; seconds: number }[]
+  onboarded: boolean
+  plan: WeekPlan | null
+  chats: Chat[]
+  highlights: Record<string, Highlight[]>
+  sessions: Session[]
+  settings: Settings
+  desmosLab: Record<string, { tries: number; solved: boolean; at: number }>
 }
 export type CustomWord = { word: string; pos: 'adj' | 'verb' | 'noun' | 'adv'; def: string; ex: string; syn: string[]; level: 'mine'; addedAt: number }
 
@@ -67,6 +98,13 @@ const initial: State = {
   weakSkills: [],
   planDone: {},
   drills: [],
+  onboarded: false,
+  plan: null,
+  chats: [],
+  highlights: {},
+  sessions: [],
+  settings: { language: 'en', humoStyle: 'hint', dailyGoal: 20, reminders: true, sounds: false, desmosFirst: true },
+  desmosLab: {},
 }
 
 /* ---------------- tiny global store (per user, localStorage) ---------------- */
@@ -80,7 +118,9 @@ function load(id: string) {
   uid = id
   try {
     const raw = localStorage.getItem(keyFor(id))
-    state = raw ? { ...initial, ...JSON.parse(raw) } : initial
+    const saved = raw ? JSON.parse(raw) : null
+    // returning students who already used the app skip onboarding
+    state = saved ? { ...initial, onboarded: !!(saved.attempts?.length || saved.drills?.length), ...saved, settings: { ...initial.settings, ...saved.settings }, profile: { ...initial.profile, ...saved.profile } } : initial
   } catch {
     state = initial
   }
@@ -122,12 +162,19 @@ export function useBindStore(userId: string | undefined) {
 
 export const today = () => new Date().toISOString().slice(0, 10)
 
-export function markActive(seconds = 0) {
+export function markActive(seconds = 0, kind = 'practice', subject?: 'EBRW' | 'MATH') {
   setStore((s) => ({
     ...s,
     activeDays: s.activeDays.includes(today()) ? s.activeDays : [...s.activeDays, today()].slice(-400),
     studySeconds: s.studySeconds + seconds,
+    sessions: seconds > 0 ? [...s.sessions, { at: Date.now(), seconds, kind, subject }].slice(-3000) : s.sessions,
   }))
+}
+
+/** Read the whole store once (for export / Humo context). */
+export const getStore = () => state
+export function resetStore() {
+  setStore(() => ({ ...initial }))
 }
 
 export function streak(days: string[]) {

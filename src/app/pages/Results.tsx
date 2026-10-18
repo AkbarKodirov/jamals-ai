@@ -56,7 +56,7 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
       <div className="space-y-5 p-5 sm:p-6">
         {/* Humo first — above the question */}
         {seen ? (
-          <HumoExplain testId={test.id} qKey={`${m}:${i}`} q={q} onAsk={() => onAsk(`About question ${n}: `)} />
+          <HumoExplain testId={test.id} qKey={`${m}:${i}`} q={q} math={test.type === 'MATH'} onAsk={() => onAsk(`About question ${n}: `)} />
         ) : (
           <div className="h-24 rounded-2xl bg-jg-50/60" />
         )}

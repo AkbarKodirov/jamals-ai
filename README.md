@@ -10,7 +10,11 @@ The exam platform of **Jamals International Academy** (Tashkent, since 2020): Di
 | `/login`, `/signup` | Google sign-in + email auth, 3D Humo on the side |
 | `/privacy`, `/terms` | Privacy Policy and Terms of Service (needed for Google publishing) |
 | `/app` | Home: score goal + predicted SAT range, exam countdown, streak, analytics strip, daily question, today's plan, live 3D Humo |
-| `/app/plan` | Weekly study plan toward the test date, driven by the student's weakest skills |
+| first visit | Animated onboarding: aim, target, SAT date, level, weak skills, schedule → Humo builds the first plan |
+| `/app/plan` | Editable weekly plan (add, remove, reorder, minutes), "Ask Humo to change it", Google Calendar export (.ics + per-day links) |
+| `/app/humo` | Ask Humo with saved chat history (search, pin, rename); Desmos solves with checked Desmos screens; plan proposals with Apply |
+| `/app/desmos` | Desmos Lab: 132 verified hard Math questions, hint ladder, live Desmos, Humo's Desmos screen |
+| `/app/settings` | Profile, SAT goal, schedule, Humo language/style, reminders, export/import, reset, delete account |
 | `/app/tests` · `/app/papers` | 10 original practice tests (476 Qs) → Exam / Practice / Sprint; exam-paper shelf + official Bluebook link |
 | `/app/tests/:id/take` | Bluebook-style runner: module timer, mark for review, eliminator, navigator, Desmos calculator + reference sheet (Math), Humo hints in practice mode |
 | `/app/results/:id` | Score, skills weakest-first, answer map, Humo explanation above every question, save questions, Ask Humo drawer |
@@ -41,6 +45,10 @@ Already configured: the public OAuth client ID is committed in `.env.development
 - To open sign-in to everyone: deploy, add the production domain to the client's **Authorized JavaScript origins**, then click **Publish app** (links to `/privacy` and `/terms` are ready for the consent screen).
 
 Flow: the browser gets a Google access token → `POST /api/auth/google` → the server checks the token belongs to our client ID, reads the verified profile, and returns a 30-day JWT.
+
+## Desmos solves
+
+The `desmos-sat-coach` skill lives in `server/skills/`. Humo writes a Desmos spec (lines + formulas); `server/desmos.js` recomputes every number with mathjs, checks each point lies on its curve and that the answer is shown, asks Gemini to fix anything that fails, and only then returns the screen. `shared/desmos-render.js` draws it as SVG (same renderer on server and browser). The live calculator uses Desmos's demo key; set `VITE_DESMOS_API_KEY` to the site's own free key from desmos.com/api.
 
 ## Turn on live Humo
 

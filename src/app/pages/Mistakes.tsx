@@ -17,7 +17,7 @@ function MistakeCard({ k, testId, module, index }: { k: string; testId: string; 
 
   function submit(v: string) {
     setValue(v)
-    markActive(30)
+    markActive(30, 'mistakes')
     if (isCorrect(q, v)) setTimeout(() => setStore((s) => ({ ...s, mistakes: s.mistakes.map((m) => (m.key === k ? { ...m, cleared: true } : m)) })), 1600)
   }
 
@@ -65,7 +65,7 @@ function MistakeCard({ k, testId, module, index }: { k: string; testId: string; 
       {done && <p className={`mt-3 text-[14px] font-semibold ${ok ? 'text-emerald-600' : 'text-red-600'}`}>{ok ? 'Fixed — removing it from your notebook.' : q.format === 'sa' ? `Not yet. The answer is ${q.answer}.` : 'Not yet. Read Humo below.'}</p>}
       {(done || show) && (
         <div className="mt-4">
-          <HumoExplain testId={testId} qKey={`${module}:${index}`} q={q} compact />
+          <HumoExplain testId={testId} qKey={`${module}:${index}`} q={q} compact math={test.type === 'MATH'} />
         </div>
       )}
       {!done && !show && (

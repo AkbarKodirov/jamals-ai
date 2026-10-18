@@ -1,6 +1,7 @@
-import { stripHtml, type TestQuestion } from './store'
+import { stripHtml, type ChatMsg, type Profile, type TestQuestion, type WeekPlan } from './store'
+import type { DesmosScreen } from '../../shared/desmos-render.js'
 
-export type ChatMsg = { role: 'user' | 'humo'; text: string }
+export type { ChatMsg }
 
 export class HumoOffline extends Error {}
 
@@ -18,8 +19,26 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
 }
 
 export async function askHumo(messages: ChatMsg[], token: string | null, context?: string) {
-  const d = await call<{ reply: string }>('/api/chat', { messages, context }, token)
-  return d.reply
+  // only text goes back to the model; pictures and plans stay on this device
+  const slim = messages.map((m) => ({ role: m.role, text: m.text }))
+  return call<{ reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }>('/api/chat', { messages: slim, context }, token)
+}
+
+export type DesmosSolve = { text: string; desmos: DesmosScreen[] }
+const solves = new Map<string, Promise<DesmosSolve>>()
+/** Humo's Desmos walkthrough + checked Desmos screen. Bank questions by id, any other question by payload. */
+export function desmosSolve(body: { bankId: string } | ({ id: string } & ReturnType<typeof questionPayload>), token: string | null) {
+  const key = 'bankId' in body ? body.bankId : body.id
+  if (!solves.has(key)) {
+    const p = call<DesmosSolve>('/api/desmos/solve', body, token)
+    p.catch(() => solves.delete(key))
+    solves.set(key, p)
+  }
+  return solves.get(key)!
+}
+
+export function editPlan(plan: WeekPlan, profile: Profile, instruction: string, token: string | null) {
+  return call<{ plan: WeekPlan; note: string }>('/api/plan', { plan, profile, instruction }, token)
 }
 
 export function questionPayload(q: TestQuestion, chosen: string | null) {
