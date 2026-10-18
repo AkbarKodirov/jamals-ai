@@ -94,5 +94,13 @@
     "modules": 2,
     "questions": 54,
     "minutesPerModule": 32
+  },
+  {
+    "id": "pt13",
+    "name": "Practice Test 13",
+    "type": "EBRW",
+    "modules": 2,
+    "questions": 54,
+    "minutesPerModule": 32
   }
 ]
