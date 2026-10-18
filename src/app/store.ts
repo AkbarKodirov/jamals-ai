@@ -360,12 +360,12 @@ export function useAsync<T>(fn: () => Promise<T>, deps: unknown[]) {
 
 const testCache = new Map<string, Promise<Test>>()
 export function loadTest(id: string) {
-  if (!testCache.has(id)) testCache.set(id, fetch(`/tests/${id}.json`).then((r) => (r.ok ? r.json() : Promise.reject(new Error('Test not found')))))
+  if (!testCache.has(id)) testCache.set(id, fetch(`/tests/${id}.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(new Error('Test not found')))))
   return testCache.get(id)!
 }
 let bankP: Promise<BankQ[]> | null = null
 /** The whole Question Bank (Jamals' own sets + the Desmos collection), loaded once. */
-export const loadBank = (): Promise<BankQ[]> => (bankP ??= fetch('/bank/bank.json').then((r) => (r.ok ? r.json() : Promise.reject(new Error('Question bank unavailable')))))
+export const loadBank = (): Promise<BankQ[]> => (bankP ??= fetch('/bank/bank.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(new Error('Question bank unavailable')))))
 
 /** Saved / mistake entries point at either a test question or a bank question. */
 export type QRef = { key: string; testId: string; module: number; index: number; bankId?: string }
@@ -401,7 +401,7 @@ export function toggleSavedBank(id: string) {
   setStore((s) => ({ ...s, saved: s.saved.some((x) => x.key === key) ? s.saved.filter((x) => x.key !== key) : [{ key, testId: 'bank', module: 0, index: 0, bankId: id, at: Date.now() }, ...s.saved] }))
 }
 
-export const loadIndex = () => fetch('/tests/index.json').then((r) => r.json() as Promise<TestMeta[]>)
+export const loadIndex = () => fetch('/tests/index.json', { cache: 'no-cache' }).then((r) => r.json() as Promise<TestMeta[]>)
 
 export const stripHtml = (h: string | null) => (h || '').replace(/<li>/g, '\n• ').replace(/<[^>]+>/g, ' ').replace(/\s+\n/g, '\n').replace(/[ \t]+/g, ' ').trim()
 
