@@ -14,3 +14,5 @@ services:
         generateValue: true
       - key: GEMINI_API_KEY
         sync: false # paste your key in the Render dashboard when asked
+      - key: DATABASE_URL
+        sync: false

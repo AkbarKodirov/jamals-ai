@@ -103,6 +103,7 @@ type State = {
   notes: Record<string, string>
   collections: Collection[]
   lessonsDone: Record<string, number>
+  updatedAt?: number
 }
 export type CustomWord = { word: string; pos: 'adj' | 'verb' | 'noun' | 'adv'; def: string; ex: string; syn: string[]; level: 'mine'; addedAt: number }
 
@@ -138,15 +139,52 @@ const initial: State = {
 let uid = 'guest'
 let state: State = initial
 const listeners = new Set<() => void>()
+// Progress is keyed by the account EMAIL, so the same student always finds their data again —
+// even if the server forgot their account id.
 const keyFor = (id: string) => `jamals.progress.${id}`
 
-function load(id: string) {
-  uid = id
+function hydrate(saved: Partial<State> | null): State {
+  // returning students who already used the app skip onboarding
+  return saved
+    ? { ...initial, onboarded: !!(saved.attempts?.length || saved.drills?.length || saved.chats?.length || saved.plan), ...saved, settings: { ...initial.settings, ...saved.settings }, profile: { ...initial.profile, ...saved.profile } }
+    : initial
+}
+
+/** Older builds saved progress under a random account id. Find it once and move it to the email key. */
+function legacy(oldId?: string): string | null {
   try {
-    const raw = localStorage.getItem(keyFor(id))
-    const saved = raw ? JSON.parse(raw) : null
-    // returning students who already used the app skip onboarding
-    state = saved ? { ...initial, onboarded: !!(saved.attempts?.length || saved.drills?.length), ...saved, settings: { ...initial.settings, ...saved.settings }, profile: { ...initial.profile, ...saved.profile } } : initial
+    if (oldId) {
+      const raw = localStorage.getItem(keyFor(oldId))
+      if (raw) return raw
+    }
+    let best: string | null = null
+    let bestAt = 0
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!
+      if (!k.startsWith('jamals.progress.') || k.includes('@')) continue
+      const raw = localStorage.getItem(k)!
+      const j = JSON.parse(raw)
+      const at = Math.max(j.updatedAt ?? 0, ...(j.chats ?? []).map((c: Chat) => c.updatedAt), ...(j.attempts ?? []).map((a: Attempt) => a.finishedAt), ...(j.sessions ?? []).map((x: Session) => x.at), 0)
+      if (at >= bestAt) {
+        best = raw
+        bestAt = at
+      }
+    }
+    return best
+  } catch {
+    return null
+  }
+}
+
+function load(key: string, oldId?: string) {
+  uid = key
+  try {
+    let raw = localStorage.getItem(keyFor(key))
+    if (!raw) {
+      raw = legacy(oldId)
+      if (raw) localStorage.setItem(keyFor(key), raw)
+    }
+    state = hydrate(raw ? JSON.parse(raw) : null)
   } catch {
     state = initial
   }
@@ -162,9 +200,10 @@ function save() {
 }
 
 export function setStore(fn: (s: State) => State) {
-  state = fn(state)
+  state = { ...fn(state), updatedAt: Date.now() }
   save()
   listeners.forEach((l) => l())
+  scheduleSync()
 }
 
 export function useStore() {
@@ -180,8 +219,67 @@ export function useStore() {
 }
 
 /** Loads this user's saved progress synchronously, before anything reads the store. */
-export function useBindStore(userId: string | undefined) {
-  if (userId && userId !== uid) load(userId)
+export function useBindStore(user: { id: string; email: string } | null | undefined) {
+  const key = user?.email?.trim().toLowerCase()
+  if (key && key !== uid) load(key, user!.id)
+}
+
+/* ---------------- cloud sync: progress follows the student to any device ---------------- */
+let token: string | null = null
+let timer: ReturnType<typeof setTimeout> | null = null
+let syncing = false
+
+/** What goes to the server: everything except photo bytes in chats (those stay on this device). */
+function forCloud(s: State) {
+  return { ...s, chats: s.chats.map((c) => ({ ...c, msgs: c.msgs.map((m) => (m.images?.length ? { ...m, images: undefined, text: `${m.text}${m.text ? ' ' : ''}[photo]` } : m)) })) }
+}
+
+async function push() {
+  if (!token || token === 'google-offline' || token === 'demo' || syncing) return
+  syncing = true
+  try {
+    const res = await fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ data: forCloud(state), updatedAt: state.updatedAt ?? Date.now() }) })
+    if (res.status === 409) {
+      const j = await res.json()
+      if (j.progress) replaceFromCloud(j.progress)
+    }
+  } catch {
+    /* offline — try again on the next change */
+  } finally {
+    syncing = false
+  }
+}
+function scheduleSync() {
+  if (!token) return
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(push, 4000)
+}
+function replaceFromCloud(data: Partial<State>) {
+  // keep photos that only exist on this device
+  const local = new Map(state.chats.map((c) => [c.id, c]))
+  const chats = (data.chats ?? []).map((c) => {
+    const l = local.get(c.id)
+    return l && l.msgs.length === c.msgs.length ? { ...c, msgs: c.msgs.map((m, i) => (l.msgs[i].images ? { ...m, images: l.msgs[i].images, text: l.msgs[i].text } : m)) } : c
+  })
+  state = hydrate({ ...data, chats })
+  save()
+  listeners.forEach((l) => l())
+}
+
+/** Called once per sign-in: pull the newer copy (server or this device) and keep them in step. */
+export async function startSync(t: string | null) {
+  token = t
+  if (!t || t === 'google-offline' || t === 'demo') return
+  try {
+    const res = await fetch('/api/progress', { headers: { Authorization: `Bearer ${t}` } })
+    if (!res.ok) return
+    const j = (await res.json()) as { progress: Partial<State> | null; updatedAt: number }
+    const localAt = state.updatedAt ?? 0
+    if (j.progress && j.updatedAt > localAt) replaceFromCloud(j.progress)
+    else if (!j.progress || localAt > j.updatedAt) push()
+  } catch {
+    /* offline: local data keeps working */
+  }
 }
 
 /* ---------------- helpers ---------------- */

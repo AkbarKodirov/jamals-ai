@@ -21,6 +21,29 @@ const base =
   'group inline-flex items-center justify-center gap-3 rounded-full bg-cream font-medium text-ink transition hover:bg-white active:scale-[0.98] disabled:opacity-60'
 const sizes = { md: 'h-11 px-5 text-sm', lg: 'h-13 px-7 text-[15px]' }
 
+/** In-app browsers (Telegram, Instagram, Facebook…) are blocked by Google sign-in. */
+export const inAppBrowser = () => /Telegram|Instagram|FBAN|FBAV|Line\/|; wv\)|MicroMessenger|TikTok/i.test(navigator.userAgent)
+
+/** Full-page Google sign-in (no popup) — used when a phone blocks the popup. */
+export function googleRedirect() {
+  const state = Math.random().toString(36).slice(2)
+  try {
+    sessionStorage.setItem('jamals.oauth', state)
+  } catch {
+    /* ignore */
+  }
+  const q = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID!,
+    redirect_uri: `${location.origin}/auth/google`,
+    response_type: 'token',
+    scope: 'openid email profile',
+    include_granted_scopes: 'true',
+    prompt: 'select_account',
+    state,
+  })
+  location.href = `https://accounts.google.com/o/oauth2/v2/auth?${q}`
+}
+
 function LiveButton({ size = 'lg', className = '', label = 'Continue with Google' }: Props) {
   const { signInWithGoogle } = useAuth()
   const nav = useNavigate()
@@ -42,7 +65,11 @@ function LiveButton({ size = 'lg', className = '', label = 'Continue with Google
       setBusy(false)
       setError('Google sign-in was cancelled. Try again.')
     },
-    onNonOAuthError: () => setBusy(false),
+    // the popup could not open (common on phones) → do the whole sign-in in this tab instead
+    onNonOAuthError: (e) => {
+      setBusy(false)
+      if (e.type === 'popup_failed_to_open') googleRedirect()
+    },
   })
   return (
     <div className="flex flex-col items-start gap-2">

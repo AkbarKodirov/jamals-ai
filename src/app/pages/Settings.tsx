@@ -116,7 +116,7 @@ export default function Settings() {
     }
     resetStore()
     try {
-      localStorage.removeItem(`jamals.progress.${user?.id}`)
+      localStorage.removeItem(`jamals.progress.${user?.email?.toLowerCase()}`)
     } catch {
       /* ignore */
     }

@@ -54,13 +54,13 @@ export function HumoFab() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Ask Humo"
-        className="group fixed bottom-24 right-4 z-30 flex animate-breathe items-center gap-2 rounded-full bg-pine py-1.5 pl-1.5 pr-4 text-[14px] font-semibold text-cream transition-transform hover:scale-[1.04] md:bottom-6 md:right-6"
+        className="group fixed bottom-24 right-4 z-30 flex animate-breathe items-center gap-2 rounded-full bg-pine p-1.5 text-[14px] font-semibold sm:pr-4 text-cream transition-transform hover:scale-[1.04] md:bottom-6 md:right-6"
       >
         <span className="relative">
           <img src="/humo-mark.png" alt="" className="size-9 rounded-full ring-2 ring-jg-500" />
           <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-jg-400 ring-2 ring-pine" />
         </span>
-        Ask Humo
+        <span className="hidden sm:inline">Ask Humo</span>
       </button>
       <HumoDrawer key={`${pathname}|${screen?.key ?? ''}`} open={open} onClose={() => { setOpen(false); setAuto(null) }} context={context} autoSend={auto} greeting={screen ? `${hi} I can see your screen — ${screen.title}. Ask me anything about it.` : `${hi} I can see you're on ${page.name.replace('their', 'your')}. What can I help with?`} suggestions={screen ? ['Why is my answer wrong?', 'Give me a hint', 'Explain it step by step', 'Solve it with Desmos'] : page.tips} />
     </>

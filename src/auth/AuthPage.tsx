@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { GoogleButton } from './GoogleButton'
+import { GoogleButton, inAppBrowser } from './GoogleButton'
 import { GOOGLE_CLIENT_ID, useAuth } from '../lib/auth'
 import { Logo } from '../landing/Landing'
 
@@ -71,7 +71,19 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
           <p className="mt-3 text-[15px] text-white/50">{signup ? 'Start with a free diagnostic. Takes 40 minutes.' : 'Pick up where you left off with Humo.'}</p>
 
           <div className="mt-9 [&>div]:w-full [&_button]:w-full">
-            <GoogleButton size="lg" label={signup ? 'Sign up with Google' : 'Continue with Google'} />
+            {inAppBrowser() && (
+              <div className="mb-3 rounded-2xl border border-amber-300/30 bg-amber-300/10 p-3.5 text-[13px] leading-snug text-amber-100">
+                <b>Open this page in Chrome or Safari.</b> Google blocks sign-in inside Telegram, Instagram and other in-app browsers. Tap ⋮ / ⋯ → “Open in browser”, or sign up with email below.
+                <button
+                  type="button"
+                  onClick={() => navigator.clipboard?.writeText(location.href)}
+                  className="mt-2 block rounded-full bg-amber-200 px-3 py-1.5 text-[12px] font-semibold text-ink"
+                >
+                  Copy link
+                </button>
+              </div>
+            )}
+            <GoogleButton size="lg" className="w-full" label={signup ? 'Sign up with Google' : 'Continue with Google'} />
           </div>
           {!GOOGLE_CLIENT_ID && <p className="mt-2 text-[11px] text-white/30">Demo mode — Google sign-in opens a demo account until a client ID is configured.</p>}
 

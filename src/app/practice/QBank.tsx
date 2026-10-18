@@ -250,7 +250,7 @@ export function QBankSection() {
       </div>
 
       <div className="card mt-4 overflow-hidden">
-        <div className="grid grid-cols-[1fr_9rem_5rem] gap-3 border-b border-line px-5 py-3 text-[12px] font-semibold text-moss sm:grid-cols-[1fr_14rem_6rem]">
+        <div className="grid grid-cols-[1fr_4rem_3.5rem] gap-3 border-b border-line px-4 py-3 text-[12px] font-semibold text-moss sm:grid-cols-[1fr_14rem_6rem] sm:px-5">
           <span>Topic</span>
           <span>Progress</span>
           <span className="text-right">Accuracy</span>
@@ -268,12 +268,12 @@ export function QBankSection() {
                   const on = picked.includes(skill)
                   const lesson = lessonFor(COARSE[skill] ?? COARSE[domain] ?? skill)
                   return (
-                    <motion.div key={skill} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="group grid grid-cols-[1fr_9rem_5rem] items-center gap-3 border-b border-line px-5 py-3.5 last:border-b-0 hover:bg-cream/40 sm:grid-cols-[1fr_14rem_6rem]">
+                    <motion.div key={skill} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="group grid grid-cols-[1fr_4rem_3.5rem] items-center gap-3 border-b border-line px-4 py-3.5 sm:px-5 last:border-b-0 hover:bg-cream/40 sm:grid-cols-[1fr_14rem_6rem]">
                       <span className="flex min-w-0 items-center gap-3">
                         <button aria-label={`Select ${skill}`} onClick={() => setPicked((p) => (on ? p.filter((x) => x !== skill) : [...p, skill]))} className={`grid size-5 shrink-0 place-items-center rounded-md border-2 transition ${on ? 'border-pine bg-pine text-cream' : 'border-line-strong hover:border-pine'}`}>
                           {on && <Check className="size-3" strokeWidth={3} />}
                         </button>
-                        <button disabled={!st.total} onClick={() => setMode([skill])} className="min-w-0 truncate text-left text-[14.5px] hover:text-jg-700 disabled:cursor-default disabled:text-moss">
+                        <button disabled={!st.total} onClick={() => setMode([skill])} className="min-w-0 text-left leading-snug sm:truncate text-[14.5px] hover:text-jg-700 disabled:cursor-default disabled:text-moss">
                           {skill}
                         </button>
                         <a href="https://satsuitequestionbank.collegeboard.org/digital/search" target="_blank" rel="noreferrer" title="Free official College Board questions" className="hidden shrink-0 rounded-md bg-[#2d70b3]/10 px-1.5 py-0.5 text-[10.5px] font-semibold text-[#2d70b3] group-hover:inline">
@@ -286,7 +286,7 @@ export function QBankSection() {
                         )}
                       </span>
                       <span className="flex items-center gap-2">
-                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-cream">
+                        <span className="hidden h-1.5 flex-1 overflow-hidden rounded-full bg-cream sm:block">
                           <motion.span initial={{ width: 0 }} animate={{ width: `${st.total ? (st.solved / st.total) * 100 : 0}%` }} className="block h-full rounded-full bg-[#2d70b3]" />
                         </span>
                         <span className="w-14 text-right text-[12px] tabular-nums text-moss">

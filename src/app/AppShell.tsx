@@ -4,7 +4,7 @@ import { Settings as SettingsIcon, Sigma, Calculator, Menu, X as XIcon, BarChart
 import { HumoFab } from './components/HumoFab'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/auth'
-import { streak, useBindStore, useStore } from './store'
+import { startSync, streak, useBindStore, useStore } from './store'
 
 const HomePage = lazy(() => import('./pages/Home'))
 const HumoChat = lazy(() => import('./pages/HumoChat'))
@@ -91,13 +91,25 @@ function PageLoading() {
 }
 
 export default function AppShell() {
-  const { user, signOut } = useAuth()
-  useBindStore(user?.id)
+  const { user, token, signOut } = useAuth()
+  useBindStore(user)
   const s = useStore()
   const nav = useNavigate()
   const { pathname } = useLocation()
   const days = streak(s.activeDays)
   const [more, setMore] = useState(false)
+
+  // progress follows the student across devices and survives a cleared browser
+  const [synced, setSynced] = useState(false)
+  useEffect(() => {
+    let alive = true
+    const t = setTimeout(() => alive && setSynced(true), 3000)
+    startSync(token).finally(() => alive && setSynced(true))
+    return () => {
+      alive = false
+      clearTimeout(t)
+    }
+  }, [token, user?.email])
 
   // Appearance: system / light / dark (Settings). The landing page never gets the class.
   useEffect(() => {
@@ -137,6 +149,9 @@ export default function AppShell() {
         </Suspense>
       </div>
     )
+
+  // a returning student on a new device: wait for their saved progress before deciding to onboard
+  if (!s.onboarded && !synced) return <PageLoading />
 
   if (!s.onboarded)
     return (

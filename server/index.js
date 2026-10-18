@@ -8,6 +8,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
+import { kvBackend, kvDel, kvGet, kvSet } from './kv.js'
+import { createHash } from 'node:crypto'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3001
@@ -37,25 +39,37 @@ const gemini = genai && {
 
 if (JWT_SECRET === 'dev-only-change-me') console.warn('⚠  JWT_SECRET not set — using an insecure dev secret.')
 
-/* ---------- tiny JSON user store (swap for Postgres later) ---------- */
+/* ---------- users: stored in kv (Postgres when DATABASE_URL is set, else local files) ---------- */
 const DATA_DIR = join(__dirname, 'data')
-const USERS_FILE = join(DATA_DIR, 'users.json')
 mkdirSync(DATA_DIR, { recursive: true })
-const loadUsers = () => (existsSync(USERS_FILE) ? JSON.parse(readFileSync(USERS_FILE, 'utf8')) : {})
-const saveUsers = (u) => writeFileSync(USERS_FILE, JSON.stringify(u, null, 2))
+console.log(`Storage: ${kvBackend}${kvBackend === 'files' ? ' (set DATABASE_URL so accounts and progress survive restarts)' : ''}`)
+
+// one-time move of the old users.json into the kv store
+const OLD_USERS = join(DATA_DIR, 'users.json')
+if (existsSync(OLD_USERS)) {
+  try {
+    for (const u of Object.values(JSON.parse(readFileSync(OLD_USERS, 'utf8')))) if (u?.email && !(await kvGet('users', u.email))) await kvSet('users', u.email, { ...u, id: 'u_' + createHash('sha256').update(u.email).digest('hex').slice(0, 24) })
+  } catch (e) {
+    console.warn('users.json migration skipped', e.message)
+  }
+}
+
+/** The same email always gets the same id — so a wiped disk never "forgets" who a student is. */
+export const idFor = (email) => 'u_' + createHash('sha256').update(String(email).trim().toLowerCase()).digest('hex').slice(0, 24)
+const getUser = (email) => kvGet('users', String(email || '').trim().toLowerCase())
 
 function publicUser(u) {
   return { id: u.id, name: u.name, email: u.email, picture: u.picture, provider: u.provider, createdAt: u.createdAt }
 }
 function issue(u) {
-  return { token: jwt.sign({ sub: u.id, email: u.email }, JWT_SECRET, { expiresIn: '30d' }), user: publicUser(u) }
+  return { token: jwt.sign({ sub: u.id, email: u.email }, JWT_SECRET, { expiresIn: '60d' }), user: publicUser(u) }
 }
-function upsertUser(data) {
-  const users = loadUsers()
-  const key = data.email.toLowerCase()
-  users[key] = { ...(users[key] || { id: crypto.randomUUID(), createdAt: Date.now() }), ...data, email: key }
-  saveUsers(users)
-  return users[key]
+async function upsertUser(data) {
+  const key = data.email.trim().toLowerCase()
+  const prev = await getUser(key)
+  const u = { createdAt: Date.now(), ...prev, ...data, email: key, id: idFor(key) }
+  await kvSet('users', key, u)
+  return u
 }
 
 /* ---------- app ---------- */
@@ -87,7 +101,8 @@ app.post('/api/auth/google', async (req, res) => {
     if (!r.ok) return res.status(401).json({ error: 'Google could not verify this sign-in. Try again.' })
     const p = await r.json()
     if (!p.email_verified) return res.status(401).json({ error: 'Verify your Google email first.' })
-    const user = upsertUser({ email: p.email, name: p.name, picture: p.picture, googleId: p.sub, provider: 'google' })
+    const prev = await getUser(p.email)
+    const user = await upsertUser({ email: p.email, name: p.name, picture: p.picture, googleId: p.sub, provider: prev?.passwordHash ? prev.provider : 'google' })
     res.json(issue(user))
   } catch (e) {
     console.error(e)
@@ -98,32 +113,44 @@ app.post('/api/auth/google', async (req, res) => {
 app.post('/api/auth/signup', async (req, res) => {
   const { name, email, password } = req.body || {}
   if (!email || !password || password.length < 8) return res.status(400).json({ error: 'Enter an email and a password of at least 8 characters.' })
-  const users = loadUsers()
-  if (users[email.toLowerCase()]?.passwordHash) return res.status(409).json({ error: 'An account with this email already exists. Log in instead.' })
-  const user = upsertUser({ email, name: name || email.split('@')[0], passwordHash: await bcrypt.hash(password, 10), provider: 'email' })
+  if ((await getUser(email))?.passwordHash) return res.status(409).json({ error: 'An account with this email already exists. Log in instead.' })
+  const user = await upsertUser({ email, name: name || email.split('@')[0], passwordHash: await bcrypt.hash(password, 10), provider: 'email' })
   res.json(issue(user))
 })
 
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body || {}
-  const u = loadUsers()[(email || '').toLowerCase()]
+  const u = await getUser(email)
   if (!u?.passwordHash || !(await bcrypt.compare(password || '', u.passwordHash))) return res.status(401).json({ error: 'Email or password is incorrect.' })
   res.json(issue(u))
 })
 
-app.get('/api/me', auth, (req, res) => {
-  const u = Object.values(loadUsers()).find((x) => x.id === req.user.sub)
+app.get('/api/me', auth, async (req, res) => {
+  let u = await getUser(req.user.email)
+  // the account record may have been lost with the server disk; the signed token is still proof of who this is
+  if (!u && req.user.email) u = await upsertUser({ email: req.user.email, name: req.user.email.split('@')[0], provider: 'google' })
   if (!u) return res.status(404).json({ error: 'Account not found.' })
   res.json({ user: publicUser(u) })
 })
 
-app.delete('/api/me', auth, (req, res) => {
-  const users = loadUsers()
-  const key = Object.keys(users).find((k) => users[k].id === req.user.sub)
-  if (key) {
-    delete users[key]
-    saveUsers(users)
-  }
+app.delete('/api/me', auth, async (req, res) => {
+  await kvDel('users', String(req.user.email || '').toLowerCase())
+  await kvDel('progress', idFor(req.user.email || ''))
+  res.json({ ok: true })
+})
+
+/* ---------- student progress sync (chats, plan, onboarding, results…) ---------- */
+app.get('/api/progress', auth, async (req, res) => {
+  const p = await kvGet('progress', idFor(req.user.email || ''))
+  res.json({ progress: p?.data ?? null, updatedAt: p?.updatedAt ?? 0 })
+})
+app.put('/api/progress', express.json({ limit: '8mb' }), auth, async (req, res) => {
+  const { data, updatedAt } = req.body || {}
+  if (!data || typeof data !== 'object') return res.status(400).json({ error: 'Missing progress.' })
+  const key = idFor(req.user.email || '')
+  const prev = await kvGet('progress', key)
+  if (prev && prev.updatedAt > (updatedAt || 0)) return res.status(409).json({ error: 'Newer progress on the server.', progress: prev.data, updatedAt: prev.updatedAt })
+  await kvSet('progress', key, { data, updatedAt: updatedAt || Date.now() })
   res.json({ ok: true })
 })
 
@@ -386,9 +413,9 @@ const weekKey = () => {
 }
 const loadBlitz = () => (existsSync(BLITZ_FILE) ? JSON.parse(readFileSync(BLITZ_FILE, 'utf8')) : {})
 
-app.post('/api/blitz', auth, (req, res) => {
+app.post('/api/blitz', auth, async (req, res) => {
   const score = Math.max(0, Math.min(100000, Math.round(Number(req.body?.score) || 0)))
-  const u = Object.values(loadUsers()).find((x) => x.id === req.user.sub)
+  const u = await getUser(req.user.email)
   if (!u) return res.status(404).json({ error: 'Account not found.' })
   const all = loadBlitz()
   const wk = weekKey()
