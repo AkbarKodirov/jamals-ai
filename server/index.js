@@ -439,7 +439,7 @@ app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'Jamals AI
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')
 if (existsSync(join(DIST, 'index.html'))) {
-  app.use(express.static(DIST, { maxAge: '1h', index: false }))
+  app.use(express.static(DIST, { maxAge: '1h', index: false, setHeaders: (res, p) => { if (p.endsWith('.json')) res.setHeader('Cache-Control', 'no-cache') } }))
   app.get(/^(?!\/api\/).*/, (_, res) => res.sendFile(join(DIST, 'index.html')))
 }
 
