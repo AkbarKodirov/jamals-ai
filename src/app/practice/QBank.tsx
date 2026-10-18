@@ -106,15 +106,6 @@ export function QBankHome() {
         })}
       </div>
 
-      <a href="https://satsuitequestionbank.collegeboard.org/digital/search" target="_blank" rel="noreferrer" className="card card-hover mt-4 flex items-center gap-4 p-4">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#2d70b3]/10 text-[13px] font-bold text-[#2d70b3]">CB</span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[14.5px] font-semibold">Official College Board questions</span>
-          <span className="block text-[12.5px] text-moss">The free official SAT Suite Question Bank, filtered by the same topics as ours — opens on collegeboard.org. Pair it with Bluebook practice tests.</span>
-        </span>
-        <span className="text-[13px] font-semibold text-[#2d70b3]">Open ↗</span>
-      </a>
-
       <h2 className="mt-8 text-[16px] font-semibold">Smart sets</h2>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
