@@ -1,0 +1,16 @@
+# One free Render web service: builds the React site and serves it together with the API.
+services:
+  - type: web
+    name: jamals-ai
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false # paste your key in the Render dashboard when asked
