@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { HumoDrawer } from './HumoDrawer'
 import { useStore } from '../store'
 import { studentContext } from '../humoContext'
 import { useScreen } from '../screen'
+import { hello } from '../greetings'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const PAGES: Record<string, { name: string; tips: string[] }> = {
@@ -26,6 +27,7 @@ export function HumoFab() {
   const s = useStore()
   const page = PAGES[pathname] ?? { name: 'the Jamals AI app', tips: ['What should I study today?', 'Explain a hard SAT topic'] }
   const screen = useScreen()
+  const hi = useMemo(() => hello(), [open])
   const [auto, setAuto] = useState<string | null>(null)
   const context = `${studentContext(s, page.name)}${screen ? `\n\nWHAT THE STUDENT SEES ON SCREEN RIGHT NOW (${screen.title}):\n${screen.text}\nUse this when the student says "this question", "why is it wrong", etc.` : ''}`
 
@@ -60,7 +62,7 @@ export function HumoFab() {
         </span>
         Ask Humo
       </button>
-      <HumoDrawer key={`${pathname}|${screen?.key ?? ''}`} open={open} onClose={() => { setOpen(false); setAuto(null) }} context={context} autoSend={auto} greeting={screen ? `Salom! I can see your screen — ${screen.title}. Ask me anything about it.` : `Salom! I can see you're on ${page.name.replace('their', 'your')}. What can I help with?`} suggestions={screen ? ['Why is my answer wrong?', 'Give me a hint', 'Explain it step by step', 'Solve it with Desmos'] : page.tips} />
+      <HumoDrawer key={`${pathname}|${screen?.key ?? ''}`} open={open} onClose={() => { setOpen(false); setAuto(null) }} context={context} autoSend={auto} greeting={screen ? `${hi} I can see your screen — ${screen.title}. Ask me anything about it.` : `${hi} I can see you're on ${page.name.replace('their', 'your')}. What can I help with?`} suggestions={screen ? ['Why is my answer wrong?', 'Give me a hint', 'Explain it step by step', 'Solve it with Desmos'] : page.tips} />
     </>
   )
 }

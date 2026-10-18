@@ -81,7 +81,7 @@ function RowCard({ row, i, onOpen, tab }: { row: Row; i: number; onOpen: () => v
       <div className="flex flex-wrap items-center gap-1.5 text-[11.5px] font-medium">
         <span className="rounded-md bg-cream px-2 py-0.5">{r.section === 'MATH' ? 'Math' : 'Reading & Writing'}</span>
         {r.difficulty !== 'Test' && <span className={`rounded-md px-2 py-0.5 ${r.difficulty === 'Hard' ? 'bg-rose-50 text-rose-700' : r.difficulty === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-jg-50 text-jg-700'}`}>{r.difficulty}</span>}
-        <span className="rounded-md bg-violet-50 px-2 py-0.5 text-violet-700">{r.skill}</span>
+        <span className="rounded-md bg-violet-50 px-2 py-0.5 text-violet-700">{r.topic ?? r.skill}</span>
         {saved && (
           <span className="inline-flex items-center gap-1 rounded-md bg-orange-50 px-2 py-0.5 text-orange-700">
             <Bookmark className="size-3 fill-current" /> Saved

@@ -45,7 +45,7 @@ const loadUsers = () => (existsSync(USERS_FILE) ? JSON.parse(readFileSync(USERS_
 const saveUsers = (u) => writeFileSync(USERS_FILE, JSON.stringify(u, null, 2))
 
 function publicUser(u) {
-  return { id: u.id, name: u.name, email: u.email, picture: u.picture, provider: u.provider }
+  return { id: u.id, name: u.name, email: u.email, picture: u.picture, provider: u.provider, createdAt: u.createdAt }
 }
 function issue(u) {
   return { token: jwt.sign({ sub: u.id, email: u.email }, JWT_SECRET, { expiresIn: '30d' }), user: publicUser(u) }

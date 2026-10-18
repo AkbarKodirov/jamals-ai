@@ -65,9 +65,7 @@ function ReviewItem({ test, attempt, m, i, n, onAsk }: { test: Test; attempt: At
             <button onClick={() => setAnalyze(true)} className="inline-flex items-center gap-1.5 rounded-full bg-pine px-4 py-2 text-[13px] font-semibold text-cream hover:bg-pine-2">
               <Sparkles className="size-4 text-jg-300" /> Analyze with Humo
             </button>
-            <button onClick={() => onAsk(`About question ${n}: `)} className="inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-[13px] font-semibold ring-1 ring-line hover:ring-jg-500">
-              <MessageCircle className="size-4" /> Ask Humo
-            </button>
+
           </div>
         )}
 

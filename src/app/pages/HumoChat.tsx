@@ -6,11 +6,13 @@ import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
 import { setStore, useStore, type Chat, type ChatMsg } from '../store'
 import { studentContext } from '../humoContext'
 import { uid } from '../plan'
+import { hello } from '../greetings'
+import { useAuth } from '../../lib/auth'
 
 type Space = 'humo' | 'desmos'
 const COPY: Record<Space, { greeting: string; starters: string[]; title: string; sub: string; placeholder: string }> = {
   humo: {
-    greeting: "Salom! I'm Humo. Send me any SAT question — I'll solve math the Desmos way with a real Desmos screen — or ask me to build or change your study plan.",
+    greeting: "I'm Humo. Send me any SAT question — I'll solve math the Desmos way with a real Desmos screen — or ask me to build or change your study plan.",
     starters: ['Solve x² − 5x + 6 = 0 with Desmos', 'Make my weekends lighter in my plan', 'Ikkinchi darajali tenglamalarni tushuntir', 'What should I study after my last test?'],
     title: 'Humo',
     sub: 'Digital SAT tutor · Desmos solves · edits your plan · English, O\'zbekcha, Русский',
@@ -159,9 +161,11 @@ function HistoryList({ active, onPick, onNew, space }: { active: string; onPick:
 
 function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; space: Space }) {
   const s = useStore()
+  const { user } = useAuth()
   const c = COPY[space]
   const context = studentContext(s, space === 'desmos' ? 'the Desmos Lab (photo questions)' : 'the Ask Humo page')
-  const { msgs, busy, send } = useHumoChat(c.greeting, context, { initial, onChange: (m) => saveChat(id, m, space), space })
+  const [hi] = useState(() => `${hello(user?.name?.split(' ')[0])} ${c.greeting}`)
+  const { msgs, busy, send } = useHumoChat(hi, context, { initial, onChange: (m) => saveChat(id, m, space), space })
   const [input, setInput] = useState('')
   const [pics, setPics] = useState<string[]>([])
   const [drag, setDrag] = useState(false)

@@ -6,6 +6,7 @@ export type User = {
   email: string
   picture?: string
   provider: 'google' | 'email' | 'demo'
+  createdAt?: number
 }
 
 type Session = { token: string; user: User }

@@ -1,11 +1,18 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, CalendarPlus, Check, Download, Languages, LogOut, Monitor, Moon, RotateCcw, Sigma, Sun, Trash2, Upload, UserRound } from 'lucide-react'
+import { Bell, CalendarPlus, Check, Download, Languages, LogOut, Monitor, Moon, Plug, Shield, RotateCcw, Sigma, Sun, Trash2, Upload, UserRound } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
-import { getStore, resetStore, setStore, useStore, type Settings as SettingsT, type Profile } from '../store'
+import { getStore, resetStore, setStore, streak, useStore, type Settings as SettingsT, type Profile } from '../store'
 import { DAY_NAMES, downloadIcs, generatePlan } from '../plan'
 import { Avatar } from '../AppShell'
+
+const TABS = [
+  ['account', 'Account', UserRound],
+  ['preferences', 'Preferences', Sun],
+  ['study', 'Study & integrations', CalendarPlus],
+  ['data', 'Data & privacy', Shield],
+] as const
 
 function Section({ icon: Icon, title, sub, children }: { icon: typeof Bell; title: string; sub?: string; children: React.ReactNode }) {
   return (
@@ -59,6 +66,15 @@ export default function Settings() {
   const [saved, setSaved] = useState(false)
   const [danger, setDanger] = useState<null | 'reset' | 'delete'>(null)
   const [typed, setTyped] = useState('')
+  const [tab, setTab] = useState<(typeof TABS)[number][0]>('account')
+  const [joined, setJoined] = useState<number | null>(user?.createdAt ?? null)
+  useEffect(() => {
+    if (joined || !token) return
+    fetch('/api/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d?.user?.createdAt && setJoined(d.user.createdAt))
+      .catch(() => {})
+  }, [joined, token])
   const p = s.profile
 
   const flash = () => {
@@ -109,7 +125,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-5xl">
       <div className="flex items-end justify-between">
         <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Settings</h1>
         <AnimatePresence>
@@ -121,158 +137,65 @@ export default function Settings() {
         </AnimatePresence>
       </div>
 
-      <div className="mt-6 space-y-4">
-        <Section icon={UserRound} title="Profile" sub="From your Google account">
-          <div className="flex items-center gap-4">
-            <Avatar size="size-16" />
-            <div>
-              <p className="text-[17px] font-semibold">{user?.name}</p>
-              <p className="text-[13px] text-moss">{user?.email}</p>
-              <p className="mt-1 text-[12px] text-moss">Signed in with {user?.provider === 'google' ? 'Google' : 'email'}</p>
+      <div className="mt-6 grid gap-6 md:grid-cols-[13rem_1fr]">
+        <nav className="flex gap-1 overflow-x-auto md:flex-col">
+          {TABS.map(([k, l, Icon]) => (
+            <button key={k} onClick={() => setTab(k)} className={`relative flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-[14px] font-medium ${tab === k ? 'text-pine' : 'text-moss hover:text-pine'}`}>
+              {tab === k && <motion.span layoutId="settings-tab" className="absolute inset-0 rounded-xl bg-card shadow-sm ring-1 ring-line" />}
+              <Icon className="relative size-4" /> <span className="relative">{l}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="min-w-0 space-y-4">
+          {tab === 'account' && (
+            <>
+        <section className="card overflow-hidden">
+          <div className="relative h-24 bg-gradient-to-r from-[#1b2925] via-[#2a652e] to-[#48ae4f]">
+            <img src="/humo-bird.png" alt="" className="absolute -bottom-6 right-4 h-28 opacity-40" />
+          </div>
+          <div className="px-6 pb-6">
+            <div className="relative -mt-10 flex flex-wrap items-start gap-4">
+              <span className="rounded-full ring-4 ring-card">
+                <Avatar size="size-20" />
+              </span>
+              <div className="mt-12 min-w-0 flex-1">
+                <p className="text-[20px] font-semibold">{user?.name}</p>
+                <p className="truncate text-[13px] text-moss">{user?.email}</p>
+              </div>
+              <span className="mt-14 rounded-full bg-jg-50 px-3 py-1 text-[12px] font-semibold text-jg-700">Jamals student · every feature free</span>
+            </div>
+            <dl className="mt-5 grid gap-3 text-[13.5px] sm:grid-cols-3">
+              <div className="rounded-2xl bg-soft p-3.5">
+                <dt className="text-[12px] text-moss">Joined</dt>
+                <dd className="mt-0.5 font-medium">{joined ? new Date(joined).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }) : '—'}</dd>
+              </div>
+              <div className="rounded-2xl bg-soft p-3.5">
+                <dt className="text-[12px] text-moss">Signed in with</dt>
+                <dd className="mt-0.5 font-medium">{user?.provider === 'google' ? 'Google' : user?.provider === 'email' ? 'Email & password' : 'Demo'}</dd>
+              </div>
+              <div className="rounded-2xl bg-soft p-3.5">
+                <dt className="text-[12px] text-moss">Goal</dt>
+                <dd className="mt-0.5 font-medium">
+                  {p.target}
+                  {p.testDate ? ` · SAT ${new Date(p.testDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}` : ''}
+                </dd>
+              </div>
+            </dl>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                ['Questions', s.practice.solved + s.attempts.reduce((a, x) => a + x.total, 0)],
+                ['Practice tests', s.attempts.length],
+                ['Day streak', streak(s.activeDays)],
+                ['Words mastered', Object.values(s.vocab).filter((v) => v.reps >= 3).length],
+              ].map(([l, v]) => (
+                <div key={l as string} className="rounded-2xl border border-line p-3.5">
+                  <p className="font-serif text-[24px] leading-none tabular-nums">{v}</p>
+                  <p className="mt-1 text-[11.5px] text-moss">{l}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </Section>
-
-        <Section icon={Sun} title="Appearance" sub="Light, dark, or follow your device">
-          <div className="grid grid-cols-3 gap-3">
-            {(
-              [
-                ['system', 'System', Monitor],
-                ['light', 'Light', Sun],
-                ['dark', 'Dark', Moon],
-              ] as const
-            ).map(([k, l, Icon]) => {
-              const on = s.settings.theme === k
-              return (
-                <motion.button key={k} whileTap={{ scale: 0.97 }} onClick={() => set({ theme: k })} className={`overflow-hidden rounded-2xl border-2 text-left transition ${on ? 'border-jg-500 shadow-[0_0_0_4px_rgb(72_174_79/.15)]' : 'border-line hover:border-line-strong'}`}>
-                  <div className={`relative h-20 ${k === 'dark' ? 'bg-[#0d1311]' : k === 'light' ? 'bg-[#faf7f1]' : 'bg-gradient-to-r from-[#faf7f1] from-50% to-[#0d1311] to-50%'}`}>
-                    <span className="absolute inset-y-2 left-2 w-5 rounded-md bg-[#1b2925]" />
-                    <span className={`absolute left-9 right-3 top-3 h-5 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
-                    <span className={`absolute bottom-3 left-9 h-5 w-1/3 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
-                    <span className="absolute bottom-3 right-3 h-5 w-8 rounded-md bg-[#48ae4f]" />
-                  </div>
-                  <span className="flex items-center gap-2 px-3 py-2.5 text-[13.5px] font-medium">
-                    <Icon className="size-4" /> {l}
-                    {on && <Check className="ml-auto size-4 text-jg-600" />}
-                  </span>
-                </motion.button>
-              )
-            })}
-          </div>
-        </Section>
-
-        <Section icon={CalendarPlus} title="Study schedule & Google Calendar" sub="Used for your plan, reminders and calendar events">
-          <p className="text-[13px] text-moss">Study days</p>
-          <div className="mt-2 grid grid-cols-7 gap-1.5">
-            {DAY_NAMES.map((d, i) => {
-              const on = (p.studyDays ?? [0, 1, 2, 3, 4, 5]).includes(i)
-              return (
-                <button key={d} onClick={() => prof({ studyDays: on ? (p.studyDays ?? [0, 1, 2, 3, 4, 5]).filter((x) => x !== i) : [...(p.studyDays ?? []), i].sort() })} className={`rounded-xl py-2 text-[12.5px] font-semibold ${on ? 'bg-pine text-cream' : 'bg-cream text-moss'}`}>
-                  {d.slice(0, 3)}
-                </button>
-              )
-            })}
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Seg value={String(p.minutesPerDay ?? 60)} options={['30', '45', '60', '90', '120'].map((m) => [m, `${m}m`])} onChange={(v) => prof({ minutesPerDay: Number(v) })} />
-            <label className="flex items-center gap-2 text-[13px] text-moss">
-              Start at
-              <input type="time" value={p.studyTime ?? '18:00'} onChange={(e) => prof({ studyTime: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
-            </label>
-            <label className="flex items-center gap-2 text-[13px] text-moss">
-              SAT date
-              <input type="date" value={p.testDate ?? ''} onChange={(e) => prof({ testDate: e.target.value || null })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
-            </label>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <button
-              onClick={() => {
-                setStore((st) => ({ ...st, plan: generatePlan(st.profile, st.weakSkills) }))
-                flash()
-              }}
-              className="btn btn-ghost h-10 px-4 text-[13px]"
-            >
-              <RotateCcw className="size-4" /> Rebuild plan from this schedule
-            </button>
-            <button onClick={() => downloadIcs(s.plan ?? generatePlan(p, s.weakSkills), p)} className="btn btn-dark h-10 px-4 text-[13px]">
-              <Download className="size-4" /> Add plan to Google Calendar (.ics)
-            </button>
-          </div>
-          <p className="mt-2 text-[11.5px] text-moss">In Google Calendar: Settings → Import & export → Import the file. Works with Apple Calendar and Outlook too. No access to your Google account is needed.</p>
-        </Section>
-
-        <Section icon={Languages} title="Humo" sub="How your tutor talks to you">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="text-[14px] font-medium">Reply language</span>
-              <Seg
-                value={s.settings.language}
-                options={[
-                  ['en', 'English'],
-                  ['uz', "O'zbekcha"],
-                  ['ru', 'Русский'],
-                ]}
-                onChange={(v) => set({ language: v })}
-              />
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="text-[14px] font-medium">When I ask about a question</span>
-              <Seg
-                value={s.settings.humoStyle}
-                options={[
-                  ['hint', 'Hint first'],
-                  ['full', 'Full solution'],
-                ]}
-                onChange={(v) => set({ humoStyle: v })}
-              />
-            </div>
-            <Toggle on={s.settings.desmosFirst} onChange={(v) => set({ desmosFirst: v })} label="Desmos-first Math" sub="Humo solves math the Desmos way with a checked Desmos screen" />
-          </div>
-        </Section>
-
-        <Section icon={Bell} title="Goals & reminders">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="text-[14px] font-medium">Daily question goal</span>
-            <Seg value={String(s.settings.dailyGoal)} options={['10', '20', '40', '60'].map((n) => [n, n])} onChange={(v) => set({ dailyGoal: Number(v) })} />
-          </div>
-          <div className="mt-3 divide-y divide-line">
-            <Toggle
-              on={s.settings.reminders}
-              onChange={async (v) => {
-                if (v && 'Notification' in window && Notification.permission === 'default') await Notification.requestPermission()
-                set({ reminders: v })
-              }}
-              label="Study reminder"
-              sub={`A nudge at ${p.studyTime ?? '18:00'} on study days while Jamals AI is open. For phone alerts, add the plan to Google Calendar.`}
-            />
-            <Toggle on={s.settings.sounds} onChange={(v) => set({ sounds: v })} label="Sounds" sub="Soft sounds for correct answers and streaks" />
-          </div>
-        </Section>
-
-        <Section icon={Sigma} title="Your data" sub="Progress is saved on this device. Take it with you.">
-          <div className="flex flex-wrap gap-2">
-            <button onClick={exportData} className="btn btn-ghost h-10 px-4 text-[13px]">
-              <Download className="size-4" /> Export progress
-            </button>
-            <button onClick={() => file.current?.click()} className="btn btn-ghost h-10 px-4 text-[13px]">
-              <Upload className="size-4" /> Import progress
-            </button>
-            <input ref={file} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
-            <button
-              onClick={() => {
-                setStore((st) => ({ ...st, chats: [] }))
-                flash()
-              }}
-              className="btn btn-ghost h-10 px-4 text-[13px]"
-            >
-              Clear chat history ({s.chats.length})
-            </button>
-          </div>
-          <p className="mt-3 text-[12px] text-moss">
-            {s.attempts.length} tests · {s.drills.length} drills · {Object.keys(s.vocab).length} words studied · {s.chats.length} Humo chats
-          </p>
-        </Section>
-
+        </section>
         <section className="card border-red-200 p-6">
           <h2 className="text-[16px] font-semibold">Account</h2>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -328,6 +251,184 @@ export default function Settings() {
             )}
           </AnimatePresence>
         </section>
+            </>
+          )}
+          {tab === 'preferences' && (
+            <>
+        <Section icon={Sun} title="Appearance" sub="Light, dark, or follow your device">
+          <div className="grid grid-cols-3 gap-3">
+            {(
+              [
+                ['system', 'System', Monitor],
+                ['light', 'Light', Sun],
+                ['dark', 'Dark', Moon],
+              ] as const
+            ).map(([k, l, Icon]) => {
+              const on = s.settings.theme === k
+              return (
+                <motion.button key={k} whileTap={{ scale: 0.97 }} onClick={() => set({ theme: k })} className={`overflow-hidden rounded-2xl border-2 text-left transition ${on ? 'border-jg-500 shadow-[0_0_0_4px_rgb(72_174_79/.15)]' : 'border-line hover:border-line-strong'}`}>
+                  <div className={`relative h-20 ${k === 'dark' ? 'bg-[#0d1311]' : k === 'light' ? 'bg-[#faf7f1]' : 'bg-gradient-to-r from-[#faf7f1] from-50% to-[#0d1311] to-50%'}`}>
+                    <span className="absolute inset-y-2 left-2 w-5 rounded-md bg-[#1b2925]" />
+                    <span className={`absolute left-9 right-3 top-3 h-5 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
+                    <span className={`absolute bottom-3 left-9 h-5 w-1/3 rounded-md ${k === 'dark' ? 'bg-[#151d1a]' : 'bg-[#ffffff]'} ring-1 ring-black/5`} />
+                    <span className="absolute bottom-3 right-3 h-5 w-8 rounded-md bg-[#48ae4f]" />
+                  </div>
+                  <span className="flex items-center gap-2 px-3 py-2.5 text-[13.5px] font-medium">
+                    <Icon className="size-4" /> {l}
+                    {on && <Check className="ml-auto size-4 text-jg-600" />}
+                  </span>
+                </motion.button>
+              )
+            })}
+          </div>
+        </Section>
+
+        <Section icon={Languages} title="Humo" sub="How your tutor talks to you">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="text-[14px] font-medium">Reply language</span>
+              <Seg
+                value={s.settings.language}
+                options={[
+                  ['en', 'English'],
+                  ['uz', "O'zbekcha"],
+                  ['ru', 'Русский'],
+                ]}
+                onChange={(v) => set({ language: v })}
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="text-[14px] font-medium">When I ask about a question</span>
+              <Seg
+                value={s.settings.humoStyle}
+                options={[
+                  ['hint', 'Hint first'],
+                  ['full', 'Full solution'],
+                ]}
+                onChange={(v) => set({ humoStyle: v })}
+              />
+            </div>
+            <Toggle on={s.settings.desmosFirst} onChange={(v) => set({ desmosFirst: v })} label="Desmos-first Math" sub="Humo solves math the Desmos way with a checked Desmos screen" />
+          </div>
+        </Section>
+
+        <Section icon={Bell} title="Goals & reminders">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-[14px] font-medium">Daily question goal</span>
+            <Seg value={String(s.settings.dailyGoal)} options={['10', '20', '40', '60'].map((n) => [n, n])} onChange={(v) => set({ dailyGoal: Number(v) })} />
+          </div>
+          <div className="mt-3 divide-y divide-line">
+            <Toggle
+              on={s.settings.reminders}
+              onChange={async (v) => {
+                if (v && 'Notification' in window && Notification.permission === 'default') await Notification.requestPermission()
+                set({ reminders: v })
+              }}
+              label="Study reminder"
+              sub={`A nudge at ${p.studyTime ?? '18:00'} on study days while Jamals AI is open. For phone alerts, add the plan to Google Calendar.`}
+            />
+            <Toggle on={s.settings.sounds} onChange={(v) => set({ sounds: v })} label="Sounds" sub="Soft sounds for correct answers and streaks" />
+          </div>
+        </Section>
+
+            </>
+          )}
+          {tab === 'study' && (
+            <>
+        <Section icon={CalendarPlus} title="Study schedule & Google Calendar" sub="Used for your plan, reminders and calendar events">
+          <p className="text-[13px] text-moss">Study days</p>
+          <div className="mt-2 grid grid-cols-7 gap-1.5">
+            {DAY_NAMES.map((d, i) => {
+              const on = (p.studyDays ?? [0, 1, 2, 3, 4, 5]).includes(i)
+              return (
+                <button key={d} onClick={() => prof({ studyDays: on ? (p.studyDays ?? [0, 1, 2, 3, 4, 5]).filter((x) => x !== i) : [...(p.studyDays ?? []), i].sort() })} className={`rounded-xl py-2 text-[12.5px] font-semibold ${on ? 'bg-pine text-cream' : 'bg-cream text-moss'}`}>
+                  {d.slice(0, 3)}
+                </button>
+              )
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <Seg value={String(p.minutesPerDay ?? 60)} options={['30', '45', '60', '90', '120'].map((m) => [m, `${m}m`])} onChange={(v) => prof({ minutesPerDay: Number(v) })} />
+            <label className="flex items-center gap-2 text-[13px] text-moss">
+              Start at
+              <input type="time" value={p.studyTime ?? '18:00'} onChange={(e) => prof({ studyTime: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
+            </label>
+            <label className="flex items-center gap-2 text-[13px] text-moss">
+              SAT date
+              <input type="date" value={p.testDate ?? ''} onChange={(e) => prof({ testDate: e.target.value || null })} className="rounded-lg border border-line bg-card px-2 py-1.5 text-[14px] text-pine" />
+            </label>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                setStore((st) => ({ ...st, plan: generatePlan(st.profile, st.weakSkills) }))
+                flash()
+              }}
+              className="btn btn-ghost h-10 px-4 text-[13px]"
+            >
+              <RotateCcw className="size-4" /> Rebuild plan from this schedule
+            </button>
+            <button onClick={() => downloadIcs(s.plan ?? generatePlan(p, s.weakSkills), p)} className="btn btn-dark h-10 px-4 text-[13px]">
+              <Download className="size-4" /> Add plan to Google Calendar (.ics)
+            </button>
+          </div>
+          <p className="mt-2 text-[11.5px] text-moss">In Google Calendar: Settings → Import & export → Import the file. Works with Apple Calendar and Outlook too. No access to your Google account is needed.</p>
+        </Section>
+
+        <Section icon={Plug} title="Integrations" sub="Connect services that work with your Jamals study plan">
+          <ul className="divide-y divide-line">
+            {[
+              ['Google Calendar', 'Weekly study events with reminders, until test day', 'calendar', '#1a73e8'],
+              ['Desmos', 'Live graphing calculator in lessons, practice and Desmos Lab', 'desmos', '#2d70b3'],
+              ['Google sign-in', user?.provider === 'google' ? `Connected as ${user?.email}` : 'Not used — you signed in with email', 'google', '#ea4335'],
+            ].map(([n, d, k, c]) => (
+              <li key={k} className="flex items-center gap-3 py-3">
+                <span className="grid size-10 place-items-center rounded-xl text-[15px] font-bold text-white" style={{ background: c }}>
+                  {n[0]}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[14px] font-medium">{n}</span>
+                  <span className="block text-[12px] text-moss">{d}</span>
+                </span>
+                {k === 'calendar' ? (
+                  <button onClick={() => downloadIcs(s.plan ?? generatePlan(p, s.weakSkills), p)} className="btn btn-dark h-9 px-4 text-[12.5px]">
+                    Add plan
+                  </button>
+                ) : (
+                  <span className="rounded-full bg-jg-50 px-2.5 py-1 text-[11.5px] font-semibold text-jg-700">{k === 'google' && user?.provider !== 'google' ? 'Off' : 'Connected'}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Section>
+            </>
+          )}
+          {tab === 'data' && <>        <Section icon={Sigma} title="Your data" sub="Progress is saved on this device. Take it with you.">
+          <div className="flex flex-wrap gap-2">
+            <button onClick={exportData} className="btn btn-ghost h-10 px-4 text-[13px]">
+              <Download className="size-4" /> Export progress
+            </button>
+            <button onClick={() => file.current?.click()} className="btn btn-ghost h-10 px-4 text-[13px]">
+              <Upload className="size-4" /> Import progress
+            </button>
+            <input ref={file} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importData(e.target.files[0])} />
+            <button
+              onClick={() => {
+                setStore((st) => ({ ...st, chats: [] }))
+                flash()
+              }}
+              className="btn btn-ghost h-10 px-4 text-[13px]"
+            >
+              Clear chat history ({s.chats.length})
+            </button>
+          </div>
+          <p className="mt-3 text-[12px] text-moss">
+            {s.attempts.length} tests · {s.drills.length} drills · {Object.keys(s.vocab).length} words studied · {s.chats.length} Humo chats
+          </p>
+        </Section>
+
+</>}
+        </div>
       </div>
     </div>
   )

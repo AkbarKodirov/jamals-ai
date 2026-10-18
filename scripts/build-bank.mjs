@@ -122,7 +122,7 @@ const index = readdirSync(join(ROOT, 'public/tests'))
     return { id: t.id, name: t.name, type: t.type, modules: t.modules.length, questions, minutesPerModule: t.type === 'MATH' ? 35 : 32 }
   })
   .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
-for (const meta of index.filter((t) => !/^Practice Test \d+$/.test(t.name))) {
+for (const meta of index.filter((t) => !/^(R&W )?(Practice Test|Mock)\b/.test(t.name))) {
   const t = JSON.parse(readFileSync(join(ROOT, 'public/tests', meta.id + '.json'), 'utf8'))
   let n = 0
   t.modules.forEach((m) =>
@@ -133,7 +133,7 @@ for (const meta of index.filter((t) => !/^Practice Test \d+$/.test(t.name))) {
   )
   console.log(meta.id, n)
 }
-writeFileSync(join(ROOT, 'public/tests/index.json'), JSON.stringify(index.filter((t) => /^Practice Test \d+$/.test(t.name)), null, 2))
+writeFileSync(join(ROOT, 'public/tests/index.json'), JSON.stringify(index.filter((t) => /^(R&W )?(Practice Test|Mock)\b/.test(t.name)), null, 2))
 
 /* 3 — Desmos skill bank (verified answers + full Desmos walkthroughs) */
 const dbank = JSON.parse(readFileSync(join(ROOT, 'public/desmos/bank.json'), 'utf8'))

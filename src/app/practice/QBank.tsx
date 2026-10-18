@@ -5,11 +5,9 @@ import { ArrowLeft, BookOpen, Bookmark, Check, ChevronRight, Filter, Flame, Gaug
 import { loadBank, streak, useStore, type BankQ } from '../store'
 import { ScoreRing } from '../../components/motion'
 import { lessonFor } from '../learn/courses'
+import { TOPICS } from '../../../shared/topics.js'
+import { COARSE } from '../../../shared/topics.js'
 
-const DOMAINS = {
-  EBRW: ['Craft and Structure', 'Information and Ideas', 'Standard English Conventions', 'Expression of Ideas'],
-  MATH: ['Algebra', 'Advanced Math', 'Problem-Solving and Data Analysis', 'Geometry and Trigonometry'],
-} as const
 const DIFFS = ['Easy', 'Medium', 'Hard'] as const
 const STATUS = [
   ['all', 'All'],
@@ -108,6 +106,15 @@ export function QBankHome() {
         })}
       </div>
 
+      <a href="https://satsuitequestionbank.collegeboard.org/digital/search" target="_blank" rel="noreferrer" className="card card-hover mt-4 flex items-center gap-4 p-4">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#2d70b3]/10 text-[13px] font-bold text-[#2d70b3]">CB</span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14.5px] font-semibold">Official College Board questions</span>
+          <span className="block text-[12.5px] text-moss">The free official SAT Suite Question Bank, filtered by the same topics as ours — opens on collegeboard.org. Pair it with Bluebook practice tests.</span>
+        </span>
+        <span className="text-[13px] font-semibold text-[#2d70b3]">Open ↗</span>
+      </a>
+
       <h2 className="mt-8 text-[16px] font-semibold">Smart sets</h2>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
@@ -161,11 +168,11 @@ export function QBankSection() {
   const list = (bank ?? []).filter((b) => b.section === sec && (!diffs.length || diffs.includes(b.difficulty)) && (!set || b.set === set))
   const sets = [...new Map((bank ?? []).filter((b) => b.section === sec).map((b) => [b.set, b.setName])).entries()]
   const bySkill = (skill: string) => {
-    const l = list.filter((b) => b.skill === skill)
+    const l = list.filter((b) => (b.topic ?? b.skill) === skill)
     const tried = l.filter((b) => s.qbank[b.id])
     return { total: l.length, solved: tried.filter((b) => s.qbank[b.id].correct).length, tried: tried.length, acc: tried.length ? Math.round((tried.filter((b) => s.qbank[b.id].correct).length / tried.length) * 100) : null }
   }
-  const skillsIn = (domain: string) => [...new Set(list.filter((b) => b.domain === domain).map((b) => b.skill))]
+  const skillsIn = (domain: string) => TOPICS[sec].find((d) => d.domain === domain)?.topics.map(([n]) => n) ?? []
   const url = (skills: string[], m: 'practice' | 'rush') => {
     const q = new URLSearchParams({ section: sec, status, order: m === 'rush' ? 'random' : order, back: `/app/practice/${sec}` })
     if (skills.length) q.set('skills', skills.join(','))
@@ -250,7 +257,7 @@ export function QBankSection() {
         </div>
         {!bank && <div className="skeleton m-5 h-40 rounded-2xl" />}
         {bank &&
-          DOMAINS[sec].map((domain) => {
+          TOPICS[sec].map(({ domain }) => {
             const skills = skillsIn(domain)
             if (!skills.length) return null
             return (
@@ -259,16 +266,19 @@ export function QBankSection() {
                 {skills.map((skill, i) => {
                   const st = bySkill(skill)
                   const on = picked.includes(skill)
-                  const lesson = lessonFor(skill)
+                  const lesson = lessonFor(COARSE[skill] ?? COARSE[domain] ?? skill)
                   return (
                     <motion.div key={skill} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="group grid grid-cols-[1fr_9rem_5rem] items-center gap-3 border-b border-line px-5 py-3.5 last:border-b-0 hover:bg-cream/40 sm:grid-cols-[1fr_14rem_6rem]">
                       <span className="flex min-w-0 items-center gap-3">
                         <button aria-label={`Select ${skill}`} onClick={() => setPicked((p) => (on ? p.filter((x) => x !== skill) : [...p, skill]))} className={`grid size-5 shrink-0 place-items-center rounded-md border-2 transition ${on ? 'border-pine bg-pine text-cream' : 'border-line-strong hover:border-pine'}`}>
                           {on && <Check className="size-3" strokeWidth={3} />}
                         </button>
-                        <button onClick={() => setMode([skill])} className="min-w-0 truncate text-left text-[14.5px] hover:text-jg-700">
+                        <button disabled={!st.total} onClick={() => setMode([skill])} className="min-w-0 truncate text-left text-[14.5px] hover:text-jg-700 disabled:cursor-default disabled:text-moss">
                           {skill}
                         </button>
+                        <a href="https://satsuitequestionbank.collegeboard.org/digital/search" target="_blank" rel="noreferrer" title="Free official College Board questions" className="hidden shrink-0 rounded-md bg-[#2d70b3]/10 px-1.5 py-0.5 text-[10.5px] font-semibold text-[#2d70b3] group-hover:inline">
+                          Official ↗
+                        </a>
                         {lesson && (
                           <Link to={lesson.to} title="Lesson" className="hidden shrink-0 rounded-md bg-jg-50 px-1.5 py-0.5 text-[10.5px] font-semibold text-jg-700 group-hover:inline">
                             Lesson

@@ -6,6 +6,7 @@ import { useAuth } from '../lib/auth'
 import { setStore, SKILLS, useStore, type Profile } from './store'
 import { DAY_NAMES, generatePlan, KINDS, planMinutes } from './plan'
 import { exciteHumo } from '../three/humoMood'
+import { hello } from './greetings'
 
 const HumoScene = lazy(() => import('../three/HumoScene'))
 
@@ -69,6 +70,7 @@ export default function Onboarding() {
   const [p, setP] = useState<Profile>({ ...s.profile, studyDays: s.profile.studyDays ?? [0, 1, 2, 3, 4, 5], minutesPerDay: s.profile.minutesPerDay ?? 60, studyTime: s.profile.studyTime ?? '18:00', focus: s.profile.focus ?? [] })
   const [built, setBuilt] = useState(0)
   const first = user?.name?.split(' ')[0] ?? 'there'
+  const [hi] = useState(() => hello(first))
   const up = (x: Partial<Profile>) => setP((o) => ({ ...o, ...x }))
   const go = (d: number) => {
     setDir(d)
@@ -129,7 +131,7 @@ export default function Onboarding() {
                 <span className="text-jg-300">Humo · </span>
                 {
                   [
-                    `Salom, ${first}! I'll ask six quick questions, then build a plan that fits your week.`,
+                    `${hi} I'll ask six quick questions, then build a plan that fits your week.`,
                     'Your aim decides how high we aim — and how hard I push.',
                     weeks ? `${weeks} weeks. That's enough time if we use it well.` : 'No date yet? Fine — I will plan in 12-week blocks.',
                     'Be honest — a good plan starts from where you really are.',
@@ -152,7 +154,7 @@ export default function Onboarding() {
                       <Sparkles className="size-3.5" /> Welcome to Jamals AI
                     </p>
                     <h1 className="display mt-5 text-[clamp(2.4rem,5vw,4rem)] leading-[1.02]">
-                      Salom, {first}.<br />
+                      {hi}<br />
                       <span className="gold-text">Let's plan your SAT.</span>
                     </h1>
                     <p className="mt-5 max-w-md text-[16px] text-cream/70">Six quick questions. Humo turns your answers into a week-by-week plan you can edit, send to Google Calendar, or change just by asking.</p>

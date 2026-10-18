@@ -41,7 +41,7 @@ export async function buildSession(p: URLSearchParams, st: ReturnType<typeof use
   let list = bank.filter(
     (b) =>
       (!section || b.section === section) &&
-      (!skills?.length || skills.includes(b.skill)) &&
+      (!skills?.length || skills.includes(b.skill) || (!!b.topic && skills.includes(b.topic))) &&
       (!diffs?.length || diffs.includes(b.difficulty)) &&
       (!set || b.set === set) &&
       (status === 'all' ||
@@ -55,7 +55,7 @@ export async function buildSession(p: URLSearchParams, st: ReturnType<typeof use
   if (n) list = list.slice(0, n)
   return list.map((b) => {
     const ref: QRef = { key: `bank:${b.id}`, testId: 'bank', module: 0, index: 0, bankId: b.id }
-    return { key: ref.key, ref, r: { q: b, section: b.section, source: b.setName, skill: b.skill, difficulty: b.difficulty, bank: b } }
+    return { key: ref.key, ref, r: { q: b, section: b.section, source: b.setName, skill: b.skill, topic: b.topic, difficulty: b.difficulty, bank: b } }
   })
 }
 
@@ -158,6 +158,12 @@ function ExplainTab({ item, a }: { item: Item; a: Ans }) {
   const b = item.r.bank
   return (
     <div className="space-y-4 overflow-y-auto p-4">
+      {b?.explanation && (
+        <div className="rounded-2xl border border-line bg-card p-4 text-[13.5px] leading-relaxed">
+          <p className="text-[11.5px] font-semibold uppercase tracking-wide text-jg-700">Answer explanation</p>
+          <p className="mt-1.5">{b.explanation}</p>
+        </div>
+      )}
       {b?.solution && <SolutionCard b={b} />}
       <HumoExplain testId={b ? 'bank' : item.ref.testId} qKey={b ? b.id : `${item.ref.module}:${item.ref.index}`} q={item.r.q} compact />
       {item.r.section === 'MATH' && !b?.solution && <DesmosSolvePanel id={item.key} q={item.r.q} />}
@@ -220,7 +226,7 @@ function InfoTab({ item }: { item: Item }) {
     <div className="space-y-3 p-4 text-[13.5px]">
       {[
         ['Section', item.r.section === 'MATH' ? 'Math' : 'Reading & Writing'],
-        ['Skill', item.r.skill],
+        ['Topic', item.r.topic ?? item.r.skill],
         ['Difficulty', item.r.difficulty],
         ['Source', item.r.source],
         ['Your history', p ? `${p.tries} tr${p.tries === 1 ? 'y' : 'ies'} · last ${p.correct ? 'correct' : 'incorrect'}` : 'First time'],
@@ -403,7 +409,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
                     <StickyNote className="size-4" /> Note
                   </button>
                   <span className="ml-auto hidden text-[11.5px] text-moss sm:inline">
-                    {item.r.skill} · <span className={item.r.difficulty === 'Hard' ? 'text-rose-600' : item.r.difficulty === 'Medium' ? 'text-amber-600' : 'text-jg-700'}>{item.r.difficulty}</span>
+                    {item.r.topic ?? item.r.skill} · <span className={item.r.difficulty === 'Hard' ? 'text-rose-600' : item.r.difficulty === 'Medium' ? 'text-amber-600' : 'text-jg-700'}>{item.r.difficulty}</span>
                   </span>
                 </div>
                 <AnimatePresence>

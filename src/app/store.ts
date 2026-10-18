@@ -70,6 +70,8 @@ export type BankQ = TestQuestion & {
   skill: Skill
   difficulty: 'Easy' | 'Medium' | 'Hard'
   challenge?: boolean
+  topic?: string
+  explanation?: string
   bankId?: string
   solution?: { hints: string[]; desmos: string[]; look_for: string; why: string; trap: string; rule: string; topic: string }
 }
@@ -269,11 +271,11 @@ export const loadBank = (): Promise<BankQ[]> => (bankP ??= fetch('/bank/bank.jso
 
 /** Saved / mistake entries point at either a test question or a bank question. */
 export type QRef = { key: string; testId: string; module: number; index: number; bankId?: string }
-export type Resolved = { q: TestQuestion; section: 'EBRW' | 'MATH'; source: string; skill: Skill; difficulty: string; bank?: BankQ }
+export type Resolved = { q: TestQuestion; section: 'EBRW' | 'MATH'; source: string; skill: Skill; topic?: string; difficulty: string; bank?: BankQ }
 export async function resolveRef(r: QRef): Promise<Resolved | null> {
   if (r.bankId) {
     const b = (await loadBank()).find((x) => x.id === r.bankId)
-    return b ? { q: b, section: b.section, source: b.setName, skill: b.skill, difficulty: b.difficulty, bank: b } : null
+    return b ? { q: b, section: b.section, source: b.setName, skill: b.skill, topic: b.topic, difficulty: b.difficulty, bank: b } : null
   }
   const t = await loadTest(r.testId).catch(() => null)
   const q = t?.modules[r.module]?.questions[r.index]

@@ -1,4 +1,5 @@
 import { KINDS } from '../plan'
+import { hello } from '../greetings'
 import { UNIVERSITIES, uniLogo } from '../../landing/Sections'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -69,6 +70,7 @@ export default function Home() {
   const { user } = useAuth()
   const s = useStore()
   const first = user?.name?.split(' ')[0] ?? 'there'
+  const [greeting] = useState(() => hello(first))
   const hour = new Date().getHours()
   const greet = hour < 5 ? 'Xayrli tun' : hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech'
 
@@ -128,7 +130,7 @@ export default function Home() {
             {greet}
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="display mt-2 text-[clamp(2rem,4vw,2.9rem)]">
-            Salom, {first}.
+            {greeting}
           </motion.h1>
           <p className="mt-3 text-[15px] leading-relaxed text-cream/65">
             {s.attempts.length ? "Here's today's plan. Humo has reviewed your last test." : "Let's find your starting score. Take your first practice test and Humo will plan the rest."}
