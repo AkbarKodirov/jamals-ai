@@ -6,16 +6,20 @@
 // Usage: node scripts/add-bank.mjs
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { ALL_TOPICS, coarseOf } from '../shared/topics.js'
 import { drawFigure } from './figure.mjs'
 
-const ROOT = new URL('..', import.meta.url).pathname
-const BANK = join(ROOT, 'public/bank/bank.json')
+// Windows-safe root path
+const __filename = fileURLToPath(import.meta.url)
+const ROOT = dirname(dirname(__filename))
+
+const BANK = join(ROOT, 'public', 'bank', 'bank.json')
 const bank = JSON.parse(readFileSync(BANK, 'utf8'))
 
 function loadAdds(file) {
-  const p = join(ROOT, 'scripts/cache', file)
+  const p = join(ROOT, 'scripts', 'cache', file)
   return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : []
 }
 
@@ -25,7 +29,7 @@ const adds = [
 ]
 
 const have = new Set(bank.map((q) => q.id))
-mkdirSync(join(ROOT, 'public/qimg'), { recursive: true })
+mkdirSync(join(ROOT, 'public', 'qimg'), { recursive: true })
 
 let added = 0
 for (const g of adds) {
@@ -39,7 +43,7 @@ for (const g of adds) {
   let image = null
   if (g.figure?.shapes?.length) {
     const name = `fig-${id.slice(2)}.svg`
-    writeFileSync(join(ROOT, 'public/qimg', name), drawFigure(g.figure))
+    writeFileSync(join(ROOT, 'public', 'qimg', name), drawFigure(g.figure))
     image = `/qimg/${name}`
   }
   const mc = g.options?.length === 4
