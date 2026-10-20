@@ -18,32 +18,63 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE
 // Free-tier models, tried in order: if one is rate-limited or retired, Humo falls back to the next.
 const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.8-flash,gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
 const genai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
-/** Calls `fn(model, req)` on each model in turn: a rate-limited or retired model falls through to the next.
+// a model that just failed or timed out is skipped for a while, so students don't wait on it again
+const cooldown = new Map()
+const resting = (m) => (cooldown.get(m) || 0) > Date.now()
+
+/** Calls `fn(req)` on each model in turn: a busy, slow, rate-limited or retired model falls through to the next.
  * A model that refuses the thinking setting is retried once without it. */
-async function withFallback(req, fn) {
+async function withFallback(req, fn, timeoutMs) {
   let last
-  for (const model of GEMINI_MODELS) {
+  const order = GEMINI_MODELS.every(resting) ? GEMINI_MODELS : GEMINI_MODELS.filter((m) => !resting(m))
+  for (const model of order) {
+    const attempt = async (config) => {
+      if (!timeoutMs) return fn({ ...req, config, model })
+      const ctl = new AbortController()
+      const timer = setTimeout(() => ctl.abort(), timeoutMs)
+      try {
+        return await fn({ ...req, config: { ...config, abortSignal: ctl.signal }, model })
+      } catch (e) {
+        if (ctl.signal.aborted) throw Object.assign(new Error(`${model} took longer than ${timeoutMs} ms`), { status: 'timeout' })
+        throw e
+      } finally {
+        clearTimeout(timer)
+      }
+    }
     try {
       try {
-        return await fn({ ...req, model })
+        return await attempt(req.config)
       } catch (e) {
         if ((e?.status || e?.code) !== 400 || !req.config?.thinkingConfig) throw e
         const { thinkingConfig, ...config } = req.config
-        return await fn({ ...req, config, model })
+        return await attempt(config)
       }
     } catch (e) {
       last = e
       const code = e?.status || e?.code
-      if (![404, 429, 500, 503].includes(code)) throw e
+      if (![404, 429, 500, 503, 'timeout'].includes(code)) throw e
+      cooldown.set(model, Date.now() + (code === 404 ? 3600_000 : 60_000))
       console.warn(`Gemini ${model} unavailable (${code}), trying next model`)
     }
   }
   throw last
 }
+
+/** A stream counts as started only once its first piece arrives, so a model that hangs before answering times out. */
+async function startStream(req) {
+  const it = await genai.models.generateContentStream(req)
+  const first = await it.next()
+  return (async function* () {
+    if (!first.done) yield first.value
+    yield* it
+  })()
+}
+
 const gemini = genai && {
   models: {
-    generateContent: (req) => withFallback(req, (r) => genai.models.generateContent(r)),
-    generateContentStream: (req) => withFallback(req, (r) => genai.models.generateContentStream(r)),
+    generateContent: (req, timeoutMs = 60_000) => withFallback(req, (r) => genai.models.generateContent(r), timeoutMs),
+    // the timeout covers the wait for the first words only
+    generateContentStream: (req, timeoutMs = 10_000) => withFallback(req, startStream, timeoutMs),
   },
 }
 
