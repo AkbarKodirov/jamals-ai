@@ -1,0 +1,30 @@
+[
+  {
+    "topic": "Text Structure and Purpose",
+    "difficulty": "Medium",
+    "passage": "Burt Kotler and colleagues showed that high moonlight intensity inhibits the activity of the greater Egyptian gerbil (Gerbillus pyramidum), a finding explicable in terms of benefits and costs: greater lunar intensity may not enable the gerbils to increase foraging success enough to offset the higher chance of detection by predatory foxes or owls. Though many other nocturnal mammals respond to lunar intensity variations similarly to greater Egyptian gerbils, Mohol bushbabies (Galago moholi) display the opposite pattern, as their heavy reliance on visual foraging results in a different balance of reward and risk.",
+    "question": "Which choice best describes the function of the reference to \"heavy reliance on visual foraging\" in the text as a whole?",
+    "options": [
+      "It emphasizes an attribute of Mohol bushbabies that enables them to respond to lunar intensity variations more rapidly than greater Egyptian gerbils and many other nocturnal mammals do.",
+      "It identifies a characteristic of Mohol bushbabies that explains why they do not reduce their activity under high lunar intensity like greater Egyptian gerbils and many other nocturnal mammals do.",
+      "It describes a behavioral pattern displayed by Mohol bushbabies that is inconsistent with how they would be expected to respond to high lunar intensity based on benefits and costs.",
+      "It presents a trait of Mohol bushbabies that serves as evidence for the assertion that greater Egyptian gerbils are not the only nocturnal mammals whose activity is inhibited by high lunar intensity."
+    ],
+    "correct": 1,
+    "explanation": "The phrase explains the different balance of reward and risk that causes the opposite pattern."
+  },
+  {
+    "topic": "Inferences",
+    "difficulty": "Medium",
+    "passage": "Optimal foraging theory (OFT) holds that animals\u2019 foraging behaviors reflect cost-benefit trade-offs that vary by species and with dynamic ecological circumstances. One such circumstance is lunar intensity, which Joel Brown and colleagues found to be negatively associated with foraging by Arizona pocket mice but Patricia C. Wright found to be positively associated with foraging by three-striped night monkeys. This discrepancy is explicable in terms of OFT: the monkeys\u2019 greater reliance on vision means that higher lunar intensity benefits them more than it benefits the mice.",
+    "question": "Which choice best describes the finding made by Wright, as presented in the text?",
+    "options": [
+      "During periods of high lunar intensity, three-striped night monkeys increase their reliance on vision.",
+      "As lunar intensity increases, Arizona pocket mice reduce their foraging activity.",
+      "As lunar intensity increases, three-striped night monkeys increase their foraging activity.",
+      "Increased lunar intensity is more beneficial for three-striped night monkeys than it is for Arizona pocket mice."
+    ],
+    "correct": 2,
+    "explanation": "Wright found a positive association between lunar intensity and foraging by the monkeys."
+  }
+]
