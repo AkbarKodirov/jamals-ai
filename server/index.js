@@ -234,9 +234,9 @@ export function cleanPlan(p) {
   return { days }
 }
 
-async function repairDesmos(spec, errors, question) {
+async function repairDesmos(spec, errors, question, expect) {
   const out = await gemini.models.generateContent({
-    contents: [{ role: 'user', parts: [{ text: `${question ? `Question:\n${question}\n\n` : ''}This Desmos screen spec was refused by the checker:\n${JSON.stringify(spec)}\n\nErrors:\n- ${errors.join('\n- ')}\n\nRecompute the math and return ONLY the corrected spec as JSON (same format).` }] }],
+    contents: [{ role: 'user', parts: [{ text: `${question ? `Question:\n${question}\n\n` : ''}${expect != null ? `Checked answer: ${expect}\n\n` : ''}This Desmos screen spec was refused by the checker:\n${JSON.stringify(spec)}\n\nErrors:\n- ${errors.join('\n- ')}\n\nRecompute the math and return ONLY the corrected spec as JSON (same format). Every curve must be an expression in x alone: put the numbers in, never a letter like k or a. A slider value or the answer goes in a line with a "result" expression.` }] }],
     config: { systemInstruction: DESMOS_GUIDE, temperature: 0.1, responseMimeType: 'application/json' },
   })
   return JSON.parse(out.text)
@@ -252,8 +252,9 @@ async function finishReply(text, { expect, question } = {}) {
     try {
       let spec = JSON.parse(m[1])
       let r = prepareScreen(spec, { expect })
-      if (r.errors.length && gemini) {
-        spec = await repairDesmos(spec, r.errors, question)
+      // up to two repairs: the checker's errors go back to Gemini with the question and the checked answer
+      for (let k = 0; k < 2 && r.errors.length && gemini; k++) {
+        spec = await repairDesmos(spec, r.errors, question, expect).catch(() => spec)
         r = prepareScreen(spec, { expect })
       }
       if (!r.errors.length) {
@@ -333,6 +334,69 @@ function flatContents(contents) {
   return [{ role: 'user', parts: [...last.parts.filter((p) => p.inlineData), { text }] }]
 }
 
+/* ---------- Desmos Lab: the answer is solved twice and checked with code before Humo explains it ---------- */
+const SOLVE_CHECK = `You check SAT math questions for Humo, a tutor, before Humo explains them. You never talk to the student.
+Look at the student's LATEST message (a photo, a screenshot or typed text; earlier messages are context, e.g. "now what if it were 16?").
+If it is not a math question to solve (a Reading & Writing question, a question about Desmos itself, a greeting, a request for a plan), answer only: {"kind":"other"}
+Otherwise:
+1. Copy the question exactly as written, with every number, condition and answer choice. If the photo is unreadable or cut off, answer only: {"kind":"unreadable","missing":"what is missing"}
+2. Solve it carefully.
+3. Verify with Python: compute the answer, plug it back into the original question, and check every condition (whole numbers, "first", "smallest positive", "exactly one", units, rounding, which quantity is asked for). For a multiple-choice question check every choice. Fix the answer if the check fails.
+4. End with ONE line of JSON and nothing after it:
+{"kind":"math","read":"the question as written","answer":"the final answer as the SAT expects it (a number, a fraction like 7/2, or the choice's text)","choice":"A, B, C or D for multiple choice, otherwise null"}`
+
+function lastJson(text) {
+  const all = [...String(text || '').matchAll(/\{[^{}]*"kind"[^{}]*\}/g)]
+  for (const m of all.reverse()) {
+    try {
+      return JSON.parse(m[0])
+    } catch {
+      /* try the one before */
+    }
+  }
+  return null
+}
+
+const norm = (a) => String(a ?? '').toLowerCase().replace(/[\s$,%°]|\\|degrees?/g, '').replace(/^[a-z]\w*=/, '')
+function sameAnswer(a, b) {
+  if (a.choice && b.choice) return String(a.choice).trim().toUpperCase() === String(b.choice).trim().toUpperCase()
+  const x = answerValue(norm(a.answer))
+  const y = answerValue(norm(b.answer))
+  if (x != null && y != null) return Math.abs(x - y) <= 1e-6 * Math.max(1, Math.abs(x))
+  return norm(a.answer) === norm(b.answer)
+}
+
+async function solveOnce(contents, temperature, extra = '') {
+  const out = await gemini.models.generateContent(
+    { contents, config: { systemInstruction: SOLVE_CHECK + extra, temperature, tools: [{ codeExecution: {} }], thinkingConfig: { thinkingLevel: 'high' } } },
+    35_000,
+  )
+  return lastJson(out.text)
+}
+
+/** Two independent solves (each checked with Python); if they disagree, a third one decides. Null when it can't be settled. */
+async function verifiedAnswer(contents) {
+  const input = flatContents(contents)
+  const [a, b] = await Promise.all([solveOnce(input, 0.2).catch(() => null), solveOnce(input, 0.8).catch(() => null)])
+  const first = [a, b].find((x) => x?.kind)
+  if (!first) return null
+  if (first.kind !== 'math') return first
+  const math = [a, b].filter((x) => x?.kind === 'math' && x.answer != null && x.answer !== '')
+  if (math.length === 2 && sameAnswer(math[0], math[1])) return { ...math[0], agreed: true }
+  const candidates = math.map((x, i) => `Solver ${i + 1} answered: ${x.answer}${x.choice ? ` (${x.choice})` : ''}`).join('\n')
+  const c = await solveOnce(input, 0.2, `\n\nOther solvers already tried this question:\n${candidates || 'They could not finish.'}\nAt least one of them is wrong or unsure. Solve it from scratch, check each candidate with Python, and give the answer that is actually correct.`).catch(() => null)
+  if (c?.kind === 'math' && c.answer) return { ...c, agreed: math.some((x) => sameAnswer(x, c)) }
+  return math[0] ? { ...math[0], agreed: false } : null
+}
+
+function withVerified(system, v) {
+  if (!v) return system
+  if (v.kind === 'unreadable') return `${system}\n\nThe photo could not be read fully${v.missing ? ` (${String(v.missing).slice(0, 200)})` : ''}. Say what is missing and ask for a clearer photo instead of solving.`
+  if (v.kind !== 'math') return system
+  return `${system}\n\nCHECKED ANSWER (solved twice and verified with code before you write; never mention this note): the question reads: ${String(v.read || '').slice(0, 1500)}
+The correct final answer is ${v.answer}${v.choice ? ` (choice ${v.choice})` : ''}. Your "I read" line, steps, Desmos screen and **Answer** must all reach exactly this answer. Make every number in your Check line agree with it.`
+}
+
 const CHAT_THINKING = { thinkingLevel: process.env.GEMINI_CHAT_THINKING || 'low' }
 
 app.post('/api/chat', async (req, res) => {
@@ -356,10 +420,19 @@ app.post('/api/chat', async (req, res) => {
       return await fn(contents)
     }
   }
+  const check = async () => {
+    if (space !== 'desmos') return null
+    const v = await verifiedAnswer(contents).catch((e) => (console.warn('Answer check failed:', e?.message), null))
+    if (v) console.log(`Desmos Lab check: ${v.kind}${v.kind === 'math' ? ` → ${v.answer}${v.agreed ? ' (solvers agreed)' : ' (solvers split)'}` : ''} in ${Date.now() - started} ms`)
+    config.systemInstruction = withVerified(system, v)
+    return v
+  }
+  const expectOf = (v) => (v?.kind === 'math' && !v.choice ? (answerValue(norm(v.answer)) ?? undefined) : undefined)
   if (!stream) {
     try {
+      const v = await check()
       const out = await ask((c) => gemini.models.generateContent({ contents: c, config }))
-      const r = await finishReply(out.text || '', { question })
+      const r = await finishReply(out.text || '', { question: v?.read || question, expect: expectOf(v) })
       res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
     } catch (e) {
       console.error('Chat failed:', e?.status || '', e?.message || e)
@@ -377,6 +450,11 @@ app.post('/api/chat', async (req, res) => {
     res.write(JSON.stringify(o) + '\n')
   }
   try {
+    let v = null
+    if (space === 'desmos') {
+      send({ status: 'Reading the question and solving it twice to double-check…' })
+      v = await check()
+    }
     const it = await ask((c) => gemini.models.generateContentStream({ contents: c, config }))
     let text = ''
     for await (const chunk of it) {
@@ -385,7 +463,7 @@ app.post('/api/chat', async (req, res) => {
       text += t
       send({ delta: t })
     }
-    const r = await finishReply(text, { question })
+    const r = await finishReply(text, { question: v?.read || question, expect: expectOf(v) })
     send({ done: true, reply: r.text, desmos: r.desmos, plan: r.plan })
     console.log(`Chat answered in ${Date.now() - started} ms (${contents.length} turns)`)
   } catch (e) {

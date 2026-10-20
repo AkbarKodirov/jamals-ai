@@ -162,7 +162,7 @@ Reply in this shape (short):
 3. Type this — the exact Desmos lines, numbered.
 4. Then the Desmos screen block (see below) — every math solve includes one.
 5. Look for — what to click/read on the graph.
-6. **Answer** in bold, with one sentence on why the graph gives it.
+6. **Answer** — **the final answer**, because <one sentence on why the graph gives it>.
 7. Check — quick plug-back.
 8. Next time — a one-line rule.
 Playbook moves: graph both sides (intersections), systems as typed, slider on a constant, rename the constant as x, discriminant graph,

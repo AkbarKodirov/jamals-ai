@@ -61,8 +61,9 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
       const o = JSON.parse(line)
       if (o.error) throw new Error(o.error)
       if (o.done) return o as HumoAnswer
+      if (o.status && !text) onText(`*${o.status}*`)
       text += o.delta || ''
-      onText(text)
+      if (o.delta) onText(text)
     }
   }
   throw new Error('Humo stopped mid-answer. Try again.')
@@ -72,7 +73,7 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
 export function streamingText(text: string) {
   const shown = text.replace(/```(desmos|plan)[\s\S]*?```/g, '').replace(/```(desmos|plan)[\s\S]*$/, '')
   const building = /```desmos/.test(text)
-  return shown.replace(/\n{3,}/g, '\n\n').trim() + (building ? '\n\n_Building the Desmos screen…_' : '')
+  return shown.replace(/\n{3,}/g, '\n\n').trim() + (building ? '\n\n*Building the Desmos screen…*' : '')
 }
 
 export type Similar = { passage: string; question: string; options: string[]; correct: number; explanation: string }
