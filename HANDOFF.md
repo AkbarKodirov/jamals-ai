@@ -1,0 +1,78 @@
+# Jamals AI — handoff notes
+
+The current state of the project, written for whoever continues the work. Read this before changing anything.
+
+## What it is
+Jamals AI is a Digital SAT prep platform for **Jamals International Academy** in Tashkent. Its AI tutor is **Humo**, a golden 3D bird powered by Google Gemini.
+- Repo: `AkbarKodirov/jamals-ai` (branch `main`).
+- Live at https://jamals-ai.onrender.com. Render's free plan auto-deploys every push to `main` in about 3–5 minutes.
+- The owner is Akbarjon. He writes casually ("bro") and wants a polished, OnePrep-quality product.
+- Students use phones a lot, so every change must work at a 390px width.
+
+## Stack
+- **Frontend:**
+  - React 19, Vite 8, TypeScript, Tailwind v4 (tokens declared with `@theme` in `src/index.css`), framer-motion, lucide-react.
+  - react-router 7; three / R3F draws the 3D Humo.
+  - Run with `npm run dev`; `npm run build` runs `tsc && vite build`.
+- **Backend:** Express in `server/index.js`, which serves `dist/` and the API. Locally: `PORT=3011 node server/index.js` after a build.
+- **AI:** `@google/genai` with a model fallback list (`GEMINI_MODELS` in `server/index.js`). The key is `GEMINI_API_KEY` in `.env` (git-ignored; never commit it or print it).
+- **Storage:** `server/kv.js` uses Postgres (Neon) when `DATABASE_URL` is set, otherwise JSON files in `server/data/kv`.
+  - Production uses Neon; `GET /api/health` returns `storage: "postgres"`.
+  - Users are keyed by email with deterministic ids: `u_` + sha256(email).slice(0, 24).
+  - Logins use a JWT that lasts 60 days.
+- **Client store** (`src/app/store.ts`):
+  - Keeps a localStorage copy per user, keyed by email.
+  - Syncs with the cloud via `GET/PUT /api/progress` after a 4 s debounce. On a 409 conflict the server copy wins. Images are stripped from the cloud copy.
+  - `AppShell` waits for that sync before deciding whether to show onboarding, so returning users never see the setup questions again.
+- **Auth:**
+  - Email/password.
+  - Google via `@react-oauth/google`. The popup is tried first and a full-page redirect is the fallback: `/auth/google` → `src/auth/GoogleCallback.tsx`.
+  - The redirect URIs are registered in Google Cloud.
+
+## Main features (where they live)
+- **Ask Humo chat:** `src/app/pages/HumoChat.tsx`, with `space` set to `humo` or `desmos`. Histories are stored separately and photos can be uploaded.
+- **Floating Humo:** `src/app/components/HumoFab.tsx`. It can see the screen through `src/app/screen.ts`.
+- **Greetings:** 20 rotating greetings in `src/app/greetings.ts`.
+- **Practice tests:** `public/tests/index.json` plus one `<id>.json` per test, shown by `src/app/pages/Tests.tsx` and run by `TakeTest.tsx`.
+  - Every test is named "Practice Test N".
+  - Reading & Writing: Practice Test 1–13, each 2 modules × 27 = 54 questions.
+  - Math: so far only Practice Test 1 (`math-pt1`), 2 modules × 22 = 44 questions.
+  - `scripts/restructure-tests.mjs` rebuilds the index and pairs single modules.
+- **Question bank:** `public/bank/bank.json` (555 questions), shown by `src/app/practice/QBank.tsx` and run by `Runner.tsx` at `/app/practice/run`.
+  - Topics follow the 29 OnePrep / College Board topics in `shared/topics.js`.
+  - Built by `scripts/gen-bank.mjs`.
+  - It must never contain practice-test or exam-paper questions.
+- **Learn courses:** `src/app/learn/` (SAT Reading & Writing; Math & Desmos).
+- **Other pages:** Saved & mistakes (`Mistakes.tsx`), Settings (tabs; light, dark or system theme; no score editing), Analytics, Vocabulary, Blitz, Exam papers, Score calculator.
+- **Desmos:**
+  - `server/desmos.js` builds screens and validates them with mathjs.
+  - `shared/desmos-render.js` renders them as SVG.
+  - Desmos Lab is a Humo chat where students upload a picture of a question.
+- **Styling:**
+  - Dark mode works by overriding CSS variables on `html.dark-app`; `.theme-light` pins regions that must stay light.
+  - Scrollbars are invisible but scrolling still works.
+- **Logo:** `public/humo-mark.png` / `humo-mark-512.png` (the brightened version).
+
+## Content rules (important)
+- **No College Board, Bluebook, real-exam or "prediction" questions** may be imported or copied. The owner has asked for them before, and the answer is always no because of copyright.
+- Only Jamals' own original sets, or new original questions, are allowed.
+- The "Official College Board questions" card was removed from the question bank at the owner's request.
+- Every generated question goes through `scripts/gen-*.mjs`: Gemini writes it, then solves it again without the key, and only questions where both answers agree are kept.
+- Geometry figures are drawn from a JSON shape spec by `scripts/figure.mjs`. `scripts/check-figures.mjs` compares each figure with its question; it removes or redraws any that don't match.
+
+## Unfinished work
+1. **Math Practice Tests 2–6**
+   - Run `node --env-file=.env scripts/gen-tests.mjs 6` in the background. It resumes from `scripts/cache/tests-gen.json`, which is committed so progress carries over.
+   - Then run `node --env-file=.env scripts/check-figures.mjs` and `node scripts/restructure-tests.mjs`.
+   - Spot-check a few questions and figures, build, commit and push.
+   - Stopped because the Gemini free tier allows only about 20 requests per model per day, and the live Humo shares the same key. Don't use up the quota students need: ask the owner for a billed key or a separate key for generation first.
+2. **Possibly:** make Google sign-in on phones use the full-page redirect by default instead of the popup.
+3. **Possibly:** the owner may want the per-topic "Official ↗" College Board links in the question bank removed (not asked yet).
+
+## Working habits that worked
+- After a change: `npm run build`, then check the page in Playwright.
+  - Chromium is at `/opt/pw-browsers/chromium`; `npm i --no-save playwright` if it's missing.
+  - Save greyscale, cropped screenshots.
+- Commit in small pieces and push to `main`. Commit messages are plain English.
+- Live-site JSON (tests and bank) is fetched with `cache: 'no-cache'` and served with `Cache-Control: no-cache`, so content updates show up immediately.
+- Don't kill processes with `pkill -f server/index.js` (it also killed the shell); run the server as a background task.
