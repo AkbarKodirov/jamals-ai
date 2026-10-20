@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Send, X } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
-import { askHumo, HumoOffline, type ChatMsg } from '../humo'
+import { askHumo, HumoOffline, streamingText, type ChatMsg } from '../humo'
 import { RichText } from './RichText'
 import { DesmosScreen } from '../../desmos/DesmosScreen'
 import { PlanProposal } from './PlanProposal'
@@ -65,7 +65,7 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
           </div>
         </motion.div>
       ))}
-      {busy && (
+      {busy && msgs[msgs.length - 1]?.role === 'user' && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5">
           <span className="relative">
             <span className="absolute inset-0 animate-ping rounded-lg bg-jg-400/40" />
@@ -101,11 +101,14 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
     const history = [...msgs, { role: 'user' as const, text: t, at: Date.now(), ...(images?.length ? { images } : {}) }]
     setMsgs(() => history)
     setBusy(true)
+    const at = Date.now()
+    // the streaming reply is the message right after `history`; it is replaced by the checked answer at the end
+    const put = (msg: ChatMsg) => setMsgs((m) => [...m.slice(0, history.length), msg])
     try {
-      const r = await askHumo(history, token, context, opts.space)
-      setMsgs((m) => [...m, { role: 'humo', text: r.reply, desmos: r.desmos?.length ? r.desmos : undefined, plan: r.plan ?? undefined, at: Date.now() }])
+      const r = await askHumo(history, token, context, opts.space, (t) => put({ role: 'humo', text: streamingText(t), at }))
+      put({ role: 'humo', text: r.reply, desmos: r.desmos?.length ? r.desmos : undefined, plan: r.plan ?? undefined, at })
     } catch (e) {
-      setMsgs((m) => [...m, { role: 'humo', text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() }])
+      put({ role: 'humo', error: true, text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() })
     } finally {
       setBusy(false)
     }

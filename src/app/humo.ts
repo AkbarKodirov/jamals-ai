@@ -18,10 +18,61 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
   return data as T
 }
 
-export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos') {
-  // text (and question photos) go to the model; Desmos screens and plans stay on this device
-  const slim = messages.map((m) => ({ role: m.role, text: m.text, ...(m.images?.length ? { images: m.images } : {}) }))
-  return call<{ reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }>('/api/chat', { messages: slim, context, space }, token)
+export type HumoAnswer = { reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }
+
+/** Ask Humo. With `onText`, the reply streams in: `onText` gets the text written so far, then the checked answer resolves. */
+export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos', onText?: (text: string) => void): Promise<HumoAnswer> {
+  // text and the latest question photos go to the model; Desmos screens, plans and error notes stay on this device
+  let photos = 0
+  const slim = messages
+    .filter((m) => !m.error)
+    .slice(-14)
+    .reverse()
+    .map((m) => {
+      const keep = !!m.images?.length && photos++ < 2
+      return { role: m.role, text: m.text, ...(keep ? { images: m.images } : m.images?.length ? { text: `${m.text} [photo of a question sent earlier]`.trim() } : {}) }
+    })
+    .reverse()
+  const body = { messages: slim, context, space }
+  if (!onText) return call<HumoAnswer>('/api/chat', body, token)
+  let res: Response
+  try {
+    res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...body, stream: true }) })
+  } catch {
+    throw new HumoOffline('The Humo server is not running. Start it with npm run dev:all.')
+  }
+  if (!res.ok || !res.body) {
+    const data = await res.json().catch(() => ({}))
+    if (res.status === 503) throw new HumoOffline(data.error || 'Humo needs a Gemini API key.')
+    throw new Error(data.error || 'Humo could not answer. Try again.')
+  }
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
+  let buf = ''
+  let text = ''
+  for (;;) {
+    const { value, done } = await reader.read()
+    if (done) break
+    buf += value
+    let nl
+    while ((nl = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, nl).trim()
+      buf = buf.slice(nl + 1)
+      if (!line) continue
+      const o = JSON.parse(line)
+      if (o.error) throw new Error(o.error)
+      if (o.done) return o as HumoAnswer
+      text += o.delta || ''
+      onText(text)
+    }
+  }
+  throw new Error('Humo stopped mid-answer. Try again.')
+}
+
+/** What to show while a reply is still streaming: Desmos and plan blocks appear only once they are checked. */
+export function streamingText(text: string) {
+  const shown = text.replace(/```(desmos|plan)[\s\S]*?```/g, '').replace(/```(desmos|plan)[\s\S]*$/, '')
+  const building = /```desmos/.test(text)
+  return shown.replace(/\n{3,}/g, '\n\n').trim() + (building ? '\n\n_Building the Desmos screen…_' : '')
 }
 
 export type Similar = { passage: string; question: string; options: string[]; correct: number; explanation: string }

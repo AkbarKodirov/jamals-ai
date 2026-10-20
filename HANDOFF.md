@@ -31,6 +31,8 @@ Jamals AI is a Digital SAT prep platform for **Jamals International Academy** in
 
 ## Main features (where they live)
 - **Ask Humo chat:** `src/app/pages/HumoChat.tsx`, with `space` set to `humo` or `desmos`. Histories are stored separately and photos can be uploaded.
+  - Replies stream (`/api/chat` with `stream: true` answers in NDJSON lines). `chatContents()` in `server/index.js` cleans the history (starts with the student, roles alternate, error notes dropped, last 12 turns, photos only on the last two), and a history Gemini refuses is retried once as a single transcript.
+  - Chat runs with `thinkingLevel: low` for speed (`GEMINI_CHAT_THINKING` overrides it); a model that rejects it is retried without it.
 - **Floating Humo:** `src/app/components/HumoFab.tsx`. It can see the screen through `src/app/screen.ts`.
 - **Greetings:** 20 rotating greetings in `src/app/greetings.ts`.
 - **Practice tests:** `public/tests/index.json` plus one `<id>.json` per test, shown by `src/app/pages/Tests.tsx` and run by `TakeTest.tsx`.

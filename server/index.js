@@ -18,22 +18,32 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE
 // Free-tier models, tried in order: if one is rate-limited or retired, Humo falls back to the next.
 const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.8-flash,gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
 const genai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
+/** Calls `fn(model, req)` on each model in turn: a rate-limited or retired model falls through to the next.
+ * A model that refuses the thinking setting is retried once without it. */
+async function withFallback(req, fn) {
+  let last
+  for (const model of GEMINI_MODELS) {
+    try {
+      try {
+        return await fn({ ...req, model })
+      } catch (e) {
+        if ((e?.status || e?.code) !== 400 || !req.config?.thinkingConfig) throw e
+        const { thinkingConfig, ...config } = req.config
+        return await fn({ ...req, config, model })
+      }
+    } catch (e) {
+      last = e
+      const code = e?.status || e?.code
+      if (![404, 429, 500, 503].includes(code)) throw e
+      console.warn(`Gemini ${model} unavailable (${code}), trying next model`)
+    }
+  }
+  throw last
+}
 const gemini = genai && {
   models: {
-    async generateContent(req) {
-      let last
-      for (const model of GEMINI_MODELS) {
-        try {
-          return await genai.models.generateContent({ ...req, model })
-        } catch (e) {
-          last = e
-          const code = e?.status || e?.code
-          if (![404, 429, 500, 503].includes(code)) throw e
-          console.warn(`Gemini ${model} unavailable (${code}), trying next model`)
-        }
-      }
-      throw last
-    },
+    generateContent: (req) => withFallback(req, (r) => genai.models.generateContent(r)),
+    generateContentStream: (req) => withFallback(req, (r) => genai.models.generateContentStream(r)),
   },
 }
 
@@ -250,32 +260,110 @@ function toParts(m) {
   return parts
 }
 
-app.post('/api/chat', async (req, res) => {
-  const { messages = [], context, space } = req.body || {}
-  if (!gemini) return res.status(503).json({ error: NO_KEY })
-  try {
-    const recent = messages.slice(-20)
-    // images are expensive: only the last two messages that carry them are sent
-    let withImages = 0
-    const contents = recent
-      .map((m, i) => ({ m, i }))
-      .reverse()
-      .map(({ m }) => {
-        const keep = m.images?.length && withImages < 2
-        if (keep) withImages++
-        return { role: m.role === 'user' ? 'user' : 'model', parts: toParts(keep ? m : { ...m, images: [], text: m.images?.length ? `${m.text || ''} [photo of a question sent earlier]` : m.text }) }
-      })
-      .reverse()
-    let system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
-    if (space === 'desmos') system = `${system}\n\n${DESMOS_LAB}`
-    const out = await gemini.models.generateContent({ contents, config: { systemInstruction: system, temperature: 0.4 } })
-    const last = recent.filter((m) => m.role === 'user').pop()?.text
-    const r = await finishReply(out.text || '', { question: last })
-    res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
-  } catch (e) {
-    console.error(e)
-    res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+/** Turns the chat into a history Gemini accepts: starts with the student, roles alternate, no empty turns,
+ * Humo's error notes left out, and only the latest photos and the last few turns kept (smaller = faster). */
+function chatContents(messages) {
+  const turns = []
+  for (const m of messages.slice(-30)) {
+    if (m.error) continue
+    const role = m.role === 'user' ? 'user' : 'model'
+    let text = String(m.text || '').trim()
+    if (role === 'model') text = text.replace(/\[\[desmos:\d+\]\]/g, '[Desmos screen shown to the student]').replace(/\[\[plan\]\]/g, '[plan proposal shown]').slice(0, 3000)
+    if (!text && !m.images?.length) continue
+    const prev = turns[turns.length - 1]
+    if (prev && prev.role === role) {
+      // two turns in a row from the same side (e.g. a failed reply was dropped): merge them
+      prev.text = [prev.text, text].filter(Boolean).join('\n\n')
+      prev.images = [...prev.images, ...(m.images || [])]
+    } else turns.push({ role, text, images: m.images || [] })
   }
+  while (turns.length && turns[0].role !== 'user') turns.shift()
+  const recent = turns.slice(-12)
+  while (recent.length && recent[0].role !== 'user') recent.shift()
+  // images are expensive: only the last two turns that carry them are sent
+  let withImages = 0
+  for (let i = recent.length - 1; i >= 0; i--) {
+    const t = recent[i]
+    if (!t.images.length) continue
+    if (withImages < 2) withImages++
+    else {
+      t.text = `${t.text} [photo of a question sent earlier]`.trim()
+      t.images = []
+    }
+  }
+  return recent.map((t) => ({ role: t.role, parts: toParts(t) }))
+}
+
+/** Same chat as one plain transcript: the fallback if Gemini refuses the multi-turn history. */
+function flatContents(contents) {
+  const last = contents[contents.length - 1]
+  const earlier = contents.slice(0, -1).map((c) => `${c.role === 'user' ? 'Student' : 'Humo'}: ${c.parts.map((p) => p.text || '[photo]').join(' ')}`).join('\n\n')
+  const text = `${earlier ? `Conversation so far:\n${earlier}\n\nThe student now says:\n` : ''}${last.parts.find((p) => p.text)?.text || ''}`
+  return [{ role: 'user', parts: [...last.parts.filter((p) => p.inlineData), { text }] }]
+}
+
+const CHAT_THINKING = { thinkingLevel: process.env.GEMINI_CHAT_THINKING || 'low' }
+
+app.post('/api/chat', async (req, res) => {
+  const { messages = [], context, space, stream } = req.body || {}
+  if (!gemini) return res.status(503).json({ error: NO_KEY })
+  let contents = chatContents(messages)
+  if (!contents.length) return res.status(400).json({ error: 'Send Humo a question first.' })
+  let system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
+  if (space === 'desmos') system = `${system}\n\n${DESMOS_LAB}`
+  const config = { systemInstruction: system, temperature: 0.4, thinkingConfig: CHAT_THINKING }
+  const question = messages.filter((m) => m.role === 'user').pop()?.text
+  const started = Date.now()
+  // a multi-turn history Gemini refuses (400) is retried once as a single transcript
+  const ask = async (fn) => {
+    try {
+      return await fn(contents)
+    } catch (e) {
+      if ((e?.status || e?.code) !== 400 || contents.length < 2) throw e
+      console.warn('Gemini refused the chat history, retrying as one transcript:', e.message)
+      contents = flatContents(contents)
+      return await fn(contents)
+    }
+  }
+  if (!stream) {
+    try {
+      const out = await ask((c) => gemini.models.generateContent({ contents: c, config }))
+      const r = await finishReply(out.text || '', { question })
+      res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
+    } catch (e) {
+      console.error('Chat failed:', e?.status || '', e?.message || e)
+      res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+    }
+    return
+  }
+  // streaming: one JSON object per line — {"delta": "..."} while Humo writes, then {"done": true, ...}
+  let opened = false
+  const send = (o) => {
+    if (!opened) {
+      res.writeHead(200, { 'Content-Type': 'application/x-ndjson; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
+      opened = true
+    }
+    res.write(JSON.stringify(o) + '\n')
+  }
+  try {
+    const it = await ask((c) => gemini.models.generateContentStream({ contents: c, config }))
+    let text = ''
+    for await (const chunk of it) {
+      const t = chunk.text || ''
+      if (!t) continue
+      text += t
+      send({ delta: t })
+    }
+    const r = await finishReply(text, { question })
+    send({ done: true, reply: r.text, desmos: r.desmos, plan: r.plan })
+    console.log(`Chat answered in ${Date.now() - started} ms (${contents.length} turns)`)
+  } catch (e) {
+    console.error('Chat failed:', e?.status || '', e?.message || e)
+    const error = 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.'
+    if (opened) send({ error })
+    else res.status(502).json({ error })
+  }
+  res.end()
 })
 
 /* ---------- "Similar question": Humo writes a fresh question on the same skill ---------- */
