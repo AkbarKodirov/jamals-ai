@@ -1,10 +1,10 @@
 // Adds verified original questions to the Question Bank without calling Gemini.
-// Input: scripts/cache/bank-additions.json, an array of
-//   {topic, difficulty, passage, question, options, correct, answer, explanation, figure}
-// Every item there has already passed a second, independent solve that matched its key.
+// Inputs:
+//   scripts/cache/bank-additions.json
+//   scripts/cache/rw-practice-additions.json
 // Items already in the bank (same id) are skipped, so the script can be re-run safely.
 // Usage: node scripts/add-bank.mjs
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import { ALL_TOPICS, coarseOf } from '../shared/topics.js'
@@ -13,14 +13,27 @@ import { drawFigure } from './figure.mjs'
 const ROOT = new URL('..', import.meta.url).pathname
 const BANK = join(ROOT, 'public/bank/bank.json')
 const bank = JSON.parse(readFileSync(BANK, 'utf8'))
-const adds = JSON.parse(readFileSync(join(ROOT, 'scripts/cache/bank-additions.json'), 'utf8'))
+
+function loadAdds(file) {
+  const p = join(ROOT, 'scripts/cache', file)
+  return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : []
+}
+
+const adds = [
+  ...loadAdds('bank-additions.json'),
+  ...loadAdds('rw-practice-additions.json'),
+]
+
 const have = new Set(bank.map((q) => q.id))
 mkdirSync(join(ROOT, 'public/qimg'), { recursive: true })
 
 let added = 0
 for (const g of adds) {
   const t = ALL_TOPICS.find((x) => x.name === g.topic)
-  if (!t) throw new Error(`unknown topic: ${g.topic}`)
+  if (!t) {
+    console.warn(`skipping unknown topic: ${g.topic}`)
+    continue
+  }
   const id = `j-${createHash('sha1').update(g.question + (g.passage || '')).digest('hex').slice(0, 10)}`
   if (have.has(id)) continue
   let image = null
