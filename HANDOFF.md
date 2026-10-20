@@ -38,9 +38,9 @@ Jamals AI is a Digital SAT prep platform for **Jamals International Academy** in
   - Reading & Writing: Practice Test 1–13, each 2 modules × 27 = 54 questions.
   - Math: so far only Practice Test 1 (`math-pt1`), 2 modules × 22 = 44 questions.
   - `scripts/restructure-tests.mjs` rebuilds the index and pairs single modules.
-- **Question bank:** `public/bank/bank.json` (555 questions), shown by `src/app/practice/QBank.tsx` and run by `Runner.tsx` at `/app/practice/run`.
+- **Question bank:** `public/bank/bank.json` (944 questions; every topic has at least 10 Easy, 10 Medium and 10 Hard), shown by `src/app/practice/QBank.tsx` and run by `Runner.tsx` at `/app/practice/run`.
   - Topics follow the 29 OnePrep / College Board topics in `shared/topics.js`.
-  - Built by `scripts/gen-bank.mjs`.
+  - Built by `scripts/gen-bank.mjs` (Gemini). Questions written without Gemini go in `scripts/cache/bank-additions.json` and are appended by `node scripts/add-bank.mjs`; each one was solved again by a separate checker and kept only if the answers matched.
   - It must never contain practice-test or exam-paper questions.
 - **Learn courses:** `src/app/learn/` (SAT Reading & Writing; Math & Desmos).
 - **Other pages:** Saved & mistakes (`Mistakes.tsx`), Settings (tabs; light, dark or system theme; no score editing), Analytics, Vocabulary, Blitz, Exam papers, Score calculator.
