@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, BookOpen, Bookmark, Check, ChevronRight, Filter, Flame, Gauge, ListChecks, Shuffle, Sigma, Target, Timer, X, Zap } from 'lucide-react'
+import { ArrowLeft, BookOpen, Bookmark, Check, ChevronRight, Flame, Gauge, ListChecks, Shuffle, Sigma, Target, Timer, X, Zap } from 'lucide-react'
 import { loadBank, streak, useStore, type BankQ } from '../store'
 import { ScoreRing } from '../../components/motion'
 import { lessonFor } from '../learn/courses'
@@ -150,14 +150,11 @@ export function QBankSection() {
   const [diffs, setDiffs] = useState<string[]>([])
   const [status, setStatus] = useState<(typeof STATUS)[number][0]>('all')
   const [order, setOrder] = useState<'normal' | 'random'>('normal')
-  const [set, setSet] = useState('')
   const [picked, setPicked] = useState<string[]>([])
   const [mode, setMode] = useState<string[] | null>(null)
-  const [filters, setFilters] = useState(false)
 
   if (!sec) return <Navigate to="/app/practice" replace />
-  const list = (bank ?? []).filter((b) => b.section === sec && (!diffs.length || diffs.includes(b.difficulty)) && (!set || b.set === set))
-  const sets = [...new Map((bank ?? []).filter((b) => b.section === sec).map((b) => [b.set, b.setName])).entries()]
+  const list = (bank ?? []).filter((b) => b.section === sec && (!diffs.length || diffs.includes(b.difficulty)))
   const bySkill = (skill: string) => {
     const l = list.filter((b) => (b.topic ?? b.skill) === skill)
     const tried = l.filter((b) => s.qbank[b.id])
@@ -168,7 +165,6 @@ export function QBankSection() {
     const q = new URLSearchParams({ section: sec, status, order: m === 'rush' ? 'random' : order, back: `/app/practice/${sec}` })
     if (skills.length) q.set('skills', skills.join(','))
     if (diffs.length) q.set('diff', diffs.join(','))
-    if (set) q.set('set', set)
     if (m === 'rush') {
       q.set('mode', 'rush')
       q.set('n', '10')
@@ -202,26 +198,7 @@ export function QBankSection() {
         <button onClick={() => setOrder((o) => (o === 'normal' ? 'random' : 'normal'))} className="inline-flex items-center gap-1.5 rounded-full bg-card px-3.5 py-1.5 text-[13px] font-medium ring-1 ring-line">
           <Shuffle className="size-3.5" /> Order: {order === 'normal' ? 'Normal' : 'Random'}
         </button>
-        <button onClick={() => setFilters((f) => !f)} className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium ring-1 ${set ? 'bg-pine text-cream ring-pine' : 'bg-card ring-line'}`}>
-          <Filter className="size-3.5" /> Source{set ? `: ${sets.find((x) => x[0] === set)?.[1]}` : ''}
-        </button>
       </div>
-      <AnimatePresence>
-        {filters && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-            <div className="mt-3 flex flex-wrap gap-2 rounded-2xl bg-card p-3 ring-1 ring-line">
-              <button onClick={() => setSet('')} className={`rounded-full px-3 py-1 text-[12.5px] ${!set ? 'bg-pine text-cream' : 'bg-cream'}`}>
-                All sources
-              </button>
-              {sets.map(([id, name]) => (
-                <button key={id} onClick={() => setSet(id)} className={`rounded-full px-3 py-1 text-[12.5px] ${set === id ? 'bg-pine text-cream' : 'bg-cream'}`}>
-                  {name}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="card mt-4 flex flex-wrap items-center justify-between gap-4 p-5">
         <div>
