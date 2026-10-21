@@ -12910,20 +12910,6 @@
  {
   "topic": "Form, Structure, and Sense",
   "difficulty": "Medium",
-  "passage": "<p>In wayang kulit, the shadow-puppet theater of the Indonesian island of Java, a single puppeteer called a dalang ______ dozens of leather figures behind a lit screen, voicing each character while also signaling cues to the gamelan orchestra that accompanies the performance.</p>",
-  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
-  "options": [
-   "manipulate",
-   "manipulates",
-   "manipulating",
-   "who manipulates"
-  ],
-  "correct": 1,
-  "explanation": "Choice B is correct: the singular subject \"puppeteer\" needs a singular finite verb, and \"manipulates\" supplies one. Choice D is tempting, but \"who manipulates\" turns the rest of the sentence into a relative clause, leaving \"puppeteer\" with no main verb. Choice A is plural, and Choice C is a participle that also creates a fragment."
- },
- {
-  "topic": "Form, Structure, and Sense",
-  "difficulty": "Medium",
   "passage": "<p>In a laboratory in Amman, Jordan, chemist Farida Nasser's team designed a porous crystalline material for use in arid regions. The material pulls water vapor out of desert air at night and ______ it as liquid when warmed by the morning sun, potentially supplying drinking water without electricity.</p>",
   "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
   "options": [
@@ -13228,20 +13214,6 @@
   ],
   "correct": 1,
   "explanation": "Choice B is correct: the clause beginning with \"how\" needs a finite verb that agrees with the plural subject \"kinds of cells,\" so \"decide\" is needed. Choice A is the most tempting, but \"decides\" is singular. Choices C and D are nonfinite forms that leave the \"how\" clause without a verb."
- },
- {
-  "topic": "Form, Structure, and Sense",
-  "difficulty": "Easy",
-  "passage": "<p>In Namibia's Namib Desert, where rain may not fall for years at a time, some beetles survive by drinking fog. On misty mornings, a beetle climbs to the top of a dune and tilts ______ body into the wind, letting tiny water droplets collect on its back and roll down toward its mouth.</p>",
-  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
-  "options": [
-   "it's",
-   "their",
-   "its",
-   "they're"
-  ],
-  "correct": 2,
-  "explanation": "Choice C is correct: the singular possessive pronoun \"its\" refers to \"a beetle,\" matching \"its back\" and \"its mouth\" later in the sentence. Choice A is the most tempting, but \"it's\" is a contraction of \"it is.\" Choice B is plural and does not agree with \"a beetle,\" and Choice D is a contraction of \"they are.\""
  },
  {
   "topic": "Form, Structure, and Sense",
@@ -28040,5 +28012,1279 @@
   ],
   "correct": 3,
   "explanation": "Choice D is the best answer because the final sentence reveals that collectors took the crackle for a lapse, so they dismissed such pieces as badly made, or botched. Choice B is tempting because Wen shows the crackle was decorative, but that is her view, and collectors who prized only flawless pieces were rejecting the crackle as a failure, not as excessive ornament. Choices A and C (imitative; outdated) are not supported by anything in the text."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p>Across Chile's hyperarid Atacama Desert, many ground surfaces are capped by hard crusts of gypsum. The usual explanation is that these crusts accumulated grain by grain over hundreds of thousands of years from sulfate carried inland by coastal fog. Geologist Ignacio Huenchullán contends that the crusts on the Tarapacá alluvial fans formed differently: largely during a single wetter interval roughly 12,000 years ago, when groundwater rose to the surface and evaporated. His argument rests on the observation that crust thickness on the fans shows no relationship to distance from the coast—a pattern he regards as incompatible with fog deposition, since fog, he reasons, delivers less and less sulfate the farther it travels inland.</p>",
+  "question": "Which finding, if true, would most seriously weaken Huenchullán's reasoning?",
+  "options": [
+   "Gypsum crusts in parts of the Atacama far from the Tarapacá fans become steadily thinner with increasing distance from the coast.",
+   "The groundwater that rose about 12,000 years ago also left salt deposits in basins well to the east of the Tarapacá fans.",
+   "Fog reaches the Tarapacá fans only through a few gaps in the coastal mountains, so the amount of fog a site on the fans receives depends on its alignment with those gaps rather than on its distance from the coast.",
+   "The sulfate in the crusts on the Tarapacá fans has a chemical signature typical of groundwater rather than of the sea spray that coastal fog carries."
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: Huenchullán's inference depends on the unstated assumption that, on these fans, fog delivery declines with distance from the coast; if fog arrives through gaps so that delivery tracks alignment instead, fog deposition would not be expected to produce a distance pattern, and the missing pattern no longer counts against it. Choice A is tempting but describes other parts of the desert, where a distance pattern is just what Huenchullán's reasoning expects of fog, so it leaves his argument about Tarapacá intact. Choice D supports his groundwater account rather than weakening it, and Choice B is consistent with his account and says nothing about his reasoning from the absent pattern."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Medium",
+  "passage": "<p>Cognitive psychologist Haruka Imai of Osaka asked university students to complete a creative task (inventing unusual uses for everyday objects) and an analytic task (solving logic puzzles) while listening to silence, to recorded café chatter at a moderate volume, or to the same chatter played loudly. Imai reports that moderate background noise had opposite effects on the two kinds of tasks: ______</p><p style=\"font-weight:600;margin:6px 0\">Mean task scores by sound condition</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Sound condition</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Creative task score</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Analytic task score</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Quiet</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">21</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">34</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Moderate noise</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">26</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">31</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Loud noise</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">18</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">22</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "participants in the loud-noise condition scored lowest on both tasks, with scores of 18 and 22.",
+   "compared with quiet, moderate noise raised creative scores from 21 to 26 but lowered analytic scores from 34 to 31.",
+   "analytic scores were higher than creative scores in every sound condition.",
+   "creative scores fell from 26 under moderate noise to 18 under loud noise."
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct because it compares moderate noise with quiet on both tasks and shows that the effect went in opposite directions: up for creative work, down for analytic work. Choice A is accurate but concerns loud noise, which hurt both tasks and so shows no opposite effect. Choice C makes a true comparison between the tasks, not between conditions, and Choice D compares moderate with loud noise for the creative task only."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Easy",
+  "passage": "<p>Herpetologist Faly Rakotomalala studied the mossy leaf-tailed gecko, a lizard of Madagascar's eastern rainforests whose skin closely resembles tree bark. Over several weeks, she recorded how high above the ground the geckos she found were perched at different times of day. She found that the geckos rest low on tree trunks during daylight hours but ______</p><p style=\"font-weight:600;margin:6px 0\">Average perch height of mossy leaf-tailed geckos</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Time of day</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Average perch height (meters)</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Geckos observed</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Morning</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">1.1</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">42</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Afternoon</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">1.3</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">39</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Dusk</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">2.4</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">35</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Night</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">3.6</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">47</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "are found less often after dark, when only 35 geckos were observed.",
+   "stay at about the same height at night, averaging 1.3 meters.",
+   "climb higher at night, when their average perch height reaches 3.6 meters.",
+   "climb lower at dusk, when their average perch height falls to 2.4 meters."
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the claim contrasts low daytime perches with something different later, and the table shows perch height rising from 1.1 and 1.3 meters by day to 3.6 meters at night. Choice A is wrong because 35 geckos were observed at dusk, not at night (47 were seen at night), and the count says nothing about height. Choice B misstates the night value, and Choice D wrongly says the geckos climb lower at dusk, when 2.4 meters is actually higher than the daytime heights."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p>Glaciologist Rosario Quispe Mamani used satellite images to measure how much area glaciers in Peru's Cordillera Blanca lost between 1990 and 2020, grouping them by elevation and by the direction their slopes face. Because the range lies in the Southern Hemisphere, north-facing slopes there receive more direct sunlight than south-facing ones do. Both factors mattered, Quispe Mamani found, but not equally: across the range, a glacier's orientation was more strongly associated with its ice loss than its elevation was. ______</p><p style=\"font-weight:600;margin:6px 0\">Glacier area lost, 1990–2020 (%)</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Elevation band</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">North-facing glaciers</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">South-facing glaciers</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Below 5,000 m</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">46</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">22</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">5,000–5,500 m</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">41</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">17</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Above 5,500 m</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">37</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">13</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "North-facing glaciers below 5,000 meters lost 46 percent of their area, the largest loss of any group shown in the table.",
+   "Within each elevation band, north-facing glaciers lost 24 percentage points more area than south-facing ones did, whereas within each orientation, loss differed by only 9 percentage points between the lowest and highest bands.",
+   "South-facing glaciers lost less area than north-facing glaciers did, and glaciers above 5,500 meters lost less area than glaciers below 5,000 meters did.",
+   "Among both north-facing and south-facing glaciers, area loss declined steadily with elevation, falling by 9 percentage points from the lowest band to the highest."
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct because the claim is comparative—orientation mattered more than elevation—and only this choice compares the size of the two effects: a 24-point gap by orientation versus a 9-point gap by elevation. Choice C is tempting, but it merely shows that each factor had some effect, without showing which was stronger. Choice D describes only the elevation effect, and Choice A singles out one group without comparing the two factors at all."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Medium",
+  "passage": "<p>Historian Meenakshi Raghavan catalogued stone inscriptions recording gifts of land or money to temples in a district of the Kaveri River delta in southern India, sorting them by the type of donor. Raghavan argues that over four centuries, merchant guilds gradually took the place of kings as the district's chief temple patrons. ______</p><p style=\"font-weight:600;margin:6px 0\">Recorded temple grants in the district, by donor</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Century</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Royal grants</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Merchant guild grants</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Individual grants</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">10th</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">58</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">9</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">21</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">11th</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">47</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">18</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">24</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">12th</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">31</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">29</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">22</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">13th</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">19</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">41</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">25</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "In the 10th century, royal grants outnumbered guild grants 58 to 9, but by the 13th century, guild grants outnumbered royal grants 41 to 19.",
+   "Grants by individuals stayed roughly steady over the four centuries, ranging only from 21 to 25.",
+   "In the 12th century, merchant guilds made 29 grants, while individuals made 22.",
+   "Royal grants fell from 58 in the 10th century to 47 in the 11th century."
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct because it shows both halves of Raghavan's claim: kings dominated at the start, and guilds had overtaken them by the end, so guilds took the kings' place. Choice D is tempting because it shows royal grants declining, but it covers only one century and says nothing about guilds replacing kings. Choice B concerns individual donors, who are not part of the claim, and Choice C compares guilds with individuals rather than with kings."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Easy",
+  "passage": "<p>In the early 1990s, filmmakers in Lagos, Nigeria, began recording feature films directly onto inexpensive videocassettes and selling copies in open-air markets instead of releasing them in cinemas. Film historian Chiamaka Obiora argues that this approach succeeded mainly because it allowed films to reach the many viewers who lived far from any cinema.</p>",
+  "question": "Which finding, if true, would most directly support Obiora's argument?",
+  "options": [
+   "Vendors' sales records from the 1990s show that most of the cassettes were bought by customers from towns and villages that had no cinema.",
+   "Many of the early video films were shot in only a few weeks and used small casts.",
+   "Several of the Lagos filmmakers had earlier worked in television or in live theater.",
+   "The cassettes were often sold for less than the price of a cinema ticket in Lagos."
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct because it shows that the cassettes' buyers were mostly people without access to a cinema, which is exactly the reach Obiora credits for the approach's success. Choice D is tempting, but it points to low price, a different reason for success, rather than to reaching distant viewers. Choices B and C describe how the films were made and who made them, which says nothing about where the audience lived."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p><em>Clay and Ember</em> is a 2009 novel by Yoon Hae-jin. In the novel, the apprentice Seo-yeon works for a maker of <em>onggi</em>, large earthenware storage jars, in a Korean mountain village. Over time, she comes to regard the cracked jars her teacher discards not as mere failures but as traces of his ambition: ______</p>",
+  "question": "Which quotation from <em>Clay and Ember</em> most effectively illustrates the claim?",
+  "options": [
+   "\"She ran her thumb along a crack in one of the discarded jars and thought that even his mistakes were more beautiful than her best work.\"",
+   "\"He never spoke of the jars that failed; he only lit the kiln again, and she learned to read his silence as a kind of shame.\"",
+   "\"In every split rim she now saw the place where he had thinned the wall past what the clay allowed—had asked it for more than it promised, and been refused.\"",
+   "\"The jars that survived the firing were sold at the market in Icheon, where buyers praised their even glaze and sturdy shoulders.\""
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: Seo-yeon now reads each crack as the spot where her teacher pushed the clay beyond its limits—asking more than it promised—so the cracks become evidence of ambition rather than simple failure. Choice A is tempting because Seo-yeon views a crack admiringly, but her admiration concerns beauty, not ambition, and she still calls the cracks \"mistakes.\" Choice B has her reading failure as shame, the opposite of the claim, and Choice D concerns the jars that succeeded."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Medium",
+  "passage": "<p>In the eighteenth century, some families in Anatolia protected their children against smallpox through inoculation: deliberately introducing material from a mild case into a small cut, which usually produced a milder illness followed by immunity. Historian Selin Aydemir argues that in one Anatolian market town, the practice spread chiefly through local women healers who performed it in people's homes, not through the influence of physicians' written treatises recommending it.</p>",
+  "question": "Which finding, if true, would most directly support Aydemir's argument?",
+  "options": [
+   "Household account books show payments to women healers for inoculations in the town decades before any physician's treatise on inoculation is known to have reached it.",
+   "Women healers in the town were regularly consulted by families of every social rank.",
+   "Smallpox outbreaks in the town were less frequent in the nineteenth century than in the eighteenth century.",
+   "Several physicians in the town owned copies of treatises that praised inoculation."
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct because it shows inoculation by women healers already established in the town before physicians' treatises could have influenced anyone there, so the practice could not have spread through those writings. Choice B is tempting, since it shows that women healers were influential, but it does not connect them to inoculation specifically. Choice D, if anything, points toward the treatises' influence, and Choice C concerns later outbreaks rather than how the practice spread."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Easy",
+  "passage": "<p>\"Harmattan Morning\" is a 1974 poem by Kofi Ansah-Darko. In the poem, the speaker describes how the dry, dust-laden wind of the harmattan season makes a familiar village seem hidden and strange: ______</p>",
+  "question": "Which quotation from \"Harmattan Morning\" most effectively illustrates the claim?",
+  "options": [
+   "\"The goats complain beside the empty well, / and grandmother counts the days until the rain.\"",
+   "\"I wake before the cockerel, cold beneath my cloth, / and hear my brother sweeping out the yard.\"",
+   "\"The traders lift their baskets onto patient heads / and take the long red road toward the market.\"",
+   "\"Dust has erased the baobab and the chapel roof; / I pass my own door and do not know it.\""
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: the dust \"erased\" familiar landmarks, and the speaker fails to recognize even his own door, showing the village made hidden and strange. Choice A mentions dryness but not anything becoming unfamiliar. Choices B and C describe ordinary morning routines without suggesting that the village looks hidden or strange."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p>When disturbed, wild orangutans produce a sharp call known as a \"kiss-squeak,\" and the acoustic form of this call differs from one population to another. Primatologist Siti Rahmawati hypothesizes that these differences are cultural—passed on socially as young apes copy the calls of their mothers—rather than adjustments to the way sound travels through each population's particular forest. The two Bornean populations she has studied so far do use clearly different forms of the call. But because they also inhabit forests that differ markedly in canopy height and density, her data cannot yet distinguish her hypothesis from the acoustic alternative.</p>",
+  "question": "Which finding, if true, would most directly support Rahmawati's hypothesis over the alternative she must rule out?",
+  "options": [
+   "Two other orangutan populations, living in forests with nearly identical structure and sound-transmission properties, also use clearly different forms of the kiss-squeak.",
+   "Orangutans born and raised in zoos produce a form of the kiss-squeak that differs from the forms used by both of the wild Bornean populations.",
+   "In each of the two Bornean forests, the form of the kiss-squeak used locally is the one that travels farthest through that forest's vegetation.",
+   "Young orangutans in both Bornean populations spend several years in close contact with their mothers before becoming independent."
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: if populations in acoustically identical forests still differ, the acoustic explanation cannot account for the difference, while social transmission can. Choice B is tempting, but zoos also differ acoustically from both forests, so a distinct zoo call fits either explanation. Choice D shows that young apes have the opportunity to learn from their mothers but does nothing to rule out the acoustic alternative, and Choice C supports that alternative."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Medium",
+  "passage": "<p>Many star catalogs compiled in the medieval Islamic world did not record new measurements; instead, they reproduced the star positions listed in older catalogs, shifting every position by the same standard correction to account for the time that had passed. Historian of science Leila Farahani argues that a star catalog compiled in the 1270s at an observatory in northwestern Iran was different: it was based largely on fresh observations made with the observatory's own instruments.</p>",
+  "question": "Which finding, if true, would most directly support Farahani's argument?",
+  "options": [
+   "The catalog lists more stars than most earlier catalogs did.",
+   "The observatory's library is reported to have held thousands of manuscripts, including several older star catalogs.",
+   "Several astronomers who worked at the observatory later wrote treatises on geometry and trigonometry.",
+   "The differences between the catalog's star positions and those in older catalogs vary from star to star instead of matching a single correction, and they resemble the errors typical of the observatory's surviving instruments."
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: copied positions would all differ from the older ones by one standard correction, so differences that vary star by star—in a pattern matching the observatory's own instruments—indicate fresh measurements. Choice A is tempting, but a longer list could come from copying older catalogs and adding a few stars. Choice B shows only that copying was possible, and Choice C concerns the astronomers' later work, not how the catalog was made."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Easy",
+  "passage": "<p>Historian Thandiwe Mokoena studied the borrowing register of the Wynberg Reading Room, a subscription library in Cape Town, South Africa, for the year 1868. Mokoena found that readers there were especially drawn to accounts of journeys to distant places. In fact, the register shows that travel narratives were the library's most popular category of book: ______</p><p style=\"font-weight:600;margin:6px 0\">Loans recorded at the Wynberg Reading Room, 1868</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Category</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Number of loans</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Novels</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">1,240</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Travel narratives</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">2,080</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Sermons</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">410</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">History</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">960</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "novels were borrowed 1,240 times, more often than history books were.",
+   "sermons were borrowed only 410 times during the year.",
+   "history books were borrowed 960 times, less often than novels were.",
+   "travel narratives were borrowed 2,080 times, more often than books in any other category."
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct because it shows that travel narratives had more loans (2,080) than any other category, which is what \"most popular\" requires. Choices A and C compare novels and history books, so they say nothing about travel narratives. Choice B gives the figure for sermons, the least borrowed category, which does not show which category was most popular."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p>Mycologist Aino Lehtonen surveyed wood-decay fungi in four kinds of forest stand in eastern Finland. She distinguished \"specialist\" species, which decompose only large trunks that have been dead for many years, from \"generalist\" species, which decompose many kinds of wood. Because intensive forestry removes most dead trees, managed stands contain far less dead wood than natural ones. Lehtonen concludes that this loss threatens fungal diversity selectively rather than across the board: ______</p><p style=\"font-weight:600;margin:6px 0\">Dead wood and wood-decay fungal species in four stand types</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Stand type</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Dead wood (cubic meters per hectare)</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Specialist species</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Generalist species</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Young managed</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">4</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">3</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">31</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Mature managed</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">11</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">7</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">33</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Naturally burned</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">38</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">19</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">30</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Old-growth</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">52</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">24</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">32</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "old-growth stands had both the most dead wood and the most specialist species, with 52 cubic meters per hectare and 24 species.",
+   "as dead wood increased from 4 to 52 cubic meters per hectare, the number of specialist species rose from 3 to 24, while the number of generalist species stayed between 30 and 33 in every stand type.",
+   "naturally burned stands had less dead wood than old-growth stands but more than either type of managed stand.",
+   "generalist species outnumbered specialist species in every stand type, including old-growth stands."
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a selective threat means that losing dead wood harms some fungi but not others, and this choice shows specialists rising steadily with dead wood while generalists stay essentially unchanged. Choice A is tempting, but by describing only the old-growth stands it neither shows a pattern across stands nor shows that generalists were unaffected. Choice C compares dead-wood amounts without mentioning fungi, and Choice D compares the two groups' sizes, which says nothing about how each responds to the loss of dead wood."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Medium",
+  "passage": "<p>In the early 1900s, many nitrate mining companies in northern Chile paid workers not in cash but in tokens that could be spent only at stores owned by the company. Historian Valentina Araya compared three mining camps from 1907 and argues that token payment disguised how little workers actually earned: ______</p><p style=\"font-weight:600;margin:6px 0\">Wages and food prices at three Chilean nitrate camps, 1907</p><table style=\"border-collapse:collapse;margin:4px 0 10px\"><tr><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Camp</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Form of payment</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Monthly wage (pesos)</th><th style=\"border:1px solid #94a3b8;padding:5px 10px;text-align:left;background:#eef2f7\">Price of a standard monthly food basket (pesos)</th></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">A</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Cash</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">60</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">30</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">B</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Tokens</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">66</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">44</td></tr><tr><td style=\"border:1px solid #94a3b8;padding:5px 10px\">C</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">Tokens</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">64</td><td style=\"border:1px solid #94a3b8;padding:5px 10px\">41</td></tr></table>",
+  "question": "Which choice most effectively uses data from the table to complete the text?",
+  "options": [
+   "Camp B paid the highest monthly wage of the three camps, 66 pesos.",
+   "the standard food basket cost 44 pesos at Camp B's store and 41 pesos at Camp C's.",
+   "workers at Camp A, who were paid in cash, earned 60 pesos a month, the lowest wage of the three camps.",
+   "although token-paid workers at Camps B and C earned more pesos than cash-paid workers at Camp A, their wages bought only about one and a half food baskets a month, compared with two at Camp A."
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct because it shows the disguise Araya describes: token-paid workers received higher nominal wages, yet those wages bought less food than the lower cash wage at Camp A. Choice A is tempting, but on its own it suggests that token-paid workers were better off, the opposite of Araya's point. Choices B and C each give only one side of the comparison—prices without wages, or a wage without prices."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>In 2019, media scholar Wanjiru Kamau compared two outlets in Kisumu, Kenya: a community radio call-in show and a daily newspaper's letters page.</li><li>Over six months, the radio show aired comments from 1,140 different listeners; the letters page printed letters from 210 different writers.</li><li>Kamau's survey found that 92% of residents could access both a radio and the newspaper.</li><li>Radio contributors cited \"being heard in my own voice\" and the option of speaking Dholuo as their reasons for calling.</li><li>Kamau concluded that the format of participation, not access to the medium, explains the difference in the number of contributors.</li></ul>",
+  "question": "The student wants to present Kamau's conclusion along with the evidence that rules out an alternative explanation for it. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Kamau found that the radio show aired comments from 1,140 different listeners over six months, compared with 210 letter writers, a difference she attributed to the format of participation.",
+   "Because 92% of surveyed residents could access both a radio and the newspaper, Kamau concluded that the format of participation, rather than access to either medium, explains why far more people contributed to the radio show (1,140) than to the letters page (210).",
+   "Radio contributors cited the chance to be heard in their own voice and to speak Dholuo, and 92% of surveyed residents could access both a radio and the newspaper.",
+   "Kamau compared a community radio call-in show with a newspaper's letters page in Kisumu and found that 92% of surveyed residents had access to both."
+  ],
+  "correct": 1,
+  "explanation": "Choice B states Kamau's conclusion and gives the evidence that rules out the alternative (unequal access): nearly all residents could reach both media. Choice A is tempting because it states the conclusion, but it omits the access data, so the alternative explanation is never ruled out. Choices C and D include the access figure but never state Kamau's conclusion."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Medium",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>In 132 CE, the Chinese scholar Zhang Heng presented an instrument to the Han court.</li><li>The instrument was designed to indicate the direction of distant earthquakes.</li><li>It was a bronze vessel with eight dragons facing outward around its rim, each holding a ball in its mouth.</li><li>Below each dragon sat a bronze toad with an open mouth.</li><li>When a tremor occurred, a ball would drop from one dragon into the toad below, indicating the earthquake's direction.</li></ul>",
+  "question": "The student wants to introduce Zhang Heng's instrument to an audience unfamiliar with it. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Zhang Heng's bronze vessel had eight dragons around its rim, each holding a ball, with a bronze toad sitting below each dragon.",
+   "When a tremor occurred, a ball would drop from one of the eight dragons into the open mouth of the toad below it.",
+   "In 132 CE, the scholar Zhang Heng presented an instrument to the Han court.",
+   "Presented to the Han court by Zhang Heng in 132 CE, the bronze instrument indicated the direction of distant earthquakes by dropping a ball from one of eight dragons into a toad's mouth."
+  ],
+  "correct": 3,
+  "explanation": "Choice D introduces the instrument fully for a new audience: who made it, when, what it was for, and how it worked. Choice B is tempting because it explains the mechanism, but it never says what the instrument was or what it was for. Choice A describes only its appearance, and Choice C never says what the instrument did."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Easy",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Kawah Ijen is a volcano in East Java, Indonesia.</li><li>Its crater contains a turquoise lake that is among the most acidic bodies of water on Earth.</li><li>Sulfur-rich gases escape from vents near the lake.</li><li>When these gases meet the air, they ignite, producing flames that glow blue at night.</li><li>Local miners collect solidified sulfur from the vents by hand.</li></ul>",
+  "question": "The student wants to explain what causes the blue glow seen at Kawah Ijen at night. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Kawah Ijen, a volcano in East Java, Indonesia, has a crater that contains a turquoise lake.",
+   "Local miners at Kawah Ijen collect solidified sulfur by hand from vents near the crater lake.",
+   "At Kawah Ijen, sulfur-rich gases escaping from vents ignite when they meet the air, producing a blue glow at night.",
+   "The lake in Kawah Ijen's crater is among the most acidic bodies of water on Earth."
+  ],
+  "correct": 2,
+  "explanation": "Choice C explains the cause of the blue glow: sulfur-rich gases from the vents ignite on contact with air. Choice B mentions the vents but describes sulfur mining, not the glow. Choices A and D describe the crater lake without explaining the glow."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Microbiologists long assumed that the hyperarid core of Chile's Atacama Desert contains almost no active microbial life between its rare rains.</li><li>In 2021, microbiologist Tomas Huenchullan sampled soil at 12 Atacama sites during a dry period.</li><li>At 9 of the 12 sites, he detected bacterial cells that were metabolically active, not merely dormant.</li><li>All of his samples came from depths of 10 to 30 centimeters; surface soil was not tested.</li><li>Huenchullan cautions that activity at the surface may still stop entirely during dry periods.</li></ul>",
+  "question": "The student wants to present Huenchullan's finding as a challenge to the earlier assumption while acknowledging a limit on what it shows. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Contrary to the assumption that the Atacama's hyperarid core holds almost no active microbial life between rains, Huenchullan found metabolically active bacteria at 9 of 12 sites during a dry period, though only at depths of 10 to 30 centimeters, not at the surface.",
+   "Huenchullan sampled soil at 12 Atacama sites during a dry period, detecting metabolically active bacteria at 9 of them at depths of 10 to 30 centimeters.",
+   "Although microbiologists long assumed the Atacama's hyperarid core held almost no active microbial life between rains, Huenchullan's 2021 study detected metabolically active bacteria at 9 of 12 sites during a dry period.",
+   "Because Huenchullan tested only soil 10 to 30 centimeters deep, he cautions that microbial activity at the Atacama's surface may still stop entirely during dry periods."
+  ],
+  "correct": 0,
+  "explanation": "Choice A sets the finding against the earlier assumption and notes the limit that only subsurface soil was tested. Choice C is tempting because it frames the challenge, but it omits the depth limit, implying a broader result than the study supports. Choice B gives the depth but never presents the finding as a challenge, and Choice D gives only the limitation."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Medium",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Q'eswachaka bridge spans the Apurimac River in Peru.</li><li>It is woven from grass rope and is rebuilt every year by local communities using traditional Inca techniques.</li><li>In 2015, engineer Ines Quispe designed a footbridge made of steel cables over a river in Peru's Cusco region.</li><li>Both bridges are suspension bridges: the walkway hangs from cables anchored on each bank.</li><li>Quispe's bridge is expected to last 50 years without replacement.</li></ul>",
+  "question": "The student wants to emphasize a similarity between the two bridges. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "The Q'eswachaka bridge is rebuilt every year, while Quispe's footbridge is expected to last 50 years without replacement.",
+   "The Q'eswachaka bridge is woven from grass rope, whereas Quispe's footbridge is made of steel cables.",
+   "In 2015, engineer Ines Quispe designed a footbridge made of steel cables in Peru's Cusco region.",
+   "Though built of different materials, the Q'eswachaka bridge and Quispe's footbridge are both suspension bridges, with walkways hanging from cables anchored on each bank."
+  ],
+  "correct": 3,
+  "explanation": "Choice D emphasizes what the bridges share: both are suspension bridges. Choices A and B compare the two bridges but emphasize differences (lifespan and material). Choice C describes only Quispe's bridge."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Easy",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Jelling stones are two large carved runestones in Jelling, Denmark.</li><li>The smaller stone was raised by King Gorm the Old in memory of his wife, Thyra.</li><li>The larger stone was raised by Gorm's son, Harald Bluetooth, around 965 CE.</li><li>Its inscription claims that Harald \"made the Danes Christian.\"</li><li>The two stones are often called Denmark's \"birth certificate.\"</li></ul>",
+  "question": "The student wants to identify who raised the larger Jelling stone and when. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "The larger Jelling stone was raised by Harald Bluetooth, the son of Gorm the Old, around 965 CE.",
+   "The Jelling stones, located in Jelling, Denmark, are two large carved runestones.",
+   "King Gorm the Old raised the smaller Jelling stone in memory of his wife, Thyra.",
+   "The inscription on the larger Jelling stone claims that Harald Bluetooth \"made the Danes Christian.\""
+  ],
+  "correct": 0,
+  "explanation": "Choice A names both who raised the larger stone (Harald Bluetooth) and when (around 965 CE). Choice C is tempting because it says who raised a stone, but it is the smaller stone. Choice D mentions Harald but gives no date, and Choice B describes the stones only generally."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Astronomers typically measure a star's rotation by tracking dark spots as they move across its surface.</li><li>Brown dwarfs are objects too massive to be planets but not massive enough to sustain hydrogen fusion as stars do.</li><li>Many brown dwarfs show no stable surface spots, so their rotation is hard to measure in the usual way.</li><li>Astronomer Anjali Raghunathan instead tracked periodic brightening caused by bands of clouds on 14 brown dwarfs.</li><li>She found rotation periods from 1.1 to 9.6 hours; most had never been measured before.</li></ul>",
+  "question": "The student wants to explain both why Raghunathan's method was needed and what it made possible. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "By tracking periodic brightening caused by cloud bands, Raghunathan measured rotation periods from 1.1 to 9.6 hours for 14 brown dwarfs, most of which had never been measured before.",
+   "Because many brown dwarfs lack the stable surface spots that astronomers typically track, Raghunathan tracked periodic brightening from cloud bands instead, a method that let her measure rotation periods for 14 brown dwarfs, most never measured before.",
+   "Because many brown dwarfs lack stable surface spots, their rotation is hard to measure by tracking spots, as astronomers typically do for stars.",
+   "Unlike astronomers who track dark spots, Raghunathan tracked periodic brightening caused by cloud bands, finding rotation periods from 1.1 to 9.6 hours."
+  ],
+  "correct": 1,
+  "explanation": "Choice B gives both parts of the goal: the reason the method was needed (many brown dwarfs lack trackable spots) and what it made possible (first measurements for most of the 14 objects). Choice D is tempting because it contrasts the two methods, but it never says why the usual method fails. Choice A explains only what the method achieved, and Choice C explains only why it was needed."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Medium",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Salt Ferry is a play by Ghanaian playwright Efua Mensah-Bonsu.</li><li>It premiered in Accra in 1987.</li><li>The play follows a ferry operator on the Volta River who must decide whether to sell his boat.</li><li>Mensah-Bonsu wrote the dialogue in both English and Ewe.</li><li>The play was revived in 2012.</li></ul>",
+  "question": "The student wants to introduce The Salt Ferry to an audience unfamiliar with the play. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "The Salt Ferry, a 1987 play by Ghanaian playwright Efua Mensah-Bonsu, follows a Volta River ferry operator deciding whether to sell his boat.",
+   "The Salt Ferry premiered in Accra in 1987 and was revived in 2012.",
+   "Mensah-Bonsu wrote the dialogue of The Salt Ferry in both English and Ewe.",
+   "A ferry operator on the Volta River must decide whether to sell his boat in a play that premiered in Accra."
+  ],
+  "correct": 0,
+  "explanation": "Choice A introduces the play for a new audience by giving its title, author, date, and subject. Choice D is tempting because it summarizes the plot, but it names neither the play nor its author. Choices B and C give production and language details without explaining what the play is about."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Easy",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Suleymaniye Mosque stands on a hill in Istanbul, Turkiye.</li><li>It was commissioned by the Ottoman sultan Suleiman I.</li><li>It was designed by the architect Mimar Sinan.</li><li>Construction was completed in 1557.</li><li>The mosque complex also included a hospital, schools, and a public kitchen.</li></ul>",
+  "question": "The student wants to identify the person who designed the Suleymaniye Mosque. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "The Suleymaniye Mosque in Istanbul was designed by the architect Mimar Sinan.",
+   "The Suleymaniye Mosque, completed in 1557, stands on a hill in Istanbul.",
+   "Sultan Suleiman I commissioned the Suleymaniye Mosque, which was completed in 1557.",
+   "Along with the mosque, the Suleymaniye complex included a hospital, schools, and a public kitchen."
+  ],
+  "correct": 0,
+  "explanation": "Choice A names the mosque's designer, the architect Mimar Sinan. Choice C is tempting, but Suleiman I commissioned the mosque rather than designing it. Choices B and D give the location, date, and other buildings without naming a designer."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Erta Ale, a volcano in Ethiopia's Afar region, has held a lava lake in its summit crater for long periods.</li><li>In 2022, volcanologist Mekdes Alemu monitored the level of the lake's surface.</li><li>The level rose and fell by up to 4 meters in cycles lasting about 20 minutes.</li><li>Some researchers had proposed that such cycles reflect pulses of new magma rising from deep below.</li><li>Alemu found that gas emissions peaked just before each fall in level, matching a model in which gas bubbles collect beneath the lake's crust and then escape, with no new magma arriving.</li></ul>",
+  "question": "The student wants to present Alemu's interpretation of the cycles as an alternative to the earlier proposal. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Some researchers proposed that the 20-minute cycles in Erta Ale's lava lake, in which the level rose and fell by up to 4 meters, reflect pulses of new magma rising from deep below.",
+   "Alemu found that gas emissions at Erta Ale peaked just before each fall in the lava lake's level, which rose and fell by up to 4 meters in cycles of about 20 minutes.",
+   "While some researchers attributed the lava lake's 20-minute cycles to pulses of new magma, Alemu's finding that gas emissions peaked just before each fall suggests instead that the cycles reflect gas collecting beneath the lake's crust and then escaping.",
+   "Alemu monitored Erta Ale's lava lake throughout 2022, finding that its level rose and fell by up to 4 meters, a pattern consistent with gas bubbles collecting and escaping."
+  ],
+  "correct": 2,
+  "explanation": "Choice C sets Alemu's gas-based interpretation directly against the earlier magma-pulse proposal. Choice D is tempting because it states her interpretation, but it never mentions the earlier proposal, so it does not present the interpretation as an alternative. Choice A gives only the earlier proposal, and Choice B gives Alemu's observation without either interpretation."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Medium",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Mount Pinatubo, in the Philippines, erupted in June 1991.</li><li>The eruption was one of the largest of the 20th century.</li><li>It injected millions of tons of sulfur dioxide into the stratosphere.</li><li>There, the gas formed tiny droplets that reflected sunlight back into space.</li><li>Average global temperatures fell by about 0.5 degrees Celsius over the following year.</li></ul>",
+  "question": "The student wants to explain the process by which the eruption lowered global temperatures. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Mount Pinatubo's June 1991 eruption in the Philippines was one of the largest of the 20th century.",
+   "After Mount Pinatubo erupted in 1991, average global temperatures fell by about 0.5 degrees Celsius over the following year.",
+   "The 1991 eruption of Mount Pinatubo, one of the 20th century's largest, injected millions of tons of sulfur dioxide into the stratosphere.",
+   "Sulfur dioxide from Pinatubo's 1991 eruption formed droplets in the stratosphere that reflected sunlight back into space, lowering average global temperatures by about 0.5 degrees Celsius."
+  ],
+  "correct": 3,
+  "explanation": "Choice D explains the process: sulfur dioxide formed droplets that reflected sunlight, which cooled the planet. Choice B is tempting because it states the cooling, but it gives only the result, not how the eruption caused it. Choice C stops before the reflection step, and Choice A only describes the eruption's size."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Easy",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Great Zimbabwe is a ruined stone city in southeastern Zimbabwe.</li><li>It was occupied from roughly the 11th to the 15th century CE.</li><li>Its builders fitted granite blocks together without mortar.</li><li>Its largest structure, the Great Enclosure, has walls up to 11 meters high.</li><li>Finds at the site include glass beads and Chinese porcelain, evidence of long-distance trade.</li></ul>",
+  "question": "The student wants to emphasize Great Zimbabwe's connections to distant regions. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Great Zimbabwe's builders fitted granite blocks together without mortar, creating walls up to 11 meters high.",
+   "Great Zimbabwe, a ruined stone city in southeastern Zimbabwe, was occupied from roughly the 11th to the 15th century CE.",
+   "The Great Enclosure, the largest structure at Great Zimbabwe, has walls up to 11 meters high.",
+   "Glass beads and Chinese porcelain found at Great Zimbabwe show that the city was linked to distant regions through long-distance trade."
+  ],
+  "correct": 3,
+  "explanation": "Choice D emphasizes the city's distant connections by citing trade goods such as Chinese porcelain. Choices A and C focus on the city's stone walls, and Choice B gives its location and period of occupation; none mentions links to other regions."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Norse settlers established farms in southern Greenland around 985 CE; the settlements were abandoned by the mid-1400s.</li><li>Historians once argued that the settlements failed because the Norse refused to adapt their European diet to Greenland's conditions.</li><li>Archaeologist Ivalu Petersen analyzed animal bones from the settlers' household trash deposits.</li><li>Seal bones made up 20% of the animal remains in early layers but more than 60% in the latest layers.</li><li>Petersen argues that the settlers did adapt and that other factors, such as declining trade in walrus ivory, better explain the abandonment.</li></ul>",
+  "question": "The student wants to use Petersen's evidence to challenge the earlier argument. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Norse settlers farmed in southern Greenland from around 985 CE until the settlements were abandoned by the mid-1400s.",
+   "Historians once argued that the Norse settlements in Greenland failed because the settlers refused to adapt their European diet.",
+   "Petersen argues that factors such as declining trade in walrus ivory better explain why the Norse abandoned their Greenland settlements by the mid-1400s.",
+   "The share of seal bones in Norse trash deposits rose from 20% in early layers to more than 60% in the latest layers, suggesting that, contrary to an earlier view, the settlers did adapt their diet."
+  ],
+  "correct": 3,
+  "explanation": "Choice D uses Petersen's evidence (the rising share of seal bones) to challenge the claim that the Norse refused to change their diet. Choice C is tempting because it presents Petersen's alternative explanation, but it offers no evidence against the earlier argument. Choice B only states the earlier argument, and Choice A gives dates."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Medium",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Kalmar Union was formed in 1397.</li><li>It brought the kingdoms of Denmark, Norway, and Sweden under a single monarch.</li><li>Each kingdom kept its own laws and its own council.</li><li>Sweden repeatedly chose its own regents during the 1400s and left the union in 1523.</li><li>Denmark and Norway remained joined until 1814.</li></ul>",
+  "question": "The student wants to contrast the Kalmar Union's formal structure with the independence its members kept. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Formed in 1397, the Kalmar Union brought Denmark, Norway, and Sweden under a single monarch.",
+   "Although the Kalmar Union placed Denmark, Norway, and Sweden under one monarch, each kingdom kept its own laws and council, and Sweden repeatedly chose its own regents before leaving in 1523.",
+   "Denmark and Norway remained joined until 1814, long after Sweden left the Kalmar Union in 1523.",
+   "Each of the Kalmar Union's three kingdoms, Denmark, Norway, and Sweden, kept its own laws and council."
+  ],
+  "correct": 1,
+  "explanation": "Choice B sets the union's formal structure (one monarch) against the independence its members kept (separate laws and councils, Swedish regents). Choice D is tempting because it describes that independence, but it never mentions the shared monarch, so there is no contrast. Choice A gives only the structure, and Choice C concerns how long the members stayed joined."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Easy",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Ulugh Beg was a 15th-century ruler and astronomer in Samarkand, in present-day Uzbekistan.</li><li>In the 1420s, he built a large observatory in Samarkand.</li><li>Its main instrument was a huge curved arc for measuring the positions of stars, built partly below ground.</li><li>Astronomers at the observatory produced a catalog of roughly 1,000 stars.</li><li>The observatory was destroyed after Ulugh Beg's death in 1449; its remains were rediscovered in 1908.</li></ul>",
+  "question": "The student wants to emphasize the scientific work produced at Ulugh Beg's observatory. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Ulugh Beg, a 15th-century ruler of Samarkand, built a large observatory there in the 1420s.",
+   "Destroyed after Ulugh Beg's death in 1449, the observatory's remains were rediscovered in 1908.",
+   "The observatory's main instrument was a huge curved arc built partly below ground.",
+   "Astronomers at Ulugh Beg's observatory in Samarkand produced a catalog of roughly 1,000 stars."
+  ],
+  "correct": 3,
+  "explanation": "Choice D emphasizes the observatory's scientific output, a catalog of about 1,000 stars. Choice C describes an instrument used in the work but not what the work produced. Choices A and B concern when the observatory was built and what happened to it."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Ornithologist Mereana Tuhiwai has long wondered why kea, the alpine parrots of New Zealand's South Island, so readily take apart objects that they cannot ______ recent experiments suggest that this destructive curiosity helps young birds discover which unfamiliar foods in their harsh mountain habitat are safe.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "eat; her",
+   "eat? Her",
+   "eat?; her",
+   "eat, her"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the first clause is a statement that contains an indirect question (\"has long wondered why kea ... take apart objects\"), so it takes no question mark, and a semicolon properly joins it to the second independent clause, \"her recent experiments suggest ....\" Choice B is tempting because the word \"why\" makes the clause feel like a question, but an indirect question embedded in a declarative sentence does not end with a question mark. Choice C combines a question mark with a semicolon, which is never correct, and Choice D creates a comma splice."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Before laying her eggs, a female rhinoceros hornbill in the rainforests of Borneo seals herself inside a tree cavity, using mud, droppings, and fruit pulp to close the entrance until only a narrow slit ______ her mate passes her food for the many weeks she remains inside.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "remains, through this opening,",
+   "remains; through this opening,",
+   "remains through this opening,",
+   "remains, through this opening;"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a semicolon joins the independent clause ending \"until only a narrow slit remains\" to the independent clause \"through this opening, her mate passes her food ...,\" with a comma after the introductory phrase. Choice A is tempting because \"through this opening\" can look like an interrupter, but the comma before it creates a comma splice. Choice C fuses the clauses, and Choice D strands \"through this opening\" at the end of the first clause and then uses a semicolon before a clause that already has its own subject."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Each year, the Arctic tern flies from its breeding grounds in the Arctic to the waters around ______ round trip that can exceed 70,000 kilometers, the longest known migration of any animal.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Antarctica and back, a",
+   "Antarctica and back a",
+   "Antarctica, and back, a",
+   "Antarctica and back; a"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: a comma properly separates the main clause from the supplementary noun phrase \"a round trip that can exceed 70,000 kilometers,\" which describes the journey. Choice D is tempting, but a semicolon must join two independent clauses, and what follows it is only a noun phrase. Choice B runs the phrase into the clause with no punctuation, and Choice C wrongly splits \"to the waters around Antarctica and back\" with commas."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>In 1652, a single deputy's objection dissolved a session of the Sejm, the parliament of the Polish-Lithuanian Commonwealth, marking the first use of the principle known as the liberum ______ deputies—some of them in the pay of foreign courts—invoked the veto so often that by the mid-eighteenth century few sessions ended with any legislation passed at all.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "veto, thereafter,",
+   "veto; thereafter,",
+   "veto thereafter,",
+   "veto, thereafter"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: \"thereafter\" begins a second independent clause (\"deputies ... invoked the veto so often ...\"), so a semicolon must separate the two clauses, and a comma follows the introductory adverb. Choice A is tempting because \"thereafter\" set off by commas looks like a harmless interrupter, but \"thereafter\" is an adverb, not a conjunction, so the comma before it creates a comma splice. Choice D creates the same comma splice, and Choice C fuses the two independent clauses with no punctuation between them."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>In 1698, Tsar Peter I of Russia, eager to make his court resemble those he had visited in Western Europe, imposed a tax on ______ paid it received a small metal token as proof that they were permitted to keep their facial hair.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "beards, noblemen and merchants who",
+   "beards noblemen and merchants who",
+   "beards; noblemen and merchants who",
+   "beards; noblemen and merchants, who"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: a semicolon separates the two independent clauses, and the clause \"who paid it\" is restrictive (it identifies which noblemen and merchants received tokens), so it takes no comma. Choice D is tempting, but the comma before \"who\" sets off the clause as nonrestrictive and is never closed, leaving a comma between the subject and the verb \"received.\" Choice A creates a comma splice, and Choice B fuses the clauses."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>In 1951, archaeologists working in the Russian city of Novgorod unearthed a medieval letter written on birch ______ more than a thousand such documents have been found there, offering a rare look at the everyday concerns of ordinary townspeople.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "bark since then,",
+   "bark, since then,",
+   "bark; since then,",
+   "bark, since then;"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the text contains two independent clauses (\"archaeologists ... unearthed a medieval letter written on birch bark\" and \"more than a thousand such documents have been found there\"), and a semicolon properly joins them, with a comma after the introductory phrase \"since then.\" Choice B is tempting but creates a comma splice. Choice A fuses the clauses with no punctuation, and Choice D places the semicolon so that \"since then\" is stranded in the first clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>The Uganda Railway, built between 1896 and 1901 to link the port of Mombasa with the shores of Lake Victoria, was laid largely by laborers recruited from British India. Several thousand of them settled in East Africa once the line was finished, and the businesses that they and their descendants later founded in towns along the railway ______ and printing presses.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "included: sawmills, cinemas,",
+   "included sawmills, cinemas,",
+   "included, sawmills, cinemas,",
+   "included sawmills cinemas,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: \"sawmills, cinemas, and printing presses\" is the direct object of the verb \"included,\" so no punctuation should come between the verb and the series, and the items in the series are separated by commas. Choice A is tempting because a list follows, but a colon may introduce a list only after a complete independent clause, and \"the businesses ... included\" is incomplete without its object. Choice C separates the verb from its object with a comma, and Choice D omits the comma between the first two items in the series."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>The oldest sections of China's Grand Canal date to the fifth century BCE. The waterway—which by the early seventh century CE linked the northern plains with the rice-growing ______ allowed grain to be shipped north to feed the imperial capital and its armies.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "south, allowed",
+   "south allowed",
+   "south; allowed",
+   "south—allowed"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: the clause \"which by the early seventh century CE linked the northern plains with the rice-growing south\" opens with a dash, so it must close with a matching dash before the verb \"allowed.\" Choice A is tempting because nonrestrictive \"which\" clauses are often set off with commas, but a comma cannot close an element opened with a dash. Choice B leaves the interrupter unclosed, and Choice C puts a semicolon between the subject and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>In the kula exchange practiced in Papua New Guinea's Trobriand Islands region, two kinds of valuables circulate in ______ shell necklaces travel clockwise around a ring of islands, while shell armbands travel counterclockwise.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "opposite: directions",
+   "opposite directions:",
+   "opposite directions,",
+   "opposite directions"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the colon follows a complete independent clause and introduces an explanation of what \"opposite directions\" means. Choice C is tempting, but a comma between these two independent clauses creates a comma splice. Choice D fuses the clauses with no punctuation, and Choice A wrongly splits the noun phrase \"opposite directions.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Anthropologist Oyunbileg Tserendorj opens her study of herding households in western Mongolia with a puzzle. Why, she asks, would families who dismantle and move their gers (round felt tents) as many as four times a year rebuild the interior in exactly the same arrangement every ______ answer, she argues, is that the fixed layout—saddles and tools to the west, kitchen goods to the east, the place of honor at the back—lets each household carry its social order with it from camp to camp.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "time. The",
+   "time?, the",
+   "time, the",
+   "time? The"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: despite the interrupting phrase \"she asks,\" the sentence is a direct question—its verb and subject are inverted (\"would families ... rebuild\")—so it must end with a question mark, and the next sentence begins with a capital letter. Choice A is tempting because \"she asks\" makes the question seem reported, but a reported (indirect) question would not keep the inverted question word order. Choice B pairs a question mark with a comma, which is never correct, and Choice C splices the question onto the following independent clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>On just a few nights each year, usually after a full moon in late spring, many coral species on Australia's Great Barrier Reef release their eggs and sperm ______ increases the odds that gametes from different colonies will meet.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "simultaneously, this remarkable synchronization, researchers believe,",
+   "simultaneously; this remarkable synchronization, researchers believe,",
+   "simultaneously; this remarkable synchronization researchers believe,",
+   "simultaneously; this remarkable synchronization, researchers believe"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a semicolon joins the two independent clauses, and a pair of commas sets off the interrupting phrase \"researchers believe.\" Choice A is tempting because it punctuates the interrupter correctly, but the comma after \"simultaneously\" creates a comma splice. Choice C leaves only the closing comma, and Choice D leaves only the opening comma, so neither correctly sets off \"researchers believe.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>The mantis shrimp has one of the most complex visual systems in the animal kingdom. Its eyes contain as many as twelve types of color ______ by contrast, have only three.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "receptors, humans,",
+   "receptors; humans",
+   "receptors humans,",
+   "receptors; humans,"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: a semicolon joins the two independent clauses, and the comma after \"humans\" pairs with the comma after \"by contrast\" to set off that interrupting phrase. Choice B is tempting, but without the comma after \"humans,\" the comma after \"contrast\" is left unpaired and separates the subject from its verb. Choice A creates a comma splice, and Choice C runs the clauses together."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Biologists long assumed that Humboldt squid, which hunt in near-darkness hundreds of meters below the surface of the Gulf of California, coordinated their group hunts mainly through ______ showed the squid flashing rapid red-and-white patterns across their skin, suggesting that the animals may also signal to one another visually.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "touch. Footage captured by deep-sea cameras, however,",
+   "touch, footage captured by deep-sea cameras, however,",
+   "touch; footage captured by deep-sea cameras however,",
+   "touch, footage captured by deep-sea cameras; however,"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the period ends the first sentence, and in the second sentence a pair of commas sets off \"however,\" which interrupts the subject \"Footage captured by deep-sea cameras\" and its verb \"showed.\" Choice B is tempting because it punctuates \"however\" correctly, but \"however\" is not a conjunction, so the comma after \"touch\" creates a comma splice. Choice C begins correctly with a semicolon but leaves only one comma around \"however,\" which then separates the subject from its verb, and Choice D both splices the clauses and puts a semicolon between the subject and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>The Saharan silver ant forages during the hottest part of the day, when surface temperatures can exceed 60°C and most of its predators have retreated into the shade. Its survival depends on two ______ a coat of triangular hairs that reflect sunlight and long legs that hold its body above the scorching sand.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "adaptations;",
+   "adaptations",
+   "adaptations.",
+   "adaptations:"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: a colon follows the complete independent clause \"Its survival depends on two adaptations\" and introduces the two adaptations it refers to. Choice A is tempting, but a semicolon must be followed by an independent clause, and what follows is only a pair of noun phrases. Choice C makes that phrase a fragment, and Choice B runs it into the clause without the needed punctuation."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>On foggy mornings in Namibia's Namib Desert, the fog-basking ______ tilts its body into the wind so that water droplets collect on its back and roll down toward its mouth.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "beetle,",
+   "beetle:",
+   "beetle",
+   "beetle;"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: \"the fog-basking beetle\" is the subject of the verb \"tilts,\" and no punctuation should separate a subject from its verb. Choice A is tempting because the sentence opens with a long introductory phrase, but a comma here would wrongly split subject and verb. Choices B and D likewise insert a colon or semicolon between the subject and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Ecologists surveying Mongolia's Gobi Desert have found that the saxaul, a hardy tree whose leaves are reduced to tiny scales, takes strikingly different forms depending on where it grows. Saxaul ______ develop into stands of trees several meters tall; those scattered across the open gravel plains remain sparse, knee-high shrubs.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "plants, growing along dry riverbeds where groundwater lies close to the surface,",
+   "plants, growing along dry riverbeds, where groundwater lies close to the surface",
+   "plants growing along dry riverbeds, where groundwater lies close to the surface,",
+   "plants growing, along dry riverbeds where groundwater lies close to the surface,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the phrase \"growing along dry riverbeds\" is restrictive—it identifies which saxaul plants grow tall, in contrast to \"those scattered across the open gravel plains\"—so it takes no commas, while the clause \"where groundwater lies close to the surface\" adds information about the riverbeds and is set off by a pair of commas. Choice A is tempting because its commas are paired, but setting off \"growing along dry riverbeds ...\" as nonrestrictive implies that all saxaul plants grow along riverbeds, contradicting the second clause. Choice B leaves the \"where\" clause without a closing comma while incorrectly setting off the participial phrase, and Choice D separates \"growing\" from the phrase that completes it."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>In Norse mythology, the nine worlds are connected by Yggdrasil, an immense ash tree. At its base, according to some accounts, three ______ Verdandi, and Skuld—tend the tree and water its roots.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Norns—Urd,",
+   "Norns, Urd,",
+   "Norns: Urd,",
+   "Norns Urd,"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the names \"Urd, Verdandi, and Skuld\" form an interrupting list that closes with a dash after \"Skuld,\" so it must open with a matching dash. Choice B is tempting because the list explains who the Norns are, but a comma cannot pair with the closing dash, and a comma-set list here would be confused with the series itself. Choice C uses a colon, which cannot introduce an element that is followed by the rest of the sentence's predicate, and Choice D supplies no opening punctuation at all."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Every twenty years, the main buildings of Japan's Ise Grand Shrine, one of the most sacred sites of the Shinto ______ rebuilt on an adjacent plot using traditional techniques.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "religion are",
+   "religion, are",
+   "religion; are",
+   "religion—are"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the comma closes the appositive \"one of the most sacred sites of the Shinto religion,\" which opened with a comma after \"Shrine.\" Choice D is tempting, but a dash cannot close an element that was opened with a comma. Choice A leaves the appositive unclosed, and Choice C places a semicolon between the subject and its verb \"are rebuilt.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>The Popol Vuh, a sacred narrative of the K'iche' Maya of highland Guatemala, recounts the gods' successive attempts to fashion ______ of mud, which crumbled and dissolved in water; beings of wood, which could speak but had no hearts or memory; and, at last, beings of maize dough, from whom the K'iche' trace their descent.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "people; beings",
+   "people: beings",
+   "people, beings",
+   "people beings"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a colon follows the complete independent clause \"The Popol Vuh ... recounts the gods' successive attempts to fashion people\" and introduces the list of those attempts, whose items are separated by semicolons because each contains internal commas. Choice C is tempting because the list seems to rename \"people,\" but a comma cannot clearly introduce a series that is itself punctuated with semicolons. Choice A is wrong because a semicolon must be followed by an independent clause, and \"beings of mud, which crumbled ...\" is only a noun phrase; Choice D runs the list into the clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Satellite images taken since the 1980s show that parts of Africa's Sahel, the semiarid belt south of the Sahara, have grown greener. Some climate scientists attribute this regreening mainly to a recovery in rainfall after the severe droughts of the 1970s and ______ argue that changes in how farmers protect young trees on their land have played an equally important role.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "1980s, others, however,",
+   "1980s; others however,",
+   "1980s; others, however,",
+   "1980s, others; however,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: a semicolon joins the two independent clauses, and a pair of commas sets off the interrupting adverb \"however\" within the second clause. Choice A is tempting because it sets off \"however\" correctly, but the comma after \"1980s\" creates a comma splice. Choice B leaves only one comma around \"however,\" separating the subject \"others\" from its verb, and Choice D places the semicolon after \"others,\" leaving a fragment."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>India's summer monsoon delivers roughly three-quarters of the country's annual ______ crops such as rice depend heavily on the monsoon's timely arrival.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "rainfall, consequently,",
+   "rainfall consequently,",
+   "rainfall; consequently,",
+   "rainfall, consequently"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: a semicolon joins the two independent clauses, and a comma follows the transitional adverb \"consequently.\" Choice A is tempting, but \"consequently\" is not a conjunction, so a comma before it creates a comma splice. Choices B and D also fail to separate the two independent clauses properly."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>In Ifá, a system of divination practiced by the Yoruba people of West Africa, a priest casts a chain strung with eight seed-pod halves and reads the resulting pattern as one of 256 figures, each tied to a body of memorized verses. Training to become a babalawo, or Ifá ______ takes more than a decade, since an apprentice must learn thousands of these verses by heart.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "priest often",
+   "priest, often",
+   "priest; often",
+   "priest—often"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the phrase \"or Ifá priest\" is an appositive that explains the term \"babalawo\"; it opens with a comma after \"babalawo\" and must close with a comma before the verb phrase \"often takes.\" Choice A is tempting because the subject (\"Training to become a babalawo\") should not normally be separated from its verb, but here the comma closes an interrupting appositive rather than splitting subject and verb. Choice D closes a comma-opened element with a dash, and Choice C places a semicolon between the subject and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Under the devshirme system, Ottoman officials periodically took boys from Christian families in the Balkans, converted them to Islam, and trained them for state ______ were educated at the palace school in Istanbul, could rise to become grand viziers, the empire's highest officials.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "service, the most talented recruits, who",
+   "service; the most talented recruits, who",
+   "service the most talented recruits, who",
+   "service; the most talented recruits who,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a semicolon joins the two independent clauses, and the comma before \"who\" pairs with the comma after \"Istanbul\" to set off the nonrestrictive clause \"who were educated at the palace school in Istanbul.\" Choice A is tempting because it punctuates the \"who\" clause correctly, but the comma after \"service\" creates a comma splice. Choice C fuses the clauses, and Choice D places a comma after \"who,\" separating the pronoun from its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>By the late 1500s, coffeehouses had spread throughout Istanbul, the Ottoman ______ patrons gathered there to play games, listen to storytellers, and discuss the news of the day.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "capital,",
+   "capital",
+   "capital and,",
+   "capital, and"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: two independent clauses may be joined by a comma followed by a coordinating conjunction such as \"and.\" Choice A is tempting but creates a comma splice because it lacks the conjunction. Choice B fuses the clauses, and Choice C wrongly places the comma after \"and\" instead of before it."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>The tiny bubbles of ancient air trapped in the ice cores that Russian, French, and American researchers drilled at Antarctica's Vostok Station during the ______ that atmospheric carbon dioxide levels rose and fell in close step with temperature over four complete glacial cycles.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "1990s, show",
+   "1990s; show",
+   "1990s—show",
+   "1990s show"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: everything from \"The tiny bubbles\" through \"during the 1990s\" is the subject of the verb \"show,\" and no punctuation should separate a subject from its verb, however long the subject is. Choice A is tempting because the subject is long and contains commas of its own, but those commas only separate items in the series \"Russian, French, and American\"; a comma before \"show\" would wrongly split subject and verb. Choices B and C likewise insert a semicolon or a single dash between the subject and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>From roughly the seventh to the thirteenth century, the rulers of Srivijaya, a maritime kingdom centered on Sumatra, grew wealthy not by conquering vast territories but by taxing the ships that passed through the Strait of ______ narrow waterway that funneled much of the trade between China and India past their ports.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Malacca; a",
+   "Malacca a",
+   "Malacca. A",
+   "Malacca, a"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: a comma properly sets off the appositive \"a narrow waterway that funneled much of the trade ...,\" which describes the Strait of Malacca. Choice A is tempting in a long sentence, but a semicolon must be followed by an independent clause, and the appositive is only a noun phrase. Choice C turns the appositive into a fragment, and Choice B omits the needed comma."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>The builders of Angkor, the capital of the Khmer Empire, constructed vast reservoirs called ______ of which stretched nearly eight kilometers in length.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "barays, some",
+   "barays some",
+   "barays; some",
+   "barays. Some"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: a comma properly introduces the nonrestrictive phrase \"some of which stretched nearly eight kilometers in length,\" which adds information about the barays. Choice C is tempting, but a semicolon must be followed by an independent clause, and \"some of which stretched ...\" is not one. Choice D creates a fragment for the same reason, and Choice B omits necessary punctuation."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Historian Thiri Aung argues that the thousands of temples built at Bagan, the capital of the Pagan Kingdom in what is now Myanmar, were not solely expressions of royal ______ funded their construction, as hundreds of stone inscriptions recording gifts from farmers, merchants, and artisans attest.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "piety, commoners, too,",
+   "piety; commoners, too,",
+   "piety: commoners too,",
+   "piety; commoners too,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: a semicolon joins the two independent clauses, and a pair of commas sets off the interrupting adverb \"too\" between the subject \"commoners\" and its verb \"funded.\" Choice A is tempting because it sets off \"too\" correctly, but the comma after \"piety\" creates a comma splice. Choices C and D each join the clauses acceptably but leave only one comma around \"too,\" so that comma separates the subject \"commoners too\" from its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>When it opened in 1998, the Akashi Kaikyō Bridge in Japan had the longest central span of any suspension bridge in the ______ two kilometers between its two main towers. Engineers designed it to withstand both powerful typhoon winds and strong earthquakes.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "world; nearly",
+   "world. Nearly",
+   "world: nearly",
+   "world nearly"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the colon follows a complete independent clause and introduces a phrase that specifies the length of the record-setting span. Choice A is tempting, but a semicolon must be followed by an independent clause, and \"nearly two kilometers between its two main towers\" is only a phrase. Choice B makes that phrase a fragment, and Choice D runs it into the clause without punctuation."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Beneath the suburbs north of Tokyo lies one of the world's largest flood-control ______ nearby rivers overflow, the system channels the excess water through tunnels into enormous underground tanks.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "systems when",
+   "systems, when",
+   "systems. When",
+   "systems, when,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the period ends the first sentence, and the second sentence opens with the dependent clause \"When nearby rivers overflow,\" followed by its main clause. Choice B is tempting, but it attaches the \"when\" clause to the first sentence and leaves \"the system channels ...\" spliced on with a comma. Choice A creates the same problem without any comma, and Choice D adds an unnecessary comma after \"when.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Unlike modern concrete, which tends to crumble after decades of exposure to seawater, the concrete that Roman engineers used in harbor walls seems to have grown stronger over the ______ it dissolved components of the volcanic ash in the mix, allowing rare interlocking minerals to crystallize in the cracks and pores.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "centuries: as seawater percolated through it,",
+   "centuries, as seawater percolated through it,",
+   "centuries; as seawater percolated through it",
+   "centuries as seawater percolated through it,"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the colon follows a complete independent clause and introduces a second independent clause that explains how the concrete grew stronger; that second clause begins with the dependent clause \"as seawater percolated through it,\" which is properly followed by a comma. Choice B is tempting because \"as seawater percolated through it\" seems to complete the first clause, but then \"it dissolved components ...\" is spliced onto the sentence with only a comma. Choice D creates the same comma splice without any punctuation after \"centuries,\" and Choice C correctly separates the clauses but omits the comma after the introductory dependent clause, running \"it\" into \"it.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Tiktaalik roseae, a 375-million-year-old fossil animal discovered on Ellesmere Island in the Canadian ______ features intermediate between those of fish and those of four-legged animals: it had gills and scales but also a flexible neck and sturdy, limb-like fins.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Arctic, displays",
+   "Arctic displays",
+   "Arctic; displays",
+   "Arctic, displays,"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the comma after \"Arctic\" closes the appositive that began after \"Tiktaalik roseae,\" allowing the subject to connect to its verb \"displays.\" Choice B is tempting because the long appositive obscures where it ends, but omitting the comma leaves the appositive unclosed. Choice C places a semicolon between subject and verb, and Choice D inserts an unnecessary comma between the verb and its object."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Discovered in ______ Argentinosaurus may have been one of the heaviest land animals ever to have lived.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Argentina, in the 1980s",
+   "Argentina in the 1980s",
+   "Argentina; in the 1980s,",
+   "Argentina in the 1980s,"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: the introductory participial phrase \"Discovered in Argentina in the 1980s\" should be followed by a comma before the main clause begins. Choice A is tempting, but it splits the introductory phrase in the middle and puts no comma at its end. Choice B omits the needed comma, and Choice C inserts a semicolon inside the introductory phrase."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Under a 1973 treaty, Brazil and Paraguay agreed to build a hydroelectric dam, now known as Itaipu, on the stretch of the Paraná River that forms part of their shared ______ to divide the electricity it generated equally between them.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "border, and",
+   "border; and",
+   "border and",
+   "border: and"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: \"to build a hydroelectric dam ...\" and \"to divide the electricity ...\" are two infinitive phrases that both serve as objects of \"agreed,\" so they are joined by \"and\" with no punctuation. Choice A is tempting because the sentence is long, but a comma before \"and\" here would separate two parts of a compound object rather than two independent clauses. Choice B uses a semicolon, which requires an independent clause on each side, and Choice D uses a colon that interrupts the compound object."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>In the late nineteenth century, photographic studios in Yokohama, Japan, sold albums of hand-colored photographs to foreign ______ many of whom had previously trained as painters, tinted each print by hand with watercolors and fine brushes.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "visitors; the studios' artists,",
+   "visitors, the studios' artists,",
+   "visitors the studios' artists,",
+   "visitors; the studios' artists"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: a semicolon joins the two independent clauses, and the comma after \"artists\" pairs with the comma after \"painters\" to set off the nonrestrictive clause \"many of whom had previously trained as painters.\" Choice B is tempting because it punctuates the clause about the artists correctly, but the comma after \"visitors\" creates a comma splice. Choice C fuses the clauses, and Choice D leaves the \"many of whom\" clause without its opening comma."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Unlike modern photographs, a daguerreotype could not be ______ image was a unique picture formed directly on a polished, silver-coated copper plate.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "copied; each",
+   "copied, each",
+   "copied each",
+   "copied, and, each"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: a semicolon properly joins the two independent clauses \"a daguerreotype could not be copied\" and \"each image was a unique picture ....\" Choice B is tempting but creates a comma splice. Choice C fuses the clauses, and Choice D incorrectly places a comma after the conjunction \"and.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>In 1971, a Polish-Mongolian expedition in the Gobi Desert unearthed a Velociraptor and a Protoceratops preserved in the middle of a struggle. The interpretation most paleontologists favor—that the two animals were still fighting when a collapsing dune, or perhaps a sudden sandstorm, buried them ______ supported by the position of the Velociraptor's sickle-shaped claw, which is lodged in its opponent's throat.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "alive, is",
+   "alive is",
+   "alive; is",
+   "alive—is"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: the clause \"that the two animals were still fighting when ... buried them alive\" is an interrupter that opens with a dash after \"favor,\" so it must close with a matching dash before the verb \"is.\" Choice A is tempting because the interrupter itself contains a pair of commas (around \"or perhaps a sudden sandstorm\"), but a comma cannot close an element that was opened with a dash. Choice B leaves the interrupter unclosed, and Choice C places a semicolon between the subject \"The interpretation\" and its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>In December 2020, a capsule released by Hayabusa2, a spacecraft operated by the Japan Aerospace Exploration Agency, landed in the Australian ______ were more than five grams of material collected from the asteroid Ryugu.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "outback, inside",
+   "outback inside",
+   "outback; inside",
+   "outback, inside,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the second part, \"inside were more than five grams of material,\" is an independent clause with an inverted subject and verb, so a semicolon is needed to join it to the first independent clause. Choice A is tempting because \"inside\" can look like the start of a modifying phrase, but the comma creates a comma splice. Choice B fuses the clauses, and Choice D both splices the clauses and separates \"inside\" from its verb \"were.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>The Unicode Standard assigns a unique number to every character in the world's major writing systems, including the letters of the Latin alphabet, the characters used to write Chinese, the syllables of the Cherokee ______ and even the small pictures known as emoji.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "syllabary",
+   "syllabary;",
+   "syllabary,",
+   "syllabary:"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the items in this series are separated by commas, so a comma must follow \"syllabary\" before the final item. Choice B is tempting, but semicolons are used in a series only when items contain internal commas, and the other items here are separated by commas. Choice A omits the needed comma, and Choice D wrongly introduces the last item with a colon."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Portrait studios flourished in Bamako, Mali, during the years surrounding the country's independence in 1960. At one such studio, run by photographer Ousmane Diakité, the props that clients most often ______ borrowed motor scooter, a transistor radio, a wristwatch—signaled their owners' self-image as modern city dwellers.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "requested—a",
+   "requested: a",
+   "requested, a",
+   "requested a"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the list \"a borrowed motor scooter, a transistor radio, a wristwatch\" interrupts the subject \"the props that clients most often requested\" and its verb \"signaled\"; since the list closes with a dash, it must open with a matching dash. Choice B is tempting because a list follows, but a colon must come after a complete independent clause, and \"the props that clients most often requested\" is only the subject of the sentence. Choice C cannot pair with the closing dash, and Choice D makes the props the object of \"requested,\" which garbles the sentence."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>The English word <em>algebra</em> derives from the Arabic term ______ appears in the title of a ninth-century treatise by the Persian mathematician al-Khwarizmi, a scholar who worked in Baghdad.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "al-jabr (\"restoration\") which",
+   "al-jabr (\"restoration\"), which",
+   "al-jabr, (\"restoration\") which",
+   "al-jabr; (\"restoration\") which"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the parenthetical gloss belongs directly after \"al-jabr,\" and the nonrestrictive clause \"which appears in the title ...\" must be set off with a comma placed after the closing parenthesis. Choice A is tempting because the parentheses seem to provide separation, but the nonrestrictive \"which\" clause still requires a comma. Choice C separates the term from its gloss and omits the comma before \"which,\" and Choice D uses a semicolon before a clause that is not independent."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>For centuries, scholarly families in Timbuktu, Mali, stored handwritten manuscripts on astronomy, law, and medicine in wooden chests in their ______ of these texts are several hundred years old and remain in remarkably good condition.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "homes, some",
+   "homes some",
+   "homes. Some",
+   "homes, some,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: the text contains two independent clauses, and a period properly separates them. Choice A joins the clauses with only a comma, creating a comma splice. Choice B runs the clauses together with no punctuation, and Choice D both creates a comma splice and wrongly separates \"some\" from \"of these texts.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>In August 2023, India's Chandrayaan-3 became the first mission to land near the Moon's south pole. The mission's lander, Vikram, deployed a small six-wheeled ______ during roughly two weeks of operation, confirmed the presence of sulfur in the lunar soil.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "rover Pragyan, which,",
+   "rover, Pragyan, which",
+   "rover, Pragyan; which,",
+   "rover, Pragyan, which,"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: because the rover is introduced with the indefinite article \"a,\" its name, \"Pragyan,\" is a nonrestrictive appositive set off by commas; a comma after \"which\" then pairs with the comma after \"operation\" to set off the phrase \"during roughly two weeks of operation.\" Choice A is tempting because names often follow nouns without commas (as in \"the rover Pragyan\"), but after \"a small six-wheeled rover\" the name is supplementary and must be set off. Choice B omits the comma after \"which,\" leaving the comma after \"operation\" unpaired, and Choice C places a semicolon before the dependent \"which\" clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>How can a bird fly over the Himalayas at altitudes where the air holds less than half the oxygen found at sea ______ Tenzin Dorjee has spent a decade investigating that question in bar-headed geese, which migrate between Central Asia and the Indian subcontinent.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "level? Researcher",
+   "level. Researcher",
+   "level?, researcher",
+   "level, researcher"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the first sentence is a direct question (\"How can a bird fly ...\"), so it must end with a question mark, and the next sentence begins with a capital letter. Choice B is tempting because the sentence is long and reads like a statement, but a direct question requires a question mark. Choice C pairs a question mark with a comma, which is never correct, and Choice D splices the question onto the following independent clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>A furoshiki, a square wrapping cloth used in Japan since at least the Edo period, can be knotted into a bag to carry ______ books, or even a pair of glass bottles.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "groceries,",
+   "groceries",
+   "groceries;",
+   "groceries:"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: \"groceries,\" \"books,\" and \"a pair of glass bottles\" are items in a series, and a comma must separate the first item from the second. Choice B omits that comma. Choice C's semicolon and Choice D's colon wrongly break the series, since what follows each is not an independent clause or a list introduced by a complete clause."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Many public-key encryption systems depend on a mathematical asymmetry. Multiplying two very large prime numbers together is easy for a computer, but recovering the original primes from their product ______ extraordinarily difficult.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "is—as far as anyone has been able to demonstrate,",
+   "is, as far as anyone has been able to demonstrate,",
+   "is: as far as anyone has been able to demonstrate,",
+   "is as far as anyone has been able to demonstrate,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the clause \"as far as anyone has been able to demonstrate\" interrupts the verb \"is\" and its complement \"extraordinarily difficult,\" so it must be set off by a matching pair of commas. Choice A is tempting because dashes can set off interrupters, but a dash cannot pair with a closing comma. Choice C wrongly places a colon between a verb and its complement, and Choice D leaves the closing comma unpaired."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>The Süleymaniye Mosque in Istanbul, completed in 1557, was designed by ______ over a career spanning half a century, is credited with more than three hundred buildings across the Ottoman Empire.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "architect, Sinan, who,",
+   "architect Sinan, who,",
+   "architect Sinan who,",
+   "architect, Sinan who,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: \"architect\" functions as a title directly before the name Sinan, so no comma separates them; a comma before \"who\" then begins the nonrestrictive clause, and the comma after \"who\" pairs with the comma after \"century\" to set off the phrase \"over a career spanning half a century.\" Choice A is tempting because it sets off the name, but a title used without an article should not be separated from the name it precedes. Choices C and D omit the comma that must introduce the nonrestrictive clause about Sinan."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>In the 1970s, planners in Curitiba, Brazil, introduced raised, tube-shaped bus ______ passengers pay their fares before stepping inside, buses can load and depart within seconds.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "stations, because",
+   "stations. Because",
+   "stations because",
+   "stations, because,"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the first sentence ends after \"stations,\" and the second begins with the dependent clause \"Because passengers pay their fares before stepping inside,\" followed by the main clause \"buses can load and depart.\" Choice A attaches the \"because\" clause to the first sentence, leaving \"buses can load and depart\" joined by only a comma, a comma splice. Choice C creates the same run-on without any punctuation, and Choice D adds an incorrect comma after \"because.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Because a qanat—a gently sloping tunnel that carries groundwater from the foot of a mountain to distant fields—relies on gravity alone, it allowed farmers in ancient Persia to draw on deep groundwater both without the labor of lifting it to the ______ open canals would have done, to the scorching desert air.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "surface and without exposing it, as",
+   "surface, and without exposing it as",
+   "surface and without exposing it as",
+   "surface, and without exposing it, as"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the paired conjunction \"both ... and\" joins two parallel phrases (\"without the labor of lifting it\" and \"without exposing it\") and takes no comma, while the comma before \"as\" pairs with the comma after \"done\" to set off the interrupting clause \"as open canals would have done.\" Choice D is tempting because it sets off the \"as\" clause correctly, but a comma should not separate the two halves of a \"both ... and\" construction joining phrases. Choices B and C omit the comma before \"as,\" leaving the comma after \"done\" unpaired."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Marine ecologist Hina Takeda surveyed kelp forests at three sites in the North Pacific: Attu ______ Kodiak, Alaska; and Vancouver Island, British Columbia. She found the densest kelp where sea otters, which eat kelp-grazing sea urchins, were most abundant.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Island, Alaska,",
+   "Island; Alaska;",
+   "Island, Alaska;",
+   "Island Alaska;"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: because each item in the series contains an internal comma separating a place from its state or province, the items must be separated by semicolons, and a comma separates \"Attu Island\" from \"Alaska.\" Choice A is tempting, but using a comma after \"Alaska\" makes it impossible to tell where one item ends, and it is inconsistent with the semicolon after \"Kodiak, Alaska.\" Choice B separates the island from its state with a semicolon, and Choice D omits the comma between them."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>Weavers of kente cloth in Ghana often choose colors for their traditional ______ for wealth, green for growth and renewal, and blue for peace.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "meanings, gold",
+   "meanings; gold",
+   "meanings gold",
+   "meanings: gold"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: a colon properly follows the complete clause \"Weavers... often choose colors for their traditional meanings\" and introduces the list that specifies those meanings. Choice A's comma makes \"gold\" read as one more item rather than the start of an explanation. Choice B's semicolon must join two independent clauses, but the list is not one, and Choice C omits needed punctuation."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Among the most fragile holdings of the archive that conservator Lakshmi Varadan oversees in ______ a bundle of palm-leaf manuscripts whose Tamil letters, incised with a stylus and darkened with lampblack, preserve remedies compiled by generations of village physicians.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Chennai, is",
+   "Chennai: is",
+   "Chennai; is",
+   "Chennai is"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: this sentence is inverted, with the introductory prepositional phrase \"Among the most fragile holdings... in Chennai\" followed directly by the verb \"is\" and then the subject \"a bundle of palm-leaf manuscripts\"; no punctuation belongs between the phrase and the verb. Choice A is tempting because a long introductory element often takes a comma, but in an inverted sentence a comma would wrongly separate the verb from the phrase it completes. Choices B and C insert a colon or semicolon, which would leave the opening phrase as a fragment."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Historian Ana Lucía Ferreyra's survey of library inventories from colonial Spanish America focuses on three cities: Lima, ______ Mexico City, New Spain; and Quito, whose collections were the smallest of the three.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Peru,",
+   "Peru",
+   "Peru;",
+   "Peru:"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: because the items in this list contain internal commas (\"Lima, Peru\"; \"Mexico City, New Spain\"), semicolons must separate the items, as the semicolon after \"New Spain\" confirms. Choice A's comma would make \"Peru\" and \"Mexico City\" look like separate items in the list. Choice B omits punctuation between the items, and Choice D's colon cannot separate items in a series."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>The peacock mantis shrimp, a brightly colored crustacean found in warm Indo-Pacific ______ smashes the shells of snails and crabs with a pair of club-shaped limbs.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "waters,",
+   "waters",
+   "waters;",
+   "waters—"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the appositive \"a brightly colored crustacean found in warm Indo-Pacific waters\" begins with a comma, so it must end with a comma before the verb \"smashes.\" Choice B leaves the appositive unclosed. Choice C's semicolon separates the subject from its verb, and Choice D's dash does not match the opening comma."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Scholars long credited the interlocking log walls of the Shōsōin, an eighth-century storehouse in Nara, Japan, with regulating the humidity that protected its thousands of ______ measurements made by conservator Haruki Ishida suggest that the nested wooden chests inside the building did most of that work.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "treasures, however,",
+   "treasures; however,",
+   "treasures; however",
+   "treasures, however;"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: the text contains two independent clauses that contrast with each other, so a semicolon must join them, and the transition \"however\" that begins the second clause must be followed by a comma. Choice A sets off \"however\" with commas but leaves the two clauses joined only by a comma, a comma splice. Choice D attaches \"however\" to the first clause, where it signals a contrast with nothing, since the text opens with that clause; Choice C omits the comma required after \"however\" when it introduces a clause, so \"however measurements\" misreads as a single phrase."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Terakoya—small private schools often run out of the homes of Buddhist priests, samurai, and ______ taught large numbers of children in Edo-period Japan to read, write, and calculate with an abacus.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "physicians—",
+   "physicians,",
+   "physicians",
+   "physicians;"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the description of terakoya begins with a dash, so it must end with a matching dash before the verb \"taught.\" Choice B is tempting because commas already appear in the list, but a comma cannot close an interruption opened by a dash. Choice C leaves the interruption unclosed, and Choice D's semicolon separates the subject from its verb."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>In the early 1990s, filmmakers in Nigeria began shooting feature films directly on ______ low cost of the format allowed small production companies to release new titles almost every week.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "video, the",
+   "video the",
+   "video; the",
+   "video: the,"
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: a semicolon properly joins the two independent clauses \"filmmakers... began shooting feature films directly on video\" and \"the low cost of the format allowed... companies to release new titles.\" Choice A joins them with only a comma, a comma splice. Choice B creates a run-on, and Choice D adds an incorrect comma between \"the\" and \"low cost.\""
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Hard",
+  "passage": "<p>Mohenjo-daro's planners, urban historian Farida Baloch contends, subordinated nearly every other consideration—the width of streets, the placement of wells, even the orientation of ______ to a single imperative: keeping the city above the Indus River's summer floods.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "houses—",
+   "houses,",
+   "houses;",
+   "houses:"
+  ],
+  "correct": 0,
+  "explanation": "Choice A is correct: the list of considerations is an interruption that opens with a dash after \"consideration,\" so it must close with a matching dash before \"to a single imperative,\" which completes the phrase \"subordinated... to.\" Choice B is tempting because the list's items are separated by commas, but a comma cannot close a dash-opened interruption. Choice D is tempting because a colon appears later, but a colon here would cut \"subordinated... consideration\" off from \"to a single imperative,\" and Choice C's semicolon likewise breaks the sentence where no independent clause follows."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Medium",
+  "passage": "<p>Textile conservator Mirela Quispe has identified three main sources of color in Paracas embroideries from southern Peru: cochineal, a red dye made from ______ indigo, a blue dye extracted from plants; and various yellows obtained from local shrubs.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "insects,",
+   "insects",
+   "insects:",
+   "insects;"
+  ],
+  "correct": 3,
+  "explanation": "Choice D is correct: each item in this list includes its own descriptive phrase set off by a comma, so the items must be separated by semicolons, as the semicolon after \"plants\" shows. Choice A's comma would blur the boundary between the first and second items. Choice B omits punctuation between items, and Choice C's colon cannot separate items in a list."
+ },
+ {
+  "topic": "Boundaries",
+  "difficulty": "Easy",
+  "passage": "<p>The click sounds heard in southern African languages such as Xhosa and ______ produced by pulling the tongue sharply away from the roof of the mouth.</p>",
+  "question": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  "options": [
+   "Zulu, are",
+   "Zulu are",
+   "Zulu; are",
+   "Zulu: are"
+  ],
+  "correct": 1,
+  "explanation": "Choice B is correct: \"The click sounds heard in southern African languages such as Xhosa and Zulu\" is the subject, and no punctuation should separate it from its verb, \"are.\" Choice A's comma, Choice C's semicolon, and Choice D's colon all wrongly divide the subject from the verb."
+ },
+ {
+  "topic": "Command of Evidence",
+  "difficulty": "Hard",
+  "passage": "<p>Through the 1920s, Japanese silent films were usually accompanied by a <em>benshi</em>, a live performer who stood beside the screen narrating the story and voicing the characters. Japan's studios converted to sound film several years later than Hollywood did. Film historian Kenji Morioka argues that the delay arose chiefly from audiences' devotion to star benshi, which kept silent films profitable well into the 1930s, and not from the expense of sound equipment—an expense, he notes, that studios in other countries managed to bear. Critics reply that Japanese studios were smaller and less well financed than their foreign counterparts, so a cost that others could absorb may have been prohibitive for them.</p>",
+  "question": "Which finding, if true, would most directly weaken Morioka's argument?",
+  "options": [
+   "Advertisements for silent films in Tokyo in the early 1930s often named the benshi more prominently than the actors.",
+   "The price of imported sound equipment fell steadily in Japan during the first half of the 1930s.",
+   "Among Japanese studios of similar size, those that obtained loans allowing them to buy sound equipment converted promptly, even in the cities where benshi were most popular.",
+   "Many benshi found work as radio performers or stage actors after sound films became standard in Japan."
+  ],
+  "correct": 2,
+  "explanation": "Choice C is correct: when studios that were otherwise alike gained the money for equipment, they converted at once even where devotion to benshi was strongest, showing that cost, not audience attachment, was what held studios back. Choice A is tempting because it concerns benshi popularity, but it supports Morioka's claim rather than weakening it. Choice B, if anything, fits Morioka, since conversion stayed slow even as equipment got cheaper, and Choice D describes what happened to benshi after conversion, which does not bear on what caused the delay."
+ },
+ {
+  "topic": "Rhetorical Synthesis",
+  "difficulty": "Hard",
+  "passage": "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Historians of science long credited 17th-century European naturalists with the first systematic records of seasonal bird migration.</li><li>Historian Rania Haddad examined a 10th-century Arabic almanac compiled in Baghdad.</li><li>For each month, the almanac lists the arrival or departure dates of 23 bird species.</li><li>Haddad notes that the almanac's dates were copied from earlier sources rather than observed by its compiler.</li><li>She argues that the almanac shows systematic attention to migration centuries earlier but cannot, by itself, establish who first observed the patterns.</li></ul>",
+  "question": "The student wants to present Haddad's claim about the almanac's significance while accurately conveying the limits of that claim. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  "options": [
+   "Haddad argues that a 10th-century almanac from Baghdad, which lists arrival and departure dates for 23 bird species month by month, shows systematic attention to bird migration.",
+   "Haddad argues that a 10th-century Baghdad almanac reveals systematic attention to bird migration centuries before 17th-century European naturalists, though because its dates were copied from earlier sources, it cannot alone show who first observed the patterns.",
+   "Historians long credited 17th-century European naturalists with the first systematic records of bird migration, but Haddad has examined a 10th-century almanac that lists dates for 23 bird species.",
+   "Although its dates were copied from earlier sources, the 10th-century Baghdad almanac that Haddad examined lists the arrival or departure dates of 23 bird species for each month."
+  ],
+  "correct": 1,
+  "explanation": "Choice B states Haddad's claim (systematic attention to migration centuries before the Europeans) and its limit (the copied dates cannot show who first observed the patterns). Choice A states the significance but omits the limit, and Choice C implies a challenge without stating either Haddad's claim or its limit. Choice D mentions the copied dates but never states what Haddad thinks the almanac shows."
  }
 ]
