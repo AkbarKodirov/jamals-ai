@@ -702,3 +702,12 @@ if (existsSync(join(DIST, 'index.html'))) {
 }
 
 app.listen(PORT, () => console.log(`STEP12 backend running on http://localhost:${PORT}`))
+
+// Render's free plan sleeps after 15 minutes without visitors (the next visitor waits ~40 s).
+// The server pings its own public address every 10 minutes, which counts as a visit and keeps it awake.
+// (Backs up the GitHub keep-awake job, whose schedule GitHub can delay.)
+if (process.env.RENDER_EXTERNAL_URL) {
+  setInterval(() => {
+    fetch(`${process.env.RENDER_EXTERNAL_URL}/api/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {})
+  }, 10 * 60_000).unref()
+}
