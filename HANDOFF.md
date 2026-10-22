@@ -80,3 +80,7 @@ Jamals AI is a Digital SAT prep platform for **Jamals International Academy** in
 - Commit in small pieces and push to `main`. Commit messages are plain English.
 - Live-site JSON (tests and bank) is fetched with `cache: 'no-cache'` and served with `Cache-Control: no-cache`, so content updates show up immediately.
 - Don't kill processes with `pkill -f server/index.js` (it also killed the shell); run the server as a background task.
+
+## AI backup (added Oct 22)
+- `server/groq.js`: when every Gemini model is busy or out of free quota, Humo answers through Groq (free tier, ~1,000 requests/day). Text uses `openai/gpt-oss-120b`; requests with photos use `qwen/qwen3.8-27b`. Key: `GROQ_API_KEY` (also read as `Groq_API_KEY`) on Render. `/api/health` shows `groq: true` when the key is set.
+- `.github/workflows/keep-awake.yml` pings the site every 10 minutes so Render's free plan never sleeps.
