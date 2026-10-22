@@ -24,7 +24,7 @@ export function Proof() {
   const row = [...UNIVERSITIES, ...UNIVERSITIES]
   return (
     <section className="border-t border-white/[0.07] py-12" aria-label="Universities our students aim for">
-      <p className="mx-auto max-w-7xl px-4 text-[13px] text-white/40 sm:px-6">Jamals students aim for — and get into — universities like these</p>
+      <p className="mx-auto max-w-7xl px-4 text-[13px] text-white/40 sm:px-6">STEP12 students aim for universities like these</p>
       <div className="relative mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
         <ul className="flex w-max animate-marquee gap-4 hover:[animation-play-state:paused]">
           {row.map(([u, d], i) => (
@@ -44,7 +44,7 @@ export function Proof() {
 export function HowItWorks() {
   const steps = [
     ['Take a 40-minute diagnostic', 'A short, timed mix of every Digital SAT domain. You get an estimated score right away.'],
-    ['Humo builds your plan', 'Your test date, target score and weak spots become a week-by-week schedule.'],
+    ['Sensai builds your plan', 'Your test date, target score and weak spots become a week-by-week schedule.'],
     ['Practice and review daily', 'Short sets from the question bank. Every mistake goes to your notebook with an explanation.'],
     ['Sit full mocks before test day', 'Timed, adaptive mocks show whether you are on track — and what to fix in the last weeks.'],
   ]
@@ -73,9 +73,9 @@ const PLANS = [
     name: 'Free',
     price: '0',
     unit: "so'm",
-    note: 'For trying Jamals AI',
+    note: 'For trying STEP12',
     cta: 'Start free',
-    features: ['300 practice questions', '1 full Digital SAT mock', '20 Humo messages a day', 'Mistake notebook'],
+    features: ['300 practice questions', '1 full Digital SAT mock', '20 Sensai messages a day', 'Mistake notebook'],
   },
   {
     name: 'Pro',
@@ -84,13 +84,13 @@ const PLANS = [
     note: 'For students with a test date',
     cta: 'Start with Pro',
     featured: true,
-    features: ['Full question bank', 'Unlimited full SAT mocks', 'Unlimited Humo', 'Personal study plan', 'Detailed analytics by skill'],
+    features: ['Full question bank', 'Unlimited full SAT mocks', 'Unlimited Sensai', 'Personal study plan', 'Detailed analytics by skill'],
   },
   {
     name: 'Academy',
     price: 'Included',
     unit: 'with your course',
-    note: 'For Jamals Academy students',
+    note: 'For STEP12 students',
     cta: 'Join with academy code',
     features: ['Everything in Pro', 'Your teacher sees your progress', 'Weekly mock with group ranking', 'Speaking practice with teachers'],
   },
@@ -117,7 +117,7 @@ export function Pricing() {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-[17px] font-semibold">{p.name}</h3>
-                {p.featured && <span className="rounded-full bg-jg-500 px-2.5 py-0.5 text-[11px] font-semibold text-ink">Most chosen</span>}
+                {p.featured && <span className="rounded-full bg-jg-500 px-2.5 py-0.5 text-[11px] font-semibold text-white">Most chosen</span>}
               </div>
               <p className="mt-1 text-[13px] text-white/45">{p.note}</p>
               <p className="mt-7 flex items-baseline gap-2">
@@ -135,7 +135,7 @@ export function Pricing() {
               <Link
                 to="/signup"
                 className={`mt-8 h-11 rounded-full text-center text-[14px] font-medium leading-[44px] transition ${
-                  p.featured ? 'bg-jg-500 text-ink hover:bg-jg-400' : 'border border-white/15 hover:border-white/30 hover:bg-white/[0.04]'
+                  p.featured ? 'bg-jg-500 text-white hover:bg-jg-400' : 'border border-white/15 hover:border-white/30 hover:bg-white/[0.04]'
                 }`}
               >
                 {p.cta}
@@ -149,11 +149,11 @@ export function Pricing() {
 }
 
 const FAQ = [
-  ['Is Jamals AI the same as the official SAT?', 'No. Our questions and mocks follow the official formats and timing closely, but they are written by Jamals Academy teachers. Use the official Bluebook practice tests as well before test day.'],
-  ['How accurate are the score estimates?', 'Estimates are most reliable after a full mock. A single practice set gives a rough range; Humo tells you how confident the estimate is.'],
-  ['Can Humo explain in Uzbek or Russian?', "Yes. Ask in O'zbekcha or Русский and Humo will answer in that language, while keeping exam terms in English so they match the real test."],
-  ['Does Humo just give me the answers?', 'When you are practising, Humo starts with a hint and only shows the full solution if you ask. In review mode it explains the full reasoning.'],
-  ['I study at Jamals Academy. Do I pay separately?', 'No. Academy students get full access with the code from their teacher.'],
+  ['Is STEP12 the same as the official SAT?', 'No. Our questions and mocks follow the official formats and timing closely, but they are written by STEP12 teachers. Use the official Bluebook practice tests as well before test day.'],
+  ['How accurate are the score estimates?', 'Estimates are most reliable after a full mock. A single practice set gives a rough range; Sensai tells you how confident the estimate is.'],
+  ['Can Sensai explain in Uzbek or Russian?', "Yes. Ask in O'zbekcha or Русский and Sensai will answer in that language, while keeping exam terms in English so they match the real test."],
+  ['Does Sensai just give me the answers?', 'When you are practising, Sensai starts with a hint and only shows the full solution if you ask. In review mode it explains the full reasoning.'],
+  ['I study at STEP12. Do I pay separately?', 'No. Academy students get full access with the code from their teacher.'],
   ['Can I cancel Pro at any time?', 'Yes. Pro is monthly, and you keep access until the end of the month you paid for.'],
 ]
 
@@ -190,8 +190,8 @@ export function FinalCta() {
       <div className="pointer-events-none absolute left-1/2 top-1/2 size-[46rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-jg-500/[0.13] blur-[140px]" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 size-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-jg-500/20" />
       <div className="relative mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
-        <img src="/brand/jamals-mark.png" alt="" className="size-16 rounded-full" />
-        <h2 className="display mt-8 pb-2 text-[clamp(2.4rem,6vw,4.6rem)]">Humo is ready <span className="gold-text">when you are</span>.</h2>
+        <img src="/sensai-mark-512.png" alt="" className="size-16 rounded-2xl shadow-[0_20px_60px_-20px_rgba(200,16,63,0.7)]" />
+        <h2 className="display mt-8 pb-2 text-[clamp(2.4rem,6vw,4.6rem)]">Sensai is ready <span className="gold-text">when you are</span>.</h2>
         <p className="mt-5 max-w-md text-[16px] text-white/55">Take the diagnostic today and see where you stand in 40 minutes.</p>
         <div className="mt-9">
           <GoogleButton />
@@ -207,14 +207,13 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div>
           <span className="flex items-center gap-2.5">
-            <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full" />
-            <span className="text-[15px] font-semibold tracking-tight">Jamals AI</span>
+            <img src="/brand/step12-logo.png" alt="STEP12" className="h-9 w-auto rounded-[5px] ring-1 ring-white/10" />
           </span>
-          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">The exam platform of Jamals International Academy — teaching SAT in Tashkent since 2020. Digital SAT preparation with Humo.</p>
+          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">The digital SAT platform of STEP12, Tashkent — full-length practice, a smart question bank and Sensai, your AI tutor.</p>
         </div>
         {[
-          ['Product', [['Try Humo', '#try'], ['Features', '#features'], ['Pricing', '#pricing']]],
-          ['Academy', [['jamals.uz', 'https://jamals.uz'], ['Courses', 'https://jamals.uz'], ['+998 55 588 99 39', 'tel:+998555889939']]],
+          ['Product', [['Try Sensai', '#try'], ['Features', '#features'], ['Pricing', '#pricing']]],
+          ['Academy', [['step12.uz', 'https://step12.uz'], ['Courses', 'https://step12.uz'], ['Telegram', 'https://t.me/STEP12_UZ'], ['Instagram', 'https://www.instagram.com/step12.uz/'], ['+998 55 050 12 12', 'tel:+998550501212']]],
           ['Legal', [['Privacy Policy', '/privacy'], ['Terms of Service', '/terms']]],
         ].map(([h, links]) => (
           <div key={h as string}>
@@ -233,7 +232,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/[0.07]">
         <p className="mx-auto max-w-7xl px-4 py-6 text-[11px] leading-relaxed text-white/30 sm:px-6">
-          © {new Date().getFullYear()} Jamals International Academy. SAT® is a trademark of the College Board, which is not affiliated with and does not endorse this product.
+          © {new Date().getFullYear()} STEP12. SAT® is a trademark of the College Board, which is not affiliated with and does not endorse this product.
         </p>
       </div>
     </footer>
@@ -242,7 +241,7 @@ export function Footer() {
 
 const INSIDE = [
   ['Exam, practice & sprint modes', 'Take any full test the way you need today: real timing, instant feedback, or less time to build pacing.'],
-  ['Humo in every screen', 'A hint while you practise, an explanation above every reviewed question, and a chat that knows your answers.'],
+  ['Sensai in every screen', 'A hint while you practise, an explanation above every reviewed question, and a chat that knows your answers.'],
   ['Desmos & reference sheet', 'The same graphing calculator and formula sheet you get in Bluebook, built into every Math test.'],
   ['Weekly study plan', 'A schedule that counts down to your test date, with tasks you tick off.'],
   ['Drills & daily question', 'Short sets with instant explanations, plus one new question every day.'],

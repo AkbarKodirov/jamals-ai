@@ -218,13 +218,13 @@ export default function Mistakes() {
             </select>
             {tab === 'mistakes' && (
               <label className="flex items-center gap-2 text-[13px] text-moss">
-                <input type="checkbox" checked={showFixed} onChange={(e) => setShowFixed(e.target.checked)} className="accent-[#1b2925]" /> Show fixed
+                <input type="checkbox" checked={showFixed} onChange={(e) => setShowFixed(e.target.checked)} className="accent-[#0b1d36]" /> Show fixed
               </label>
             )}
             <span className="ml-auto flex gap-2">
               {tab === 'mistakes' && shown.length > 0 && (
                 <button onClick={() => setHumo(true)} className="btn btn-ghost h-10 px-4 text-[13px]">
-                  <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Find my patterns
+                  <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Find my patterns
                 </button>
               )}
               {shown.length > 0 && (

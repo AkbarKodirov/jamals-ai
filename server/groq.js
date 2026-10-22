@@ -1,4 +1,4 @@
-// Free backup for Humo: when every Gemini model is busy or out of quota, the same request goes to Groq
+// Free backup for Sensai: when every Gemini model is busy or out of quota, the same request goes to Groq
 // (OpenAI-compatible API, free tier ~1,000 requests a day). Text goes to a strong reasoning model; requests
 // with photos go to a model that can read images. Responses are shaped like Gemini's ({ text } / chunks with .text)
 // so the rest of the server doesn't need to know which provider answered.

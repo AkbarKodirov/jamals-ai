@@ -37,7 +37,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
 
   return (
     <div className="grid min-h-svh bg-ink text-white lg:grid-cols-2">
-      {/* Humo stage */}
+      {/* Sensai stage */}
       <aside className="relative hidden overflow-hidden border-r border-white/[0.07] lg:block">
         <div className="absolute inset-0">
           <Suspense fallback={null}>
@@ -52,7 +52,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
         </div>
         <div className="absolute inset-x-10 bottom-10">
           <p className="max-w-md text-[22px] font-medium leading-snug tracking-tight">
-            "In the old stories, whoever the Humo's shadow touched was blessed with good fortune."
+            "In the old stories, whoever the Sensai's shadow touched was blessed with good fortune."
           </p>
           <p className="mt-3 text-[13px] text-white/45">Here, the fortune is a better score.</p>
         </div>
@@ -68,7 +68,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
         </div>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
           <h1 className="display text-[40px]">{signup ? 'Create your account' : 'Welcome back'}</h1>
-          <p className="mt-3 text-[15px] text-white/50">{signup ? 'Start with a free diagnostic. Takes 40 minutes.' : 'Pick up where you left off with Humo.'}</p>
+          <p className="mt-3 text-[15px] text-white/50">{signup ? 'Start with a free diagnostic. Takes 40 minutes.' : 'Pick up where you left off with Sensai.'}</p>
 
           <div className="mt-9 [&>div]:w-full [&_button]:w-full">
             {inAppBrowser() && (
@@ -117,13 +117,13 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
               />
             </label>
             {error && <p className="text-[13px] text-red-300">{error}</p>}
-            <button disabled={busy} className="h-12 w-full rounded-full bg-jg-500 text-[15px] font-semibold text-ink transition hover:bg-jg-400 disabled:opacity-60">
+            <button disabled={busy} className="h-12 w-full rounded-full bg-jg-500 text-[15px] font-semibold text-white transition hover:bg-jg-400 disabled:opacity-60">
               {busy ? 'One moment…' : signup ? 'Create account' : 'Log in'}
             </button>
           </form>
 
           <p className="mt-7 text-center text-[14px] text-white/50">
-            {signup ? 'Already have an account? ' : 'New to Jamals AI? '}
+            {signup ? 'Already have an account? ' : 'New to STEP12? '}
             <Link to={signup ? '/login' : '/signup'} className="text-jg-300 hover:text-jg-200">
               {signup ? 'Log in' : 'Create an account'}
             </Link>
@@ -132,7 +132,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
         <p className="text-center text-[11px] text-white/30">
           By continuing you agree to the{' '}
           <Link to="/terms" className="underline hover:text-white/60">Terms</Link> and{' '}
-          <Link to="/privacy" className="underline hover:text-white/60">Privacy Policy</Link> of Jamals International Academy.
+          <Link to="/privacy" className="underline hover:text-white/60">Privacy Policy</Link> of STEP12.
         </p>
       </main>
     </div>

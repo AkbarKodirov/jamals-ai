@@ -27,7 +27,7 @@ const DEFAULT_TITLE: Record<PlanKind, string> = {
   lesson: 'One strategy lesson',
   blitz: 'Blitz run for pacing',
   test: 'Full practice test in exam mode',
-  review: 'Review my last test with Humo',
+  review: 'Review my last test with Sensai',
   custom: '',
 }
 
@@ -88,16 +88,16 @@ function AskHumoPlan({ plan }: { plan: WeekPlan }) {
       const r = await editPlan(plan, s.profile, t, token)
       setSt({ proposal: r.plan, note: r.note })
     } catch (e) {
-      setSt({ error: e instanceof HumoOffline ? `Humo is offline: ${e.message}` : (e as Error).message })
+      setSt({ error: e instanceof HumoOffline ? `Sensai is offline: ${e.message}` : (e as Error).message })
     }
   }
   return (
     <div className="card relative overflow-hidden p-5">
       <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-jg-400/15 blur-3xl" />
       <div className="relative flex items-center gap-3">
-        <img src="/humo-mark.png" alt="" className="size-10 rounded-xl" />
+        <img src="/sensai-mark.png" alt="" className="size-10 rounded-xl" />
         <div>
-          <p className="text-[15px] font-semibold">Ask Humo to change your plan</p>
+          <p className="text-[15px] font-semibold">Ask Sensai to change your plan</p>
           <p className="text-[12.5px] text-moss">Say it in your own words — English, O'zbekcha or Русский.</p>
         </div>
       </div>
@@ -168,7 +168,7 @@ function AskHumoPlan({ plan }: { plan: WeekPlan }) {
                   }}
                   className="btn btn-green h-10 flex-1 text-[13.5px]"
                 >
-                  <Check className="size-4" /> Apply Humo's changes
+                  <Check className="size-4" /> Apply Sensai's changes
                 </button>
                 <button onClick={() => setSt({})} className="btn btn-ghost h-10 px-4 text-[13px]">
                   Discard
@@ -321,7 +321,7 @@ export default function StudyPlan() {
             <motion.section layout key={date} className={`card p-4 transition-shadow ${isToday ? 'ring-2 ring-jg-500' : ''} ${allDone ? 'bg-gradient-to-b from-jg-50 to-card' : ''}`}>
               <p className="flex items-center justify-between text-[13px]">
                 <span className="font-semibold">{d.toLocaleDateString(undefined, { weekday: 'long' })}</span>
-                <span className={isToday ? 'rounded-full bg-jg-500 px-2 py-0.5 text-[11px] font-semibold text-ink' : 'text-moss'}>{isToday ? 'Today' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                <span className={isToday ? 'rounded-full bg-jg-500 px-2 py-0.5 text-[11px] font-semibold text-white' : 'text-moss'}>{isToday ? 'Today' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
               </p>
               {tasks.length === 0 && !editing && <p className="mt-3 rounded-xl bg-cream px-3 py-4 text-center text-[12.5px] text-moss">Rest day 🌿</p>}
               <Reorder.Group axis="y" values={tasks} onReorder={(next) => editing && setDay(i, next)} className="mt-3 space-y-2">
@@ -339,7 +339,7 @@ export default function StudyPlan() {
                             whileTap={{ scale: 0.85 }}
                             aria-label={ok ? 'Mark not done' : 'Mark done'}
                             onClick={() => setStore((x) => ({ ...x, planDone: { ...x.planDone, [k]: !ok } }))}
-                            className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${ok ? 'border-jg-500 bg-jg-500 text-ink' : 'border-line-strong hover:border-jg-500'}`}
+                            className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${ok ? 'border-jg-500 bg-jg-500 text-white' : 'border-line-strong hover:border-jg-500'}`}
                           >
                             {ok && (
                               <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 500, damping: 18 }}>

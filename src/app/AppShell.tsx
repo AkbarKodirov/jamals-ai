@@ -33,7 +33,7 @@ const GROUPS: { label: string | null; items: Item[] }[] = [
     label: null,
     items: [
       { to: '/app', label: 'Home', icon: Home, end: true },
-      { to: '/app/humo', label: 'Ask Humo', icon: MessageCircle },
+      { to: '/app/humo', label: 'Ask Sensai', icon: MessageCircle },
       { to: '/app/plan', label: 'Study plan', icon: CalendarCheck },
     ],
   },
@@ -79,7 +79,7 @@ const MOBILE = [
 export function Avatar({ size = 'size-8' }: { size?: string }) {
   const { user } = useAuth()
   if (user?.picture) return <img src={user.picture} alt="" referrerPolicy="no-referrer" className={`${size} rounded-full`} />
-  return <span className={`${size} grid place-items-center rounded-full bg-jg-500 text-[13px] font-semibold text-ink`}>{user?.name?.[0]?.toUpperCase() ?? 'J'}</span>
+  return <span className={`${size} grid place-items-center rounded-full bg-jg-500 text-[13px] font-semibold text-white`}>{user?.name?.[0]?.toUpperCase() ?? 'J'}</span>
 }
 
 function PageLoading() {
@@ -133,7 +133,7 @@ export default function AppShell() {
     at.setHours(h, m, 0, 0)
     const ms = at.getTime() - Date.now()
     if (ms < 0) return
-    const t = setTimeout(() => new Notification('Time to study with Humo', { body: `Today's plan: ${(s.plan?.days[day] ?? []).map((x) => x.title).slice(0, 3).join(' · ') || 'Daily 20 words'}`, icon: '/humo-mark.png' }), ms)
+    const t = setTimeout(() => new Notification('Time to study with Sensai', { body: `Today's plan: ${(s.plan?.days[day] ?? []).map((x) => x.title).slice(0, 3).join(' · ') || 'Daily 20 words'}`, icon: '/sensai-mark.png' }), ms)
     return () => clearTimeout(t)
   }, [s.settings.reminders, s.profile.studyDays, s.profile.studyTime, s.plan])
 
@@ -167,10 +167,11 @@ export default function AppShell() {
       {/* Sidebar */}
       <aside className="theme-light fixed inset-y-0 left-0 hidden w-64 flex-col bg-pine p-4 text-cream md:flex">
         <Link to="/" className="flex items-center gap-2.5 px-2 py-2">
-          <img src="/brand/jamals-mark.png" alt="" className="size-9 rounded-full ring-1 ring-white/15" />
-          <span className="flex flex-col leading-none">
-            <span className="text-[16px] font-semibold tracking-tight">Jamals AI</span>
-            <span className="mt-1 text-[11px] text-cream/45">Digital SAT</span>
+          <img src="/brand/step12-logo.png" alt="STEP12" className="h-8 w-auto rounded-[5px] ring-1 ring-white/15" />
+          <span className="border-l border-white/15 pl-2.5 text-[10.5px] font-medium uppercase leading-tight tracking-[0.14em] text-cream/55">
+            Digital
+            <br />
+            SAT
           </span>
         </Link>
         <nav className="mt-5 flex-1 space-y-4 overflow-y-auto pr-1">
@@ -193,7 +194,7 @@ export default function AppShell() {
                         {isActive && <motion.span layoutId="nav-bar" className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-jg-400" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
                         <Icon className="relative size-[18px]" />
                         <span className="relative">{label}</span>
-                        {to === '/app/humo' && <img src="/humo-mark.png" alt="" className="relative ml-auto size-5 rounded-md" />}
+                        {to === '/app/humo' && <img src="/sensai-mark.png" alt="" className="relative ml-auto size-5 rounded-md" />}
                         {badge && <span className="relative ml-auto rounded-md bg-[#2d70b3] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">{badge}</span>}
                       </>
                     )}
@@ -229,8 +230,7 @@ export default function AppShell() {
       <header className="sticky top-0 z-30 border-b border-line bg-cream/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-8">
           <Link to="/" className="flex items-center gap-2 md:hidden">
-            <img src="/brand/jamals-mark.png" alt="" className="size-8 rounded-full" />
-            <span className="text-[15px] font-semibold">Jamals AI</span>
+            <img src="/brand/step12-logo.png" alt="STEP12" className="h-7 w-auto rounded-[4px]" />
           </Link>
           <span className="hidden md:block" />
           <div className="flex items-center gap-2">

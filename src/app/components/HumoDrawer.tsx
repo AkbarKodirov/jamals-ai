@@ -7,7 +7,7 @@ import { RichText } from './RichText'
 import { DesmosScreen } from '../../desmos/DesmosScreen'
 import { PlanProposal } from './PlanProposal'
 
-/** Humo's text with its checked Desmos screens and plan proposals placed where Humo put them. */
+/** Sensai's text with its checked Desmos screens and plan proposals placed where Sensai put them. */
 export function HumoReply({ msg }: { msg: ChatMsg }) {
   const parts = msg.text.split(/(\[\[(?:desmos:\d+|plan)\]\])/g)
   const used = new Set<number>()
@@ -46,7 +46,7 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
           style={{ transformOrigin: m.role === 'user' ? 'bottom right' : 'bottom left' }}
           className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}
         >
-          {m.role === 'humo' && <img src="/humo-mark.png" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
+          {m.role === 'humo' && <img src="/sensai-mark.png" alt="" className="mt-0.5 size-7 shrink-0 rounded-lg" />}
           <div className={`rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === 'user' ? 'max-w-[82%] bg-pine text-cream' : `border border-line bg-card text-pine ${m.desmos?.length || m.plan ? 'w-full max-w-[94%]' : 'max-w-[82%]'}`}`}>
             {m.role === 'humo' ? (
               <HumoReply msg={m} />
@@ -69,7 +69,7 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5">
           <span className="relative">
             <span className="absolute inset-0 animate-ping rounded-lg bg-jg-400/40" />
-            <img src="/humo-mark.png" alt="" className="relative size-7 rounded-lg" />
+            <img src="/sensai-mark.png" alt="" className="relative size-7 rounded-lg" />
           </span>
           <span className="flex items-center gap-1 rounded-2xl border border-line bg-card px-4 py-3">
             {[0, 1, 2].map((i) => (
@@ -119,7 +119,7 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
   return { msgs, busy, send, reset }
 }
 
-/** Slide-over chat with Humo that already knows the test the student just took. */
+/** Slide-over chat with Sensai that already knows the test the student just took. */
 export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill, subtitle = 'Your Digital SAT tutor', autoSend }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string; subtitle?: string; autoSend?: string | null }) {
   const { msgs, busy, send } = useHumoChat(greeting, context)
   const [input, setInput] = useState('')
@@ -141,7 +141,7 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
           <motion.div className="fixed inset-0 z-40 bg-pine/40 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.aside
             role="dialog"
-            aria-label="Chat with Humo"
+            aria-label="Chat with Sensai"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -149,9 +149,9 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-cream"
           >
             <div className="flex items-center gap-3 border-b border-line bg-card px-5 py-4">
-              <img src="/humo-mark.png" alt="" className="size-10 rounded-xl" />
+              <img src="/sensai-mark.png" alt="" className="size-10 rounded-xl" />
               <div className="flex-1">
-                <p className="text-[15px] font-semibold">Humo</p>
+                <p className="text-[15px] font-semibold">Sensai</p>
                 <p className="text-[12px] text-moss">{subtitle}</p>
               </div>
               <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-moss hover:bg-cream">

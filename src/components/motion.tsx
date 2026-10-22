@@ -23,7 +23,7 @@ export function CountUp({ to, duration = 1.1, className = '', format = (n: numbe
 }
 
 /** Circular progress ring that draws itself in. */
-export function ScoreRing({ value, max, size = 168, stroke = 12, color = '#62b968', track = 'rgb(255 255 255 / 0.1)', children }: { value: number; max: number; size?: number; stroke?: number; color?: string; track?: string; children?: React.ReactNode }) {
+export function ScoreRing({ value, max, size = 168, stroke = 12, color = '#e0456b', track = 'rgb(255 255 255 / 0.1)', children }: { value: number; max: number; size?: number; stroke?: number; color?: string; track?: string; children?: React.ReactNode }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   const pct = Math.max(0, Math.min(1, value / max))
@@ -50,7 +50,7 @@ export function ScoreRing({ value, max, size = 168, stroke = 12, color = '#62b96
   )
 }
 
-const CONFETTI_COLORS = ['#62b968', '#48ae4f', '#f7c76a', '#e9a23b', '#faf7f1', '#8fd295']
+const CONFETTI_COLORS = ['#e0456b', '#c8103f', '#f7c76a', '#e9a23b', '#f6f7fb', '#ef8fa6']
 
 /** A one-shot burst of confetti from the centre of its parent. Pure DOM — no canvas, no library. */
 export function Confetti({ fire, count = 46 }: { fire: boolean; count?: number }) {
@@ -89,7 +89,7 @@ export function Reveal({ children, delay = 0, className = '', y = 22 }: { childr
 }
 
 /** Card with a soft light that follows the pointer. */
-export function Spotlight({ children, className = '', color = 'rgba(98,185,104,0.16)' }: { children: React.ReactNode; className?: string; color?: string }) {
+export function Spotlight({ children, className = '', color = 'rgba(224,69,107,0.16)' }: { children: React.ReactNode; className?: string; color?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   return (
     <div
