@@ -183,7 +183,7 @@ export function QBankSection() {
       <div className="mt-5 flex flex-wrap items-center gap-2">
         {DIFFS.map((d) => (
           <button key={d} onClick={() => setDiffs((x) => (x.includes(d) ? x.filter((y) => y !== d) : [...x, d]))} className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium ring-1 transition ${diffs.includes(d) ? 'bg-pine text-cream ring-pine' : 'bg-card ring-line hover:ring-jg-500'}`}>
-            <span className={`mr-1.5 inline-block size-2 rounded-full ${d === 'Easy' ? 'bg-jg-500' : d === 'Medium' ? 'bg-amber-400' : 'bg-rose-500'}`} />
+            <span className={`mr-1.5 inline-block size-2 rounded-full ${d === 'Easy' ? 'bg-emerald-500' : d === 'Medium' ? 'bg-amber-400' : 'bg-rose-500'}`} />
             {d}
           </button>
         ))}

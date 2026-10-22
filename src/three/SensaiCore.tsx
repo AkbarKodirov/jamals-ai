@@ -71,35 +71,73 @@ function Spark(props: ThreeElements['group']) {
   )
 }
 
-/** Soft radial glow drawn in a tiny shader (no textures, no flat discs). */
-function glowMaterial() {
-  return new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    toneMapped: false,
-    uniforms: { uOpacity: { value: 0 } },
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-    fragmentShader: `varying vec2 vUv; uniform float uOpacity;
-      void main(){
-        float d = distance(vUv, vec2(0.5)) * 2.0;
-        float core = exp(-d * d * 60.0);
-        float mid = exp(-d * d * 9.0);
-        float outer = exp(-d * d * 3.0) * (1.0 - smoothstep(0.85, 1.0, d));
-        vec3 col = vec3(1.0, 0.94, 0.96) * core * 1.6 + vec3(1.0, 0.32, 0.5) * mid * 0.9 + vec3(0.62, 0.02, 0.18) * outer * 0.6;
-        gl_FragColor = vec4(col * uOpacity, 1.0);
-      }`,
+/** Ink motes that flow along the stroke, like energy travelling through the master's brush. */
+function Motes({ count = 140 }: { count?: number }) {
+  const ref = useRef<THREE.Points>(null)
+  const seeds = useMemo(() => Array.from({ length: count }, () => [Math.random(), (Math.random() - 0.5) * 0.36, (Math.random() - 0.5) * 0.2, 0.4 + Math.random() * 0.8]), [count])
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+    return g
+  }, [count])
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime()
+    const speed = 0.05 + humoMood.value * 0.22
+    const pos = geo.attributes.position as THREE.BufferAttribute
+    const p = introProgress(t)
+    seeds.forEach(([u0, dr, dz, sp], i) => {
+      const u = (((u0 + t * speed * sp) % 1) + 1) % 1
+      const a = Math.PI * 0.32 + u * Math.PI * 2 * 0.87 * p
+      const r = 1.55 + dr * (1 - u * 0.6)
+      pos.setXYZ(i, Math.cos(a) * r, Math.sin(a) * r, dz)
+    })
+    pos.needsUpdate = true
+    if (ref.current) (ref.current.material as THREE.PointsMaterial).opacity = 0.85 * p
   })
+  return (
+    <points ref={ref} geometry={geo}>
+      <pointsMaterial size={0.035} color="#ffc2d1" transparent opacity={0} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
+    </points>
+  )
 }
+
+/** A ripple leaves the core every few seconds, like a drop of ink touching still water. */
+function Ripples() {
+  const rings = [useRef<THREE.Mesh>(null), useRef<THREE.Mesh>(null), useRef<THREE.Mesh>(null)]
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime()
+    const period = 3.6 - humoMood.value * 1.8
+    rings.forEach((r, i) => {
+      if (!r.current) return
+      const k = (((t / period + i / 3) % 1) + 1) % 1
+      r.current.scale.setScalar(0.3 + k * 2.2)
+      ;(r.current.material as THREE.MeshBasicMaterial).opacity = (1 - k) ** 2 * 0.55 * introProgress(t, 1.4, 1)
+    })
+  })
+  return (
+    <>
+      {rings.map((r, i) => (
+        <mesh key={i} ref={r}>
+          <torusGeometry args={[1, 0.006, 8, 160]} />
+          <meshBasicMaterial color={[1.8, 0.5, 0.8]} toneMapped={false} transparent opacity={0} depthWrite={false} />
+        </mesh>
+      ))}
+    </>
+  )
+}
+
+/** Many faint additive shells read as one smooth glow: radius, opacity, colour (white-pink → crimson). */
+const GLOW: [number, number, [number, number, number]][] = Array.from({ length: 9 }, (_, i) => {
+  const k = i / 8
+  return [0.17 + k * 0.6, 0.16 * (1 - k) ** 1.4 + 0.012, [2.6 - k * 1.6, 0.9 * (1 - k) + 0.04, 1.2 * (1 - k) + 0.22]]
+})
 
 export function SensaiCore(props: ThreeElements['group']) {
   const root = useRef<THREE.Group>(null)
   const stroke = useRef<THREE.Mesh>(null)
-  const light = useRef<THREE.Mesh>(null)
-  const halo = useRef<THREE.Mesh>(null)
+  const light = useRef<THREE.Group>(null)
   const spark = useRef<THREE.Group>(null)
   const geo = useMemo(() => ensoGeometry(), [])
-  const glow = useMemo(() => glowMaterial(), [])
   const total = geo.index!.count
 
   useFrame(({ clock }) => {
@@ -116,8 +154,7 @@ export function SensaiCore(props: ThreeElements['group']) {
     }
     if (stroke.current) stroke.current.rotation.z = Math.sin(t * 0.2) * 0.05 - m * 0.04
     const pulse = 0.5 + 0.5 * Math.sin(t * (1.4 + m * 3))
-    if (light.current) light.current.scale.setScalar((0.13 + 0.03 * pulse + m * 0.05) * (0.2 + 0.8 * p))
-    glow.uniforms.uOpacity.value = (0.75 + 0.25 * pulse + m * 0.35) * p
+    if (light.current) light.current.scale.setScalar((0.9 + 0.12 * pulse + m * 0.3) * p)
     if (spark.current) {
       const a = Math.PI * 0.32 - 0.14 + Math.sin(t * 0.8) * 0.03
       spark.current.position.set(Math.cos(a) * 1.62, Math.sin(a) * 1.62, 0.12)
@@ -129,17 +166,23 @@ export function SensaiCore(props: ThreeElements['group']) {
   return (
     <group ref={root} {...props}>
       <mesh ref={stroke} geometry={geo}>
-        <meshPhysicalMaterial color="#b80d3b" metalness={0.7} roughness={0.2} clearcoat={1} clearcoatRoughness={0.12} sheen={0.6} sheenColor="#ff9fb4" envMapIntensity={1.4} />
+        <meshPhysicalMaterial color="#a8092f" metalness={0.75} roughness={0.18} clearcoat={1} clearcoatRoughness={0.1} sheen={0.35} sheenColor="#ff7a98" envMapIntensity={1.5} />
       </mesh>
-      {/* the living light inside */}
-      <mesh ref={light}>
-        <sphereGeometry args={[1, 48, 48]} />
-        <meshBasicMaterial color={[3.2, 1.6, 2.0]} toneMapped={false} />
-      </mesh>
-      <mesh ref={halo} position={[0, 0, -0.05]}>
-        <planeGeometry args={[2.6, 2.6]} />
-        <primitive object={glow} attach="material" />
-      </mesh>
+      {/* the living light inside: a white-hot heart in layered crimson glow (bloom does the rest) */}
+      <group ref={light}>
+        <mesh>
+          <sphereGeometry args={[0.13, 32, 32]} />
+          <meshBasicMaterial color={[4, 3.4, 3.6]} toneMapped={false} />
+        </mesh>
+        {GLOW.map(([r, o, c], i) => (
+          <mesh key={i}>
+            <sphereGeometry args={[r, 32, 32]} />
+            <meshBasicMaterial color={c} toneMapped={false} transparent opacity={o} depthWrite={false} blending={THREE.AdditiveBlending} />
+          </mesh>
+        ))}
+      </group>
+      <Ripples />
+      <Motes />
       <group ref={spark}>
         <Spark />
       </group>

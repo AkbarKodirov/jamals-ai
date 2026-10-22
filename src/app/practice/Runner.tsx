@@ -326,7 +326,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
         </p>
         <div className="mt-8 grid grid-cols-10 gap-1.5">
           {ans.map((x, j) => (
-            <button key={j} onClick={() => (setDone(false), setI(j))} className={`aspect-square rounded-lg text-[12px] font-semibold ${!x.checked ? 'bg-line text-moss' : x.correct ? 'bg-jg-500 text-white' : 'bg-red-400 text-white'}`}>
+            <button key={j} onClick={() => (setDone(false), setI(j))} className={`aspect-square rounded-lg text-[12px] font-semibold ${!x.checked ? 'bg-line text-moss' : x.correct ? 'bg-emerald-500 text-white' : 'bg-red-400 text-white'}`}>
               {j + 1}
             </button>
           ))}
@@ -360,7 +360,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
         <Link to={back} aria-label="Back" className="rounded-lg p-1.5 hover:bg-cream">
           <ChevronLeft className="size-5" />
         </Link>
-        <span className={`rounded-full px-2.5 py-1 text-[12px] font-semibold tabular-nums ${answered.length ? (right / answered.length >= 0.7 ? 'bg-jg-50 text-jg-700' : 'bg-red-50 text-red-600') : 'bg-cream text-moss'}`}>{answered.length ? `${Math.round((right / answered.length) * 100)}% · ${right}/${answered.length}` : 'New session'}</span>
+        <span className={`rounded-full px-2.5 py-1 text-[12px] font-semibold tabular-nums ${answered.length ? (right / answered.length >= 0.7 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600') : 'bg-cream text-moss'}`}>{answered.length ? `${Math.round((right / answered.length) * 100)}% · ${right}/${answered.length}` : 'New session'}</span>
         <div className="flex flex-1 items-center justify-center gap-2">
           {rush && <Timer className="size-4 text-orange-500" />}
           <span className={`font-mono text-[15px] font-semibold tabular-nums ${rush && timeLeft <= 10 ? 'animate-pulse text-red-600' : ''}`}>{rush ? mm(timeLeft) : mm(a.seconds)}</span>
@@ -559,7 +559,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} className="absolute bottom-12 left-0 z-30 max-h-80 w-80 overflow-y-auto rounded-2xl border border-line bg-card p-3 shadow-xl">
                 <div className="grid grid-cols-8 gap-1.5">
                   {ans.map((x, j) => (
-                    <button key={j} onClick={() => go(j)} className={`aspect-square rounded-lg text-[12px] font-semibold tabular-nums ${j === i ? 'ring-2 ring-[#2d70b3]' : ''} ${!x.checked ? 'bg-cream text-pine' : x.correct ? 'bg-jg-500 text-white' : 'bg-red-400 text-white'}`}>
+                    <button key={j} onClick={() => go(j)} className={`aspect-square rounded-lg text-[12px] font-semibold tabular-nums ${j === i ? 'ring-2 ring-[#2d70b3]' : ''} ${!x.checked ? 'bg-cream text-pine' : x.correct ? 'bg-emerald-500 text-white' : 'bg-red-400 text-white'}`}>
                       {j + 1}
                     </button>
                   ))}

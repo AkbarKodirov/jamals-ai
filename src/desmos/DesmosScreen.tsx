@@ -107,7 +107,7 @@ export function DesmosScreen({ screen, compact = false }: { screen: Screen; comp
       <figcaption className="flex items-center gap-2 border-b border-line bg-soft px-3 py-2 text-[12px]">
         <span className="grid size-5 place-items-center rounded-md bg-[#2d70b3] text-[10px] font-bold text-white">D</span>
         <span className="min-w-0 flex-1 truncate font-medium text-pine">{screen.title || 'Desmos screen'}</span>
-        <span className="hidden rounded-full bg-jg-50 px-2 py-0.5 text-[10.5px] font-semibold text-jg-700 sm:inline">Numbers checked</span>
+        <span className="hidden rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-semibold text-emerald-700 sm:inline">Numbers checked</span>
         <button onClick={() => setLive(true)} className="inline-flex items-center gap-1 rounded-lg px-2 py-1 font-semibold text-[#2d70b3] hover:bg-[#2d70b3]/10">
           <ExternalLink className="size-3.5" /> Live
         </button>

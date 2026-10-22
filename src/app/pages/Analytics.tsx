@@ -13,7 +13,7 @@ import { studentContext } from '../humoContext'
 const RW = '#c8103f'
 const MATH = '#2d70b3'
 const OTHER = '#e8a33d'
-const RIGHT = '#c8103f'
+const RIGHT = '#10b981'
 const WRONG = '#d9534f'
 
 const DOMAIN: Record<Skill, string> = {
@@ -43,7 +43,7 @@ const KIND_LABEL: Record<string, string> = { test: 'Practice tests', drill: 'Dri
 const dayKey = (t: number) => new Date(t).toISOString().slice(0, 10)
 const pct = (r: number, t: number) => (t ? Math.round((r / t) * 100) : null)
 const fmtMin = (sec: number) => (sec >= 3600 ? `${(sec / 3600).toFixed(1)} h` : `${Math.round(sec / 60)} min`)
-const band = (v: number | null) => (v == null ? 'bg-soft' : v >= 85 ? 'bg-jg-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
+const band = (v: number | null) => (v == null ? 'bg-soft' : v >= 85 ? 'bg-emerald-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
 
 /** Floating tooltip shared by every chart on the page. */
 function useTip() {
@@ -398,7 +398,7 @@ export default function Analytics() {
             ['Math', d.mDomains],
           ] as const
         ).map(([title, list]) => (
-          <Card key={title} title={`${title} · accuracy by domain`} right={<Legend items={[['#c8103f', '≥85%'], ['#fbbf24', '60–84%'], ['#fb7185', '<60%']]} />}>
+          <Card key={title} title={`${title} · accuracy by domain`} right={<Legend items={[['#10b981', '≥85%'], ['#fbbf24', '60–84%'], ['#fb7185', '<60%']]} />}>
             <div className="space-y-4">
               {list.map((x) => (
                 <div key={x.name} {...tip.bind(<>{x.name}: {x.acc ?? '–'}% over {x.total} questions</>)}>

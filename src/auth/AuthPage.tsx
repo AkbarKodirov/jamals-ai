@@ -52,9 +52,9 @@ export default function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
         </div>
         <div className="absolute inset-x-10 bottom-10">
           <p className="max-w-md text-[22px] font-medium leading-snug tracking-tight">
-            "In the old stories, whoever the Sensai's shadow touched was blessed with good fortune."
+            "A master draws the ensō in one breath. Mastery is a thousand small corrections."
           </p>
-          <p className="mt-3 text-[13px] text-white/45">Here, the fortune is a better score.</p>
+          <p className="mt-3 text-[13px] text-white/45">Sensai finds yours, one question at a time.</p>
         </div>
       </aside>
 
