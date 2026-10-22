@@ -673,8 +673,22 @@ app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', 
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')
 if (existsSync(join(DIST, 'index.html'))) {
-  app.use(express.static(DIST, { maxAge: '1h', index: false, setHeaders: (res, p) => { if (p.endsWith('.json')) res.setHeader('Cache-Control', 'no-cache') } }))
-  app.get(/^(?!\/api\/).*/, (_, res) => res.sendFile(join(DIST, 'index.html')))
+  app.use(
+    express.static(DIST, {
+      maxAge: '1h',
+      index: false,
+      setHeaders: (res, p) => {
+        // built JS/CSS have a content hash in the name: cache them for a year so repeat visits load instantly
+        if (/[\\/]assets[\\/]/.test(p)) res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+        // data and the app shell must always be fresh
+        else if (p.endsWith('.json') || p.endsWith('.webmanifest')) res.setHeader('Cache-Control', 'no-cache')
+      },
+    }),
+  )
+  app.get(/^(?!\/api\/).*/, (_, res) => {
+    res.setHeader('Cache-Control', 'no-cache')
+    res.sendFile(join(DIST, 'index.html'))
+  })
 }
 
 app.listen(PORT, () => console.log(`STEP12 backend running on http://localhost:${PORT}`))
