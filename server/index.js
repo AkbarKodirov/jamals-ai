@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
+import { groqGenerate, groqReady, groqStream } from './groq.js'
 import { kvBackend, kvDel, kvGet, kvSet } from './kv.js'
 import { createHash } from 'node:crypto'
 
@@ -74,11 +75,23 @@ async function startStream(req) {
   return gen
 }
 
+/** Gemini first; when every Gemini model is busy or out of free quota, the free Groq backup answers instead. */
+async function withGroq(geminiCall, groqCall, req) {
+  if (groqReady && GEMINI_MODELS.every(resting)) return groqCall(req)
+  try {
+    return await geminiCall()
+  } catch (e) {
+    if (!groqReady || ![404, 429, 500, 503, 'timeout'].includes(e?.status || e?.code)) throw e
+    console.warn(`All Gemini models unavailable (${e?.status || e?.code}), answering with Groq`)
+    return groqCall(req)
+  }
+}
+
 const gemini = genai && {
   models: {
-    generateContent: (req, timeoutMs = 60_000) => withFallback(req, (r) => genai.models.generateContent(r), timeoutMs),
+    generateContent: (req, timeoutMs = 60_000) => withGroq(() => withFallback(req, (r) => genai.models.generateContent(r), timeoutMs), groqGenerate, req),
     // the timeout covers the wait for the first words only
-    generateContentStream: (req, timeoutMs = 10_000) => withFallback(req, startStream, timeoutMs),
+    generateContentStream: (req, timeoutMs = 10_000) => withGroq(() => withFallback(req, startStream, timeoutMs), groqStream, req),
   },
 }
 
@@ -644,7 +657,7 @@ app.get('/api/blitz/leaderboard', (_, res) => {
   res.json({ week: weekKey(), rows })
 })
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'Jamals AI', tutor: 'Humo', gemini: !!gemini, storage: kvBackend }))
+app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'Jamals AI', tutor: 'Humo', gemini: !!gemini, groq: groqReady, storage: kvBackend }))
 
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')
