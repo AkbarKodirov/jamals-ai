@@ -35,11 +35,11 @@ export function CoursePage() {
               <circle cx="122" cy="105" r="7" fill="white" />
             </svg>
           ) : (
-            <img src="/humo-bird.png" alt="" className="h-full opacity-30" />
+            <img src="/sensai-enso.png" alt="" className="h-full opacity-30" />
           )}
         </motion.div>
         <p className="relative inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold">
-          <Sparkles className="size-3.5" /> Jamals Masterclass · free
+          <Sparkles className="size-3.5" /> STEP12 Masterclass · free
         </p>
         <h1 className="display relative mt-4 max-w-2xl text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.05]">{c.title}</h1>
         <p className="relative mt-3 max-w-xl text-[15px] text-white/80">{c.tagline}</p>
@@ -66,7 +66,7 @@ export function CoursePage() {
               return (
                 <div key={m.id} className="overflow-hidden rounded-2xl border border-line">
                   <button onClick={() => setOpen(isOpen ? null : m.id)} className="flex w-full items-center gap-4 px-4 py-3.5 text-left hover:bg-cream/60">
-                    <span className={`grid size-9 shrink-0 place-items-center rounded-xl text-[13px] font-bold ${md === m.lessons.length ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>{md === m.lessons.length ? <Check className="size-4" /> : mi + 1}</span>
+                    <span className={`grid size-9 shrink-0 place-items-center rounded-xl text-[13px] font-bold ${md === m.lessons.length ? 'bg-jg-500 text-white' : 'bg-cream text-pine'}`}>{md === m.lessons.length ? <Check className="size-4" /> : mi + 1}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-[15px] font-semibold">{m.title}</span>
                       <span className="block text-[12.5px] text-moss">
@@ -103,17 +103,17 @@ export function CoursePage() {
           <section className="card p-5">
             <h2 className="text-[15px] font-semibold">Your instructors</h2>
             <div className="mt-4 flex items-center gap-3">
-              <img src="/humo-mark.png" alt="" className="size-12 rounded-2xl" />
+              <img src="/sensai-mark.png" alt="" className="size-12 rounded-2xl" />
               <div>
-                <p className="text-[14px] font-semibold">Humo</p>
+                <p className="text-[14px] font-semibold">Sensai</p>
                 <p className="text-[12.5px] text-moss">AI tutor — answers questions inside every lesson</p>
               </div>
             </div>
             <div className="mt-3 flex items-center gap-3">
-              <img src="/brand/jamals-mark.png" alt="" className="size-12 rounded-2xl" />
+              <img src="/favicon.png" alt="" className="size-12 rounded-2xl" />
               <div>
-                <p className="text-[14px] font-semibold">Jamals Academy teachers</p>
-                <p className="text-[12.5px] text-moss">SAT team in Tashkent since 2020</p>
+                <p className="text-[14px] font-semibold">STEP12 teachers</p>
+                <p className="text-[12.5px] text-moss">SAT team in Tashkent</p>
               </div>
             </div>
           </section>
@@ -125,7 +125,7 @@ export function CoursePage() {
                 ['Lessons', p.total],
                 ['Duration', `${Math.round(p.min / 6) / 10} h`],
                 ['Practice', 'Question bank by skill'],
-                ['Language', "English · Humo also explains in O'zbekcha / Русский"],
+                ['Language', "English · Sensai also explains in O'zbekcha / Русский"],
               ].map(([k, v]) => (
                 <div key={k as string} className="flex justify-between gap-3">
                   <dt className="text-moss">{k}</dt>
@@ -268,7 +268,7 @@ export function LessonPage() {
             </Link>
           )}
           <button onClick={() => setHumo(true)} className="btn btn-ghost h-11 px-5 text-[14px]">
-            <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Ask Humo about this lesson
+            <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Ask Sensai about this lesson
           </button>
           <button
             onClick={() => setStore((x) => ({ ...x, lessonsDone: done ? Object.fromEntries(Object.entries(x.lessonsDone).filter(([k]) => k !== key)) : { ...x.lessonsDone, [key]: Date.now() } }))}

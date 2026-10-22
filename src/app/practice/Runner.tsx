@@ -59,7 +59,7 @@ export async function buildSession(p: URLSearchParams, st: ReturnType<typeof use
   })
 }
 
-/* ---------------- side panel: Ask Humo / Explanation / Similar / Info ---------------- */
+/* ---------------- side panel: Ask Sensai / Explanation / Similar / Info ---------------- */
 type Tab = 'ask' | 'explain' | 'similar' | 'info'
 
 function AskTab({ item, a, auto }: { item: Item; a: Ans; auto: string | null }) {
@@ -142,7 +142,7 @@ function ExplainTab({ item, a }: { item: Item; a: Ans }) {
     return (
       <div className="p-6 text-center text-[13.5px] text-moss">
         <Lightbulb className="mx-auto size-6 text-amber-500" />
-        <p className="mt-3">Check your answer first — then Humo explains it. Stuck? Ask Humo for a hint instead.</p>
+        <p className="mt-3">Check your answer first — then Sensai explains it. Stuck? Ask Sensai for a hint instead.</p>
         {item.r.bank?.solution && (
           <div className="mt-4 space-y-2 text-left">
             {item.r.bank.solution.hints.map((h, i) => (
@@ -180,12 +180,12 @@ function SimilarTab({ item }: { item: Item }) {
     try {
       setSt({ q: await similarQuestion(item.r.q, item.r.skill, item.r.section, token) })
     } catch (e) {
-      setSt({ error: e instanceof HumoOffline ? `Humo is offline: ${e.message}` : (e as Error).message })
+      setSt({ error: e instanceof HumoOffline ? `Sensai is offline: ${e.message}` : (e as Error).message })
     }
   }
   return (
     <div className="space-y-3 overflow-y-auto p-4">
-      <p className="text-[13px] text-moss">Humo writes a brand-new question on the same skill ({item.r.skill}) so you can test the idea again right away.</p>
+      <p className="text-[13px] text-moss">Sensai writes a brand-new question on the same skill ({item.r.skill}) so you can test the idea again right away.</p>
       <button onClick={go} disabled={st.busy} className="btn btn-dark h-10 w-full text-[13px] disabled:opacity-60">
         {st.busy ? <span className="size-4 animate-spin rounded-full border-2 border-cream border-t-transparent" /> : <Shuffle className="size-4" />} {st.q ? 'Another one' : 'Write a similar question'}
       </button>
@@ -319,14 +319,14 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
   if (done)
     return (
       <div className="mx-auto max-w-2xl px-6 py-16 text-center">
-        <motion.img initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} src="/humo-mark.png" alt="" className="mx-auto size-20 rounded-3xl" />
+        <motion.img initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} src="/sensai-mark.png" alt="" className="mx-auto size-20 rounded-3xl" />
         <h1 className="display mt-6 text-[38px]">Session done</h1>
         <p className="mt-2 text-[15px] text-moss">
           {right} of {answered.length} correct · {Math.round(ans.reduce((x, y) => x + y.seconds, 0) / 60)} min
         </p>
         <div className="mt-8 grid grid-cols-10 gap-1.5">
           {ans.map((x, j) => (
-            <button key={j} onClick={() => (setDone(false), setI(j))} className={`aspect-square rounded-lg text-[12px] font-semibold ${!x.checked ? 'bg-line text-moss' : x.correct ? 'bg-jg-500 text-ink' : 'bg-red-400 text-white'}`}>
+            <button key={j} onClick={() => (setDone(false), setI(j))} className={`aspect-square rounded-lg text-[12px] font-semibold ${!x.checked ? 'bg-line text-moss' : x.correct ? 'bg-emerald-500 text-white' : 'bg-red-400 text-white'}`}>
               {j + 1}
             </button>
           ))}
@@ -360,7 +360,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
         <Link to={back} aria-label="Back" className="rounded-lg p-1.5 hover:bg-cream">
           <ChevronLeft className="size-5" />
         </Link>
-        <span className={`rounded-full px-2.5 py-1 text-[12px] font-semibold tabular-nums ${answered.length ? (right / answered.length >= 0.7 ? 'bg-jg-50 text-jg-700' : 'bg-red-50 text-red-600') : 'bg-cream text-moss'}`}>{answered.length ? `${Math.round((right / answered.length) * 100)}% · ${right}/${answered.length}` : 'New session'}</span>
+        <span className={`rounded-full px-2.5 py-1 text-[12px] font-semibold tabular-nums ${answered.length ? (right / answered.length >= 0.7 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600') : 'bg-cream text-moss'}`}>{answered.length ? `${Math.round((right / answered.length) * 100)}% · ${right}/${answered.length}` : 'New session'}</span>
         <div className="flex flex-1 items-center justify-center gap-2">
           {rush && <Timer className="size-4 text-orange-500" />}
           <span className={`font-mono text-[15px] font-semibold tabular-nums ${rush && timeLeft <= 10 ? 'animate-pulse text-red-600' : ''}`}>{rush ? mm(timeLeft) : mm(a.seconds)}</span>
@@ -493,7 +493,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
                       <span className="ml-auto flex gap-2">
                         {!a.correct && (
                           <button onClick={openWhy} className="inline-flex items-center gap-1.5 rounded-full bg-pine px-3.5 py-1.5 text-[12.5px] font-semibold text-cream">
-                            <img src="/humo-mark.png" alt="" className="size-4 rounded" /> Why was I wrong?
+                            <img src="/sensai-mark.png" alt="" className="size-4 rounded" /> Why was I wrong?
                           </button>
                         )}
                         <button onClick={() => setPanel('explain')} className="rounded-full bg-card px-3.5 py-1.5 text-[12.5px] font-semibold ring-1 ring-line">
@@ -515,14 +515,14 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
           )}
         </main>
 
-        {/* Humo panel */}
+        {/* Sensai panel */}
         <AnimatePresence>
           {panel && (
             <motion.aside initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 40, opacity: 0 }} transition={{ type: 'spring', damping: 30, stiffness: 320 }} className="absolute inset-y-0 right-0 z-20 flex w-full max-w-md flex-col border-l border-line bg-cream shadow-[-20px_0_40px_-30px_rgb(27_41_37/.5)] lg:relative">
               <div className="flex items-center gap-1 border-b border-line bg-card px-2 py-2">
                 {(
                   [
-                    ['ask', 'Ask Humo', MessageCircle],
+                    ['ask', 'Ask Sensai', MessageCircle],
                     ['explain', 'Explanation', Lightbulb],
                     ['similar', 'Similar', Shuffle],
                     ['info', 'Info', Info],
@@ -559,7 +559,7 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} className="absolute bottom-12 left-0 z-30 max-h-80 w-80 overflow-y-auto rounded-2xl border border-line bg-card p-3 shadow-xl">
                 <div className="grid grid-cols-8 gap-1.5">
                   {ans.map((x, j) => (
-                    <button key={j} onClick={() => go(j)} className={`aspect-square rounded-lg text-[12px] font-semibold tabular-nums ${j === i ? 'ring-2 ring-[#2d70b3]' : ''} ${!x.checked ? 'bg-cream text-pine' : x.correct ? 'bg-jg-500 text-ink' : 'bg-red-400 text-white'}`}>
+                    <button key={j} onClick={() => go(j)} className={`aspect-square rounded-lg text-[12px] font-semibold tabular-nums ${j === i ? 'ring-2 ring-[#2d70b3]' : ''} ${!x.checked ? 'bg-cream text-pine' : x.correct ? 'bg-emerald-500 text-white' : 'bg-red-400 text-white'}`}>
                       {j + 1}
                     </button>
                   ))}
@@ -569,8 +569,8 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
           </AnimatePresence>
         </div>
         <div className="flex flex-1 items-center justify-center gap-1.5 overflow-x-auto">
-          <button onClick={() => setPanel(panel === 'ask' ? null : 'ask')} className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#1b2925] to-[#2a652e] px-3.5 text-[13px] font-semibold text-cream">
-            <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Ask Humo
+          <button onClick={() => setPanel(panel === 'ask' ? null : 'ask')} className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#0b1d36] to-[#85082a] px-3.5 text-[13px] font-semibold text-cream">
+            <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Ask Sensai
           </button>
           <button onClick={() => setPanel('explain')} className="hidden h-10 shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-3 text-[13px] font-semibold text-amber-800 sm:inline-flex">
             <Lightbulb className="size-4" /> Explanation

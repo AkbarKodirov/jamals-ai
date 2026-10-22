@@ -25,7 +25,7 @@ function Leaderboard({ rows, me }: { rows: Row[] | null; me?: string }) {
         <span className="flex items-center gap-2">
           <Trophy className="size-4 text-orange-500" /> This week's leaderboard
         </span>
-        <span className="text-[12px] font-normal text-moss">Jamals students</span>
+        <span className="text-[12px] font-normal text-moss">STEP12 students</span>
       </p>
       {!rows ? (
         <p className="mt-4 text-[13px] text-moss">Leaderboard is available when the server is running.</p>
@@ -174,7 +174,7 @@ export default function Blitz() {
       <div className="flex items-center justify-between gap-3">
         <span className="flex gap-1">
           {[0, 1, 2].map((k) => (
-            <Heart key={k} className={`size-6 ${k < lives ? 'fill-red-500 text-red-500' : 'text-[#e3dccf]'}`} />
+            <Heart key={k} className={`size-6 ${k < lives ? 'fill-red-500 text-red-500' : 'text-[#dde3ec]'}`} />
           ))}
         </span>
         <span className="flex items-center gap-2">

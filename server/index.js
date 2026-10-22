@@ -16,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3001
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-change-me'
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '1007781081540-u54cner78n5lvsq76ftp185a9825ec4a.apps.googleusercontent.com'
-// Free-tier models, tried in order: if one is rate-limited or retired, Humo falls back to the next.
+// Free-tier models, tried in order: if one is rate-limited or retired, Sensai falls back to the next.
 const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.6-flash,gemini-3.5-flash,gemini-3.8-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
 const genai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
 // a model that just failed or timed out is skipped for a while, so students don't wait on it again
@@ -212,8 +212,8 @@ app.put('/api/progress', express.json({ limit: '8mb' }), auth, async (req, res) 
   res.json({ ok: true })
 })
 
-/* ---------- Humo ---------- */
-const HUMO_SYSTEM = `You are Humo, the AI tutor of Jamals AI, the exam platform of Jamals Academy in Tashkent.
+/* ---------- Sensai ---------- */
+const HUMO_SYSTEM = `You are Sensai, the AI tutor of STEP12 — the SAT school in Tashkent (step12.uz) that takes students from STEP1 to STEP12. Your name means teacher: calm, precise and encouraging.
 You are an expert Digital SAT tutor with a warm, precise, encouraging style.
 - Reply in the language the student writes in (English, O'zbekcha or Русский); keep exam terms in English.
 - When a student is practising, give a hint first; give the full solution only if they ask.
@@ -221,7 +221,7 @@ You are an expert Digital SAT tutor with a warm, precise, encouraging style.
 - When asked for a study plan, ask for (or use) test date, target score and weak areas, then give a week-by-week plan.
 - Keep answers short and scannable; use plain text, not markdown tables. Write math in plain text (x², √2, 7/2, ≤), never LaTeX or $…$ delimiters; put Desmos lines in \`backticks\`.
 - Never claim to be affiliated with the College Board.
-- When you recommend practice, point to the Jamals AI features by name: Practice tests (Exam / Practice / Sprint mode), Question bank (filter by skill and difficulty, Question Rush), Desmos Lab (upload a photo of a math question), Learn courses (SAT Reading & Writing, Math & Desmos), Vocabulary (Practice, Word list, My words), Blitz, Study plan, Saved & mistakes (saved, mistakes log, notes, collections), Analytics. There are no Drills or Lessons pages any more.
+- When you recommend practice, point to the STEP12 features by name: Practice tests (Exam / Practice / Sprint mode), Question bank (filter by skill and difficulty, Question Rush), Desmos Lab (upload a photo of a math question), Learn courses (SAT Reading & Writing, Math & Desmos), Vocabulary (Practice, Word list, My words), Blitz, Study plan, Saved & mistakes (saved, mistakes log, notes, collections), Analytics. There are no Drills or Lessons pages any more.
 - Digital SAT skills: Words in context, Transitions, Standard English conventions, Rhetorical synthesis, Command of evidence, Central ideas & details, Text structure & purpose, Inferences, Algebra, Advanced math, Problem solving & data, Geometry & trigonometry.`
 
 const PLAN_GUIDE = `STUDY PLAN EDITS
@@ -236,9 +236,9 @@ review (review last test), desmos (Desmos Lab), custom (any other task). 0–5 t
 The app shows your plan as a card with an "Apply" button right after your words; never claim it is already applied and don't write anything after the block.`
 
 const HUMO_FULL = `${HUMO_SYSTEM}\n\n${DESMOS_GUIDE}\n\n${PLAN_GUIDE}`
-const NO_KEY = 'Humo needs a Gemini API key. Add GEMINI_API_KEY to .env (free at aistudio.google.com) and restart the server.'
+const NO_KEY = 'Sensai needs a Gemini API key. Add GEMINI_API_KEY to .env (free at aistudio.google.com) and restart the server.'
 
-/* ---------- Humo replies: pull out checked Desmos screens and plan proposals ---------- */
+/* ---------- Sensai replies: pull out checked Desmos screens and plan proposals ---------- */
 const PLAN_KINDS = new Set(['drill-rw', 'drill-math', 'skill', 'vocab', 'mistakes', 'lesson', 'blitz', 'test', 'review', 'desmos', 'custom'])
 export function cleanPlan(p) {
   if (!p || !Array.isArray(p.days) || p.days.length !== 7) return null
@@ -310,7 +310,7 @@ function toParts(m) {
 }
 
 /** Turns the chat into a history Gemini accepts: starts with the student, roles alternate, no empty turns,
- * Humo's error notes left out, and only the latest photos and the last few turns kept (smaller = faster). */
+ * Sensai's error notes left out, and only the latest photos and the last few turns kept (smaller = faster). */
 function chatContents(messages) {
   const turns = []
   for (const m of messages.slice(-30)) {
@@ -346,13 +346,13 @@ function chatContents(messages) {
 /** Same chat as one plain transcript: the fallback if Gemini refuses the multi-turn history. */
 function flatContents(contents) {
   const last = contents[contents.length - 1]
-  const earlier = contents.slice(0, -1).map((c) => `${c.role === 'user' ? 'Student' : 'Humo'}: ${c.parts.map((p) => p.text || '[photo]').join(' ')}`).join('\n\n')
+  const earlier = contents.slice(0, -1).map((c) => `${c.role === 'user' ? 'Student' : 'Sensai'}: ${c.parts.map((p) => p.text || '[photo]').join(' ')}`).join('\n\n')
   const text = `${earlier ? `Conversation so far:\n${earlier}\n\nThe student now says:\n` : ''}${last.parts.find((p) => p.text)?.text || ''}`
   return [{ role: 'user', parts: [...last.parts.filter((p) => p.inlineData), { text }] }]
 }
 
-/* ---------- Desmos Lab: the answer is solved twice and checked with code before Humo explains it ---------- */
-const SOLVE_CHECK = `You check SAT math questions for Humo, a tutor, before Humo explains them. You never talk to the student.
+/* ---------- Desmos Lab: the answer is solved twice and checked with code before Sensai explains it ---------- */
+const SOLVE_CHECK = `You check SAT math questions for Sensai, a tutor, before Sensai explains them. You never talk to the student.
 Look at the student's LATEST message (a photo, a screenshot or typed text; earlier messages are context, e.g. "now what if it were 16?").
 If it is not a math question to solve (a Reading & Writing question, a question about Desmos itself, a greeting, a request for a plan), answer only: {"kind":"other"}
 Otherwise:
@@ -420,7 +420,7 @@ app.post('/api/chat', async (req, res) => {
   const { messages = [], context, space, stream } = req.body || {}
   if (!gemini) return res.status(503).json({ error: NO_KEY })
   let contents = chatContents(messages)
-  if (!contents.length) return res.status(400).json({ error: 'Send Humo a question first.' })
+  if (!contents.length) return res.status(400).json({ error: 'Send Sensai a question first.' })
   let system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
   if (space === 'desmos') system = `${system}\n\n${DESMOS_LAB}`
   const config = { systemInstruction: system, temperature: 0.4, thinkingConfig: CHAT_THINKING }
@@ -450,14 +450,14 @@ app.post('/api/chat', async (req, res) => {
       const v = await check()
       const out = await ask((c) => gemini.models.generateContent({ contents: c, config }))
       const r = await finishReply(out.text || '', { question: v?.read || question, expect: expectOf(v) })
-      res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Humo' })
+      res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Sensai' })
     } catch (e) {
       console.error('Chat failed:', e?.status || '', e?.message || e)
-      res.status(502).json({ error: 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+      res.status(502).json({ error: 'Sensai could not reach Gemini. Check GEMINI_API_KEY and try again.' })
     }
     return
   }
-  // streaming: one JSON object per line — {"delta": "..."} while Humo writes, then {"done": true, ...}
+  // streaming: one JSON object per line — {"delta": "..."} while Sensai writes, then {"done": true, ...}
   let opened = false
   const send = (o) => {
     if (!opened) {
@@ -494,14 +494,14 @@ app.post('/api/chat', async (req, res) => {
     console.log(`Chat answered in ${Date.now() - started} ms (${contents.length} turns)`)
   } catch (e) {
     console.error('Chat failed:', e?.status || '', e?.message || e)
-    const error = 'Humo could not reach Gemini. Check GEMINI_API_KEY and try again.'
+    const error = 'Sensai could not reach Gemini. Check GEMINI_API_KEY and try again.'
     if (opened) send({ error })
     else res.status(502).json({ error })
   }
   res.end()
 })
 
-/* ---------- "Similar question": Humo writes a fresh question on the same skill ---------- */
+/* ---------- "Similar question": Sensai writes a fresh question on the same skill ---------- */
 app.post('/api/similar', async (req, res) => {
   const { passage, question, options = [], skill, section } = req.body || {}
   if (!question && !passage) return res.status(400).json({ error: 'Missing question.' })
@@ -520,7 +520,7 @@ Use plain text math (x², √, 7/2). Exactly four options, exactly one correct. 
     res.json({ passage: String(j.passage || ''), question: String(j.question), options: j.options.map(String), correct: Number(j.correct), explanation: String(j.explanation || '') })
   } catch (e) {
     console.error(e)
-    res.status(502).json({ error: 'Humo could not write a similar question right now. Try again.' })
+    res.status(502).json({ error: 'Sensai could not write a similar question right now. Try again.' })
   }
 })
 
@@ -565,25 +565,25 @@ app.post('/api/desmos/solve', async (req, res) => {
     res.json(await solving.get(id))
   } catch (e) {
     console.error(e)
-    res.status(502).json({ error: 'Humo could not finish the Desmos solve. Try again in a moment.' })
+    res.status(502).json({ error: 'Sensai could not finish the Desmos solve. Try again in a moment.' })
   }
 })
 
-/* ---------- Humo edits the study plan ---------- */
+/* ---------- Sensai edits the study plan ---------- */
 app.post('/api/plan', async (req, res) => {
   const { plan, profile, instruction } = req.body || {}
-  if (!instruction) return res.status(400).json({ error: 'Tell Humo what to change.' })
+  if (!instruction) return res.status(400).json({ error: 'Tell Sensai what to change.' })
   if (!gemini) return res.status(503).json({ error: NO_KEY })
   try {
     const prompt = `Student profile: ${JSON.stringify(profile || {}).slice(0, 2000)}\nCurrent plan: ${JSON.stringify(plan || {}).slice(0, 8000)}\n\nThe student says: "${String(instruction).slice(0, 600)}"\n\nReturn JSON: {"note": "one or two friendly sentences on what you changed", "days": [7 arrays of tasks]}.`
     const out = await gemini.models.generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }], config: { systemInstruction: `${HUMO_SYSTEM}\n\n${PLAN_GUIDE}`, temperature: 0.4, responseMimeType: 'application/json' } })
     const j = JSON.parse(out.text)
     const p = cleanPlan(j)
-    if (!p) return res.status(502).json({ error: 'Humo returned a plan the app could not read. Try rephrasing.' })
+    if (!p) return res.status(502).json({ error: 'Sensai returned a plan the app could not read. Try rephrasing.' })
     res.json({ plan: p, note: String(j.note || '').slice(0, 400) })
   } catch (e) {
     console.error(e)
-    res.status(502).json({ error: 'Humo could not change the plan right now. Try again.' })
+    res.status(502).json({ error: 'Sensai could not change the plan right now. Try again.' })
   }
 })
 
@@ -603,7 +603,7 @@ app.post('/api/explain', async (req, res) => {
 ${passage ? `Text:\n${passage}\n` : ''}Question: ${question}
 ${options.length ? `Choices:\n${options.join('\n')}\n` : ''}Correct answer: ${correct}
 
-Write the explanation Humo shows above the question in review:
+Write the explanation Sensai shows above the question in review:
 1. One sentence naming the skill being tested.
 2. Why the correct answer is right, step by step (show the math if it is a math question).
 ${options.length ? '3. One short line for each wrong choice saying exactly why it is wrong or what trap it sets.\n' : ''}Plain text, no markdown headings, under 170 words, English.`
@@ -622,7 +622,7 @@ ${options.length ? '3. One short line for each wrong choice saying exactly why i
     res.json({ explanation: await inflight.get(id) })
   } catch (e) {
     console.error(e)
-    res.status(502).json({ error: 'Humo could not reach Gemini. Try again in a moment.' })
+    res.status(502).json({ error: 'Sensai could not reach Gemini. Try again in a moment.' })
   }
 })
 
@@ -657,7 +657,7 @@ app.get('/api/blitz/leaderboard', (_, res) => {
   res.json({ week: weekKey(), rows })
 })
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'Jamals AI', tutor: 'Humo', gemini: !!gemini, groq: groqReady, storage: kvBackend }))
+app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', tutor: 'Sensai', gemini: !!gemini, groq: groqReady, storage: kvBackend }))
 
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')
@@ -666,4 +666,4 @@ if (existsSync(join(DIST, 'index.html'))) {
   app.get(/^(?!\/api\/).*/, (_, res) => res.sendFile(join(DIST, 'index.html')))
 }
 
-app.listen(PORT, () => console.log(`Jamals AI backend running on http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`STEP12 backend running on http://localhost:${PORT}`))

@@ -106,7 +106,7 @@ function Quiz({ words, types, onExit, title }: { words: AnyWord[]; types: QType[
     return (
       <div className="card relative mx-auto max-w-xl p-8 text-center">
         <Confetti fire={score / items.length >= 0.8} />
-        <img src="/humo-mark.png" alt="" className="mx-auto size-14 rounded-2xl" />
+        <img src="/sensai-mark.png" alt="" className="mx-auto size-14 rounded-2xl" />
         <h2 className="display mt-5 text-[34px]">
           {score}/{items.length}
         </h2>
@@ -275,7 +275,7 @@ function Flashcards({ words, onExit }: { words: AnyWord[]; onExit: () => void })
           [
             [0, 'Again', 'bg-red-50 text-red-700 ring-red-200'],
             [1, 'Hard', 'bg-orange-50 text-orange-700 ring-orange-200'],
-            [2, 'Good', 'bg-jg-50 text-jg-700 ring-jg-200'],
+            [2, 'Good', 'bg-emerald-50 text-emerald-700 ring-emerald-200'],
             [3, 'Easy', 'bg-sky-50 text-sky-700 ring-sky-200'],
           ] as const
         ).map(([r, l, c]) => (
@@ -383,7 +383,7 @@ export default function Vocabulary() {
       {/* Stats */}
       <section className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          ['Mastered', counts.mastered, 'text-jg-700'],
+          ['Mastered', counts.mastered, 'text-emerald-700'],
           ['Learning', counts.learning, 'text-orange-600'],
           ['New', counts.new, 'text-moss'],
           ['Accuracy', seen ? `${Math.round((right / seen) * 100)}%` : '–', 'text-pine'],
@@ -419,7 +419,7 @@ export default function Vocabulary() {
                   </span>
                   <span className="flex items-center gap-1.5">
                   {w.level === 'mine' && <span className="rounded-full bg-pine px-2 py-0.5 text-[10.5px] font-semibold text-cream">mine</span>}
-                  <span className={`rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${st === 'mastered' ? 'bg-jg-50 text-jg-700' : st === 'learning' ? 'bg-orange-50 text-orange-700' : 'bg-cream text-moss'}`}>{st}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${st === 'mastered' ? 'bg-emerald-50 text-emerald-700' : st === 'learning' ? 'bg-orange-50 text-orange-700' : 'bg-cream text-moss'}`}>{st}</span>
                   </span>
                 </div>
                 <p className="mt-1 text-[13px] text-pine/75">{w.def}</p>

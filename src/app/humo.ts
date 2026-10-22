@@ -10,17 +10,17 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
   try {
     res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) })
   } catch {
-    throw new HumoOffline('The Humo server is not running. Start it with npm run dev:all.')
+    throw new HumoOffline('The Sensai server is not running. Start it with npm run dev:all.')
   }
   const data = await res.json().catch(() => ({}))
-  if (res.status === 503) throw new HumoOffline(data.error || 'Humo needs a Gemini API key.')
-  if (!res.ok) throw new Error(data.error || 'Humo could not answer. Try again.')
+  if (res.status === 503) throw new HumoOffline(data.error || 'Sensai needs a Gemini API key.')
+  if (!res.ok) throw new Error(data.error || 'Sensai could not answer. Try again.')
   return data as T
 }
 
 export type HumoAnswer = { reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }
 
-/** Ask Humo. With `onText`, the reply streams in: `onText` gets the text written so far, then the checked answer resolves. */
+/** Ask Sensai. With `onText`, the reply streams in: `onText` gets the text written so far, then the checked answer resolves. */
 export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos', onText?: (text: string) => void): Promise<HumoAnswer> {
   // text and the latest question photos go to the model; Desmos screens, plans and error notes stay on this device
   let photos = 0
@@ -39,12 +39,12 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
   try {
     res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...body, stream: true }) })
   } catch {
-    throw new HumoOffline('The Humo server is not running. Start it with npm run dev:all.')
+    throw new HumoOffline('The Sensai server is not running. Start it with npm run dev:all.')
   }
   if (!res.ok || !res.body) {
     const data = await res.json().catch(() => ({}))
-    if (res.status === 503) throw new HumoOffline(data.error || 'Humo needs a Gemini API key.')
-    throw new Error(data.error || 'Humo could not answer. Try again.')
+    if (res.status === 503) throw new HumoOffline(data.error || 'Sensai needs a Gemini API key.')
+    throw new Error(data.error || 'Sensai could not answer. Try again.')
   }
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
   let buf = ''
@@ -67,7 +67,7 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
       if (o.delta) onText(text)
     }
   }
-  throw new Error('Humo stopped mid-answer. Try again.')
+  throw new Error('Sensai stopped mid-answer. Try again.')
 }
 
 /** What to show while a reply is still streaming: Desmos and plan blocks appear only once they are checked. */
@@ -85,7 +85,7 @@ export function similarQuestion(q: TestQuestion, skill: string, section: string,
 
 export type DesmosSolve = { text: string; desmos: DesmosScreen[] }
 const solves = new Map<string, Promise<DesmosSolve>>()
-/** Humo's Desmos walkthrough + checked Desmos screen. Bank questions by id, any other question by payload. */
+/** Sensai's Desmos walkthrough + checked Desmos screen. Bank questions by id, any other question by payload. */
 export function desmosSolve(body: { bankId: string } | ({ id: string } & ReturnType<typeof questionPayload>), token: string | null) {
   const key = 'bankId' in body ? body.bankId : body.id
   if (!solves.has(key)) {

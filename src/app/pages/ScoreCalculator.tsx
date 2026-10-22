@@ -12,7 +12,7 @@ function Slider({ label, value, max, onChange }: { label: string; value: number;
           {value} / {max} correct
         </span>
       </div>
-      <input id={label} type="range" min={0} max={max} value={value} onChange={(e) => onChange(Number(e.target.value))} className="mt-3 w-full accent-[#48ae4f]" />
+      <input id={label} type="range" min={0} max={max} value={value} onChange={(e) => onChange(Number(e.target.value))} className="mt-3 w-full accent-[#c8103f]" />
       <p className="mt-2 font-serif text-[34px] tabular-nums">{scaleSection(value, max)}</p>
     </div>
   )

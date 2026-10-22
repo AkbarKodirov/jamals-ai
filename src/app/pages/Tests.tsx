@@ -11,14 +11,14 @@ export const MODES: { id: Mode; name: string; icon: typeof Timer; line: string; 
     name: 'Exam mode',
     icon: GraduationCap,
     line: 'Exactly like test day.',
-    points: ['Real timing per module', 'No answers until the end', 'No going back to a finished module', 'Score + full Humo review after'],
+    points: ['Real timing per module', 'No answers until the end', 'No going back to a finished module', 'Score + full Sensai review after'],
   },
   {
     id: 'practice',
     name: 'Practice mode',
     icon: ListChecks,
     line: 'Learn as you go.',
-    points: ['No time pressure', 'Check each answer instantly', 'Humo explains right after you answer', 'Move freely between modules'],
+    points: ['No time pressure', 'Check each answer instantly', 'Sensai explains right after you answer', 'Move freely between modules'],
   },
   {
     id: 'sprint',
@@ -67,7 +67,7 @@ function ModeSheet({ test, onClose }: { test: TestMeta; onClose: () => void }) {
                 aria-pressed={on}
                 className={`rounded-2xl border-2 p-4 text-left transition ${on ? 'border-jg-500 bg-jg-50' : 'border-line hover:border-line-strong'}`}
               >
-                <span className={`grid size-9 place-items-center rounded-xl ${on ? 'bg-jg-500 text-ink' : 'bg-cream text-pine'}`}>
+                <span className={`grid size-9 place-items-center rounded-xl ${on ? 'bg-jg-500 text-white' : 'bg-cream text-pine'}`}>
                   <Icon className="size-[18px]" />
                 </span>
                 <p className="mt-3 text-[15px] font-semibold">{m.name}</p>
@@ -127,7 +127,7 @@ export default function Tests() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="display text-[clamp(2rem,4vw,2.75rem)]">Practice tests</h1>
-          <p className="mt-2 text-[15px] text-moss">Full Digital SAT sections written by Jamals Academy teachers. Pick a test, then pick a mode.</p>
+          <p className="mt-2 text-[15px] text-moss">Full Digital SAT sections written by STEP12 teachers. Pick a test, then pick a mode.</p>
         </div>
         {data && (
           <div className="card flex items-center gap-5 px-5 py-3">
@@ -180,7 +180,7 @@ export default function Tests() {
             <motion.div key={t.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.04, 0.35), ease: [0.22, 1, 0.36, 1] }}>
               <Tilt className="h-full">
                 <article className="card card-hover flex h-full flex-col overflow-hidden">
-                  <div className={`relative h-24 overflow-hidden px-5 pt-4 ${t.type === 'MATH' ? 'bg-gradient-to-br from-sky-50 to-sky-100/70' : 'bg-gradient-to-br from-jg-50 to-[#dff1e1]'}`}>
+                  <div className={`relative h-24 overflow-hidden px-5 pt-4 ${t.type === 'MATH' ? 'bg-gradient-to-br from-sky-50 to-sky-100/70' : 'bg-gradient-to-br from-jg-50 to-[#fbe4ea]'}`}>
                     <Icon className={`absolute -bottom-5 -right-3 size-28 rotate-[-12deg] ${t.type === 'MATH' ? 'text-sky-200' : 'text-jg-200'}`} strokeWidth={1.2} />
                     <div className="relative flex items-center justify-between">
                       <span className={`inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[11.5px] font-semibold backdrop-blur ${t.type === 'MATH' ? 'text-sky-700' : 'text-jg-700'}`}>
@@ -194,7 +194,7 @@ export default function Tests() {
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="font-serif text-[22px] leading-tight">{t.name}</h3>
                       {b && (
-                        <ScoreRing value={b.scaled - 200} max={600} size={52} stroke={5} color={t.type === 'MATH' ? '#38bdf8' : '#48ae4f'} track="#efe9de">
+                        <ScoreRing value={b.scaled - 200} max={600} size={52} stroke={5} color={t.type === 'MATH' ? '#38bdf8' : '#c8103f'} track="#e9edf3">
                           <span className="text-[12px] font-semibold tabular-nums">{b.scaled}</span>
                         </ScoreRing>
                       )}

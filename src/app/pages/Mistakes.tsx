@@ -80,7 +80,7 @@ function RowCard({ row, i, onOpen, tab }: { row: Row; i: number; onOpen: () => v
     <motion.li layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ delay: Math.min(i, 12) * 0.03 }} onClick={onOpen} className="group relative cursor-pointer border-b border-line px-5 py-4 last:border-b-0 hover:bg-cream/40">
       <div className="flex flex-wrap items-center gap-1.5 text-[11.5px] font-medium">
         <span className="rounded-md bg-cream px-2 py-0.5">{r.section === 'MATH' ? 'Math' : 'Reading & Writing'}</span>
-        {r.difficulty !== 'Test' && <span className={`rounded-md px-2 py-0.5 ${r.difficulty === 'Hard' ? 'bg-rose-50 text-rose-700' : r.difficulty === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-jg-50 text-jg-700'}`}>{r.difficulty}</span>}
+        {r.difficulty !== 'Test' && <span className={`rounded-md px-2 py-0.5 ${r.difficulty === 'Hard' ? 'bg-rose-50 text-rose-700' : r.difficulty === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{r.difficulty}</span>}
         <span className="rounded-md bg-violet-50 px-2 py-0.5 text-violet-700">{r.topic ?? r.skill}</span>
         {saved && (
           <span className="inline-flex items-center gap-1 rounded-md bg-orange-50 px-2 py-0.5 text-orange-700">
@@ -218,13 +218,13 @@ export default function Mistakes() {
             </select>
             {tab === 'mistakes' && (
               <label className="flex items-center gap-2 text-[13px] text-moss">
-                <input type="checkbox" checked={showFixed} onChange={(e) => setShowFixed(e.target.checked)} className="accent-[#1b2925]" /> Show fixed
+                <input type="checkbox" checked={showFixed} onChange={(e) => setShowFixed(e.target.checked)} className="accent-[#0b1d36]" /> Show fixed
               </label>
             )}
             <span className="ml-auto flex gap-2">
               {tab === 'mistakes' && shown.length > 0 && (
                 <button onClick={() => setHumo(true)} className="btn btn-ghost h-10 px-4 text-[13px]">
-                  <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Find my patterns
+                  <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Find my patterns
                 </button>
               )}
               {shown.length > 0 && (

@@ -1,28 +1,31 @@
 @import "tailwindcss";
 
-/* Jamals International Academy brand — taken from jamals.uz */
+/* STEP12 brand — navy + crimson, taken from step12.uz */
 @theme {
   --font-sans: "Onest", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Literata", ui-serif, Georgia, serif;
 
-  --color-ink: #0a0f0e;        /* page background */
-  --color-pine: #1b2925;       /* brand dark green */
-  --color-pine-2: #253731;
-  --color-moss: #4c605a;       /* muted green-grey */
-  --color-cream: #faf7f1;      /* brand light */
-  --color-sand: #e3dccf;
+  --color-ink: #050e19;        /* page background */
+  --color-pine: #0b1d36;       /* brand navy */
+  --color-pine-2: #132a4a;
+  --color-moss: #56657a;       /* muted slate */
+  --color-cream: #f6f7fb;      /* brand light */
+  --color-sand: #dde3ec;
+  --color-navy: #03244a;       /* STEP12 logo navy */
+  --color-navy-2: #0a3263;
+  --color-crimson: #bb0937;    /* STEP12 logo crimson */
   --color-card: #ffffff;       /* app surfaces (cards, inputs) */
-  --color-soft: #f1ece2;       /* quiet fills, tracks */
-  --color-line: #e8e2d6;       /* hairlines and borders */
-  --color-line-strong: #cfc6b4;
+  --color-soft: #eef1f6;       /* quiet fills, tracks */
+  --color-line: #e3e7ee;       /* hairlines and borders */
+  --color-line-strong: #c9d1dd;
 
-  --color-jg-50: #eef8ef;
-  --color-jg-200: #b9e3bc;
-  --color-jg-300: #8fd295;
-  --color-jg-400: #62b968;     /* brand green, bright */
-  --color-jg-500: #48ae4f;     /* brand green */
-  --color-jg-600: #3a8f40;
-  --color-jg-700: #2a652e;     /* brand forest */
+  --color-jg-50: #fdf0f3;
+  --color-jg-200: #f7c2cf;
+  --color-jg-300: #ef8fa6;
+  --color-jg-400: #e0456b;     /* brand crimson, bright */
+  --color-jg-500: #c8103f;     /* brand crimson */
+  --color-jg-600: #a80a33;
+  --color-jg-700: #85082a;     /* brand crimson, deep */
 
   --animate-marquee: marquee 40s linear infinite;
   --animate-shake: shake 0.42s cubic-bezier(.36,.07,.19,.97) both;
@@ -42,8 +45,8 @@
     100% { transform: scale(1); }
   }
   @keyframes breathe {
-    0%, 100% { box-shadow: 0 10px 30px -10px rgb(27 41 37 / .45), 0 0 0 0 rgb(98 185 104 / .45); }
-    50% { box-shadow: 0 10px 30px -10px rgb(27 41 37 / .45), 0 0 0 10px rgb(98 185 104 / 0); }
+    0%, 100% { box-shadow: 0 10px 30px -10px rgb(11 29 54 / .45), 0 0 0 0 rgb(224 69 107 / .45); }
+    50% { box-shadow: 0 10px 30px -10px rgb(11 29 54 / .45), 0 0 0 10px rgb(224 69 107 / 0); }
   }
   @keyframes flicker {
     0%, 100% { transform: scale(1) rotate(0deg); }
@@ -66,18 +69,18 @@
    onboarding) to the original values. */
 html.dark-app {
   color-scheme: dark;
-  --color-cream: #0d1311;
-  --color-card: #151d1a;
-  --color-soft: #1c2622;
-  --color-line: #26312d;
-  --color-line-strong: #3a4842;
-  --color-pine: #e8efe9;
+  --color-cream: #070f1c;
+  --color-card: #0e1a2c;
+  --color-soft: #13223a;
+  --color-line: #1d2d47;
+  --color-line-strong: #2c3f5e;
+  --color-pine: #e9eef6;
   --color-pine-2: #ffffff;
-  --color-moss: #95a69e;
-  --color-sand: #2b3632;
-  --color-jg-50: #12291a;
-  --color-jg-600: #62b968;
-  --color-jg-700: #8fd295;
+  --color-moss: #93a3ba;
+  --color-sand: #1f2d44;
+  --color-jg-50: #2a0d17;
+  --color-jg-600: #e0456b;
+  --color-jg-700: #ef8fa6;
   --color-emerald-50: #0f2a1f;
   --color-emerald-100: #133526;
   --color-emerald-600: #34d399;
@@ -109,20 +112,20 @@ html.dark-app {
   --color-sky-50: #0f2230;
   --color-sky-700: #7dd3fc;
 }
-html.dark-app mark.hl { color: #0a0f0e; }
-html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #3a4842; }
+html.dark-app mark.hl { color: #050e19; }
+html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #2c3f5e; }
 .theme-light {
-  --color-cream: #faf7f1;
+  --color-cream: #f6f7fb;
   --color-card: #ffffff;
-  --color-soft: #f1ece2;
-  --color-line: #e8e2d6;
-  --color-line-strong: #cfc6b4;
-  --color-pine: #1b2925;
-  --color-pine-2: #253731;
-  --color-moss: #4c605a;
-  --color-jg-50: #eef8ef;
-  --color-jg-600: #3a8f40;
-  --color-jg-700: #2a652e;
+  --color-soft: #eef1f6;
+  --color-line: #e3e7ee;
+  --color-line-strong: #c9d1dd;
+  --color-pine: #0b1d36;
+  --color-pine-2: #132a4a;
+  --color-moss: #56657a;
+  --color-jg-50: #fdf0f3;
+  --color-jg-600: #a80a33;
+  --color-jg-700: #85082a;
 }
 
 @layer base {
@@ -142,12 +145,12 @@ html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #3a4842; }
   /* scrollbars stay invisible everywhere — scrolling (wheel, touch, keys) still works */
   * { scrollbar-width: none; -ms-overflow-style: none; }
   *::-webkit-scrollbar { width: 0; height: 0; display: none; }
-  ::selection { background: #62b968; color: #0a0f0e; }
-  :focus-visible { outline: 2px solid #62b968; outline-offset: 3px; border-radius: 8px; }
+  ::selection { background: #e0456b; color: #050e19; }
+  :focus-visible { outline: 2px solid #e0456b; outline-offset: 3px; border-radius: 8px; }
 }
 
 @layer components {
-  /* Literata display — Jamals' signature serif */
+  /* Literata display — STEP12's signature serif */
   .display {
     font-family: var(--font-serif);
     font-weight: 450;
@@ -155,7 +158,7 @@ html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #3a4842; }
     letter-spacing: -0.025em;
     line-height: 1.02;
   }
-  /* Jamals' hand-drawn green underline */
+  /* STEP12's hand-drawn green underline */
   .brush {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9c40-5 90-7 150-6s100 3 144 1' fill='none' stroke='%2362b968' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -171,7 +174,7 @@ html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #3a4842; }
     to { background-size: 100% 0.22em; }
   }
   .gold-text {
-    background: linear-gradient(180deg, #fff3cf 0%, #f7d27a 40%, #d79a2c 75%, #9c6512 100%);
+    background: linear-gradient(180deg, #ffe4ea 0%, #ff8aa5 38%, #e3224f 72%, #a80a33 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -188,32 +191,32 @@ html.dark-app .prose-q th, html.dark-app .prose-q td { border-color: #3a4842; }
     border-radius: 24px;
   }
   .card-hover { transition: border-color .2s, transform .2s, box-shadow .2s; }
-  .card-hover:hover { border-color: var(--color-line-strong); transform: translateY(-2px); box-shadow: 0 10px 30px -18px rgb(27 41 37 / .35); }
+  .card-hover:hover { border-color: var(--color-line-strong); transform: translateY(-2px); box-shadow: 0 10px 30px -18px rgb(11 29 54 / .35); }
   .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; border-radius:9999px; font-weight:600; transition: background-color .15s, transform .1s, opacity .15s; }
   .btn:active { transform: scale(.98); }
   .btn-dark { background:var(--color-pine); color:var(--color-cream); }
   .btn-dark:hover { background:var(--color-pine-2); }
-  .btn-green { background:#48ae4f; color:#0a0f0e; }
-  .btn-green:hover { background:#62b968; }
+  .btn-green { background:#c8103f; color:#ffffff; }
+  .btn-green:hover { background:#e0456b; }
   .btn-ghost { border:1px solid var(--color-line); color:var(--color-pine); background:var(--color-card); }
   .btn-ghost:hover { border-color:var(--color-line-strong); }
   .prose-q p { margin: 0 0 .75em; }
   .prose-q ul { margin: .25em 0 .75em 1.1em; list-style: disc; }
   .prose-q li { margin: .2em 0; }
   .prose-q table { border-collapse: collapse; margin: .5em 0; font-size: .92em; }
-  .prose-q th, .prose-q td { border: 1px solid #d8d0bf; padding: .35em .6em; }
+  .prose-q th, .prose-q td { border: 1px solid #cfd6e1; padding: .35em .6em; }
   .prose-q u { text-decoration-thickness: 2px; text-underline-offset: 3px; }
   /* Reading & Writing highlights (Bluebook-style) */
   mark.hl { color: inherit; border-radius: 3px; padding: 0 1px; cursor: pointer; transition: background-color .2s; }
   mark.hl-yellow { background: #fde68a; }
   mark.hl-blue { background: #bfdbfe; }
   mark.hl-pink { background: #fbcfe8; }
-  mark.hl-underline { background: transparent; text-decoration: underline; text-decoration-color: #2a652e; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  mark.hl-underline { background: transparent; text-decoration: underline; text-decoration-color: #85082a; text-decoration-thickness: 2px; text-underline-offset: 4px; }
   mark.hl-note { box-shadow: inset 0 -2px 0 #d97706; }
   .select-text ::selection, .select-text::selection { background: #fde68a; color: inherit; }
   .panel {
-    background: linear-gradient(180deg, rgb(37 55 49 / 0.55), rgb(27 41 37 / 0.25));
-    border: 1px solid rgb(250 247 241 / 0.08);
+    background: linear-gradient(180deg, rgb(19 42 74 / 0.55), rgb(11 29 54 / 0.25));
+    border: 1px solid rgb(246 247 251 / 0.08);
   }
 }
 

@@ -3,12 +3,12 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, Lightformer, Sparkles } from '@react-three/drei'
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
-import { HumoBird, introProgress } from './HumoBird'
+import { SensaiCore, introProgress } from './SensaiCore'
 import { humoMood } from './humoMood'
 
 type Layout = 'hero' | 'compact'
 
-/** Thin glowing rings behind Humo — the "orbit of fortune". */
+/** Thin glowing rings behind Sensai. */
 function Halo() {
   const a = useRef<THREE.Mesh>(null)
   const b = useRef<THREE.Mesh>(null)
@@ -26,22 +26,17 @@ function Halo() {
     <group ref={g} position={[0, 0.35, -1.1]}>
       <mesh ref={a}>
         <torusGeometry args={[2.35, 0.008, 16, 256]} />
-        <meshBasicMaterial color={[0.75, 2.2, 0.85]} toneMapped={false} transparent opacity={0.85} />
+        <meshBasicMaterial color={[1.6, 0.3, 0.55]} toneMapped={false} transparent opacity={0.35} />
       </mesh>
       <mesh ref={b} rotation={[1.2, 0, 0]}>
         <torusGeometry args={[2.9, 0.005, 16, 256]} />
-        <meshBasicMaterial color={[0.5, 1.4, 0.6]} toneMapped={false} transparent opacity={0.45} />
-      </mesh>
-      {/* soft disc glow */}
-      <mesh position={[0, 0, -0.3]}>
-        <circleGeometry args={[2.2, 64]} />
-        <meshBasicMaterial color="#48ae4f" transparent opacity={0.07} depthWrite={false} />
+        <meshBasicMaterial color={[1.4, 1.5, 1.8]} toneMapped={false} transparent opacity={0.35} />
       </mesh>
     </group>
   )
 }
 
-/** Drifting gold dust filling the whole hero. */
+/** Drifting starlight filling the whole hero. */
 function GoldDust({ count = 1400 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null)
   const geo = useMemo(() => {
@@ -63,12 +58,12 @@ function GoldDust({ count = 1400 }: { count?: number }) {
   })
   return (
     <points ref={ref} geometry={geo}>
-      <pointsMaterial size={0.028} color="#fcd34d" transparent opacity={0.7} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
+      <pointsMaterial size={0.028} color="#cdd9ee" transparent opacity={0.55} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   )
 }
 
-/** Places Humo depending on screen shape and scroll position. */
+/** Places Sensai depending on screen shape and scroll position. */
 function Rig({ layout, children }: { layout: Layout; children: React.ReactNode }) {
   const group = useRef<THREE.Group>(null)
   const { viewport, size } = useThree()
@@ -109,7 +104,7 @@ function SettleFrames() {
   return null
 }
 
-export default function HumoScene({ layout = 'hero', bg = '#0a0f0e' }: { layout?: Layout; bg?: string }) {
+export default function HumoScene({ layout = 'hero', bg = '#050e19' }: { layout?: Layout; bg?: string }) {
   useEffect(() => {
     humoMood.target = 0 // a fresh scene always starts calm
   }, [])
@@ -125,26 +120,26 @@ export default function HumoScene({ layout = 'hero', bg = '#0a0f0e' }: { layout?
       {reduced && <SettleFrames />}
       <color attach="background" args={[bg]} />
       <ambientLight intensity={0.15} />
-      <directionalLight position={[3, 5, 6]} intensity={2.2} color="#ffe2a8" />
-      <directionalLight position={[-4, 3, 6]} intensity={1.2} color="#fff1d0" />
-      <directionalLight position={[-6, 2, -4]} intensity={0.9} color="#7fbf86" />
-      <pointLight position={[0, -0.5, 4]} intensity={1.4} color="#ffcf7a" distance={9} />
+      <directionalLight position={[3, 5, 6]} intensity={2.2} color="#ffffff" />
+      <directionalLight position={[-4, 3, 6]} intensity={1.2} color="#dbe6ff" />
+      <directionalLight position={[-6, 2, -4]} intensity={1.1} color="#e0456b" />
+      <pointLight position={[0, -0.5, 4]} intensity={1.2} color="#ffd6e0" distance={9} />
 
       <Suspense fallback={null}>
         <Rig layout={layout}>
           <Halo />
-          <HumoBird />
-          <Sparkles count={60} scale={[6, 5, 3]} size={2.2} speed={0.35} color="#fde68a" opacity={0.9} />
+          <SensaiCore />
+          <Sparkles count={60} scale={[6, 5, 3]} size={2.2} speed={0.35} color="#ffd1dc" opacity={0.8} />
         </Rig>
         {layout === 'hero' && <GoldDust />}
 
         {/* Studio lighting baked into an environment — no HDR download needed */}
         <Environment resolution={256} frames={1}>
-          <Lightformer form="rect" intensity={4} color="#fff3d6" position={[0, 5, 2]} scale={[10, 2, 1]} />
-          <Lightformer form="rect" intensity={2.5} color="#ffd38a" position={[-5, 1, 3]} scale={[2, 8, 1]} rotation-y={Math.PI / 2} />
+          <Lightformer form="rect" intensity={4} color="#ffffff" position={[0, 5, 2]} scale={[10, 2, 1]} />
+          <Lightformer form="rect" intensity={2.5} color="#9db8e8" position={[-5, 1, 3]} scale={[2, 8, 1]} rotation-y={Math.PI / 2} />
           <Lightformer form="rect" intensity={2} color="#ffffff" position={[5, 0, 2]} scale={[2, 6, 1]} rotation-y={-Math.PI / 2} />
-          <Lightformer form="ring" intensity={2.5} color="#62b968" position={[0, -3, 4]} scale={4} />
-          <Lightformer form="rect" intensity={1.4} color="#2a652e" position={[0, 2, -6]} scale={[12, 4, 1]} />
+          <Lightformer form="ring" intensity={2.5} color="#e0456b" position={[0, -3, 4]} scale={4} />
+          <Lightformer form="rect" intensity={1.4} color="#85082a" position={[0, 2, -6]} scale={[12, 4, 1]} />
         </Environment>
       </Suspense>
 

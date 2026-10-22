@@ -10,10 +10,10 @@ import { CountUp } from '../../components/motion'
 import { studentContext } from '../humoContext'
 
 /* palette — validated for CVD separation; values always carry text labels */
-const RW = '#48ae4f'
+const RW = '#c8103f'
 const MATH = '#2d70b3'
 const OTHER = '#e8a33d'
-const RIGHT = '#48ae4f'
+const RIGHT = '#10b981'
 const WRONG = '#d9534f'
 
 const DOMAIN: Record<Skill, string> = {
@@ -43,7 +43,7 @@ const KIND_LABEL: Record<string, string> = { test: 'Practice tests', drill: 'Dri
 const dayKey = (t: number) => new Date(t).toISOString().slice(0, 10)
 const pct = (r: number, t: number) => (t ? Math.round((r / t) * 100) : null)
 const fmtMin = (sec: number) => (sec >= 3600 ? `${(sec / 3600).toFixed(1)} h` : `${Math.round(sec / 60)} min`)
-const band = (v: number | null) => (v == null ? 'bg-soft' : v >= 85 ? 'bg-jg-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
+const band = (v: number | null) => (v == null ? 'bg-soft' : v >= 85 ? 'bg-emerald-500' : v >= 60 ? 'bg-amber-400' : 'bg-rose-400')
 
 /** Floating tooltip shared by every chart on the page. */
 function useTip() {
@@ -240,7 +240,7 @@ export default function Analytics() {
     return { k, n: perDay.get(k) ?? 0, future: dd > new Date() }
   })
   const maxDay = Math.max(1, ...cells.map((c) => c.n))
-  const shade = (n: number) => (n === 0 ? '#efe9de' : ['#d4eed6', '#9fd6a4', '#62b968', '#2a652e'][Math.min(3, Math.floor((n / maxDay) * 3.999))])
+  const shade = (n: number) => (n === 0 ? '#e9edf3' : ['#fadbe3', '#f3a3b6', '#e0456b', '#85082a'][Math.min(3, Math.floor((n / maxDay) * 3.999))])
 
   const summary = `Analytics (${RANGES.find((r) => r[0] === range)![1]}): ${d.total} questions, accuracy ${acc ?? '–'}%, predicted ${d.predicted ?? 'unknown'}. Weakest skills: ${d.skillList
     .slice(0, 4)
@@ -264,7 +264,7 @@ export default function Analytics() {
             ))}
           </div>
           <button onClick={() => setHumo(true)} className="btn btn-dark h-10 px-4 text-[13px]">
-            <img src="/humo-mark.png" alt="" className="size-5 rounded-md" /> Humo, read my stats
+            <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Sensai, read my stats
           </button>
         </div>
       </div>
@@ -303,14 +303,14 @@ export default function Analytics() {
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Score trajectory">
               {[200, 400, 600, 800].map((v) => (
                 <g key={v}>
-                  <line x1={24} x2={W - 24} y1={yOf(v)} y2={yOf(v)} stroke="#efe9de" />
+                  <line x1={24} x2={W - 24} y1={yOf(v)} y2={yOf(v)} stroke="#e9edf3" />
                   <text x={0} y={yOf(v) + 4} fontSize={10} fill="#7d8a84">
                     {v}
                   </text>
                 </g>
               ))}
-              <line x1={24} x2={W - 24} y1={yOf(sectionTarget)} y2={yOf(sectionTarget)} stroke="#1b2925" strokeDasharray="5 5" opacity={0.5} />
-              <text x={W - 24} y={yOf(sectionTarget) - 5} fontSize={10} fill="#1b2925" textAnchor="end">
+              <line x1={24} x2={W - 24} y1={yOf(sectionTarget)} y2={yOf(sectionTarget)} stroke="#0b1d36" strokeDasharray="5 5" opacity={0.5} />
+              <text x={W - 24} y={yOf(sectionTarget) - 5} fontSize={10} fill="#0b1d36" textAnchor="end">
                 target {Math.round(sectionTarget)}
               </text>
               {(['EBRW', 'MATH'] as const).map((type) => {
@@ -398,7 +398,7 @@ export default function Analytics() {
             ['Math', d.mDomains],
           ] as const
         ).map(([title, list]) => (
-          <Card key={title} title={`${title} · accuracy by domain`} right={<Legend items={[['#48ae4f', '≥85%'], ['#fbbf24', '60–84%'], ['#fb7185', '<60%']]} />}>
+          <Card key={title} title={`${title} · accuracy by domain`} right={<Legend items={[['#10b981', '≥85%'], ['#fbbf24', '60–84%'], ['#fb7185', '<60%']]} />}>
             <div className="space-y-4">
               {list.map((x) => (
                 <div key={x.name} {...tip.bind(<>{x.name}: {x.acc ?? '–'}% over {x.total} questions</>)}>
@@ -506,7 +506,7 @@ export default function Analytics() {
           <div className="mt-2 flex h-16 items-end gap-[2px]">
             {d.hours.map((v, h) => (
               <div key={h} className="flex h-full flex-1 items-end" {...tip.bind(<>{h}:00 · {fmtMin(v)}</>)}>
-                <motion.span initial={{ height: 0 }} whileInView={{ height: `${(v / maxHour) * 100}%` }} viewport={{ once: true }} className="w-full rounded-t-[3px]" style={{ background: h === peak && v ? '#2a652e' : '#9fd6a4', minHeight: v ? 3 : 1 }} />
+                <motion.span initial={{ height: 0 }} whileInView={{ height: `${(v / maxHour) * 100}%` }} viewport={{ once: true }} className="w-full rounded-t-[3px]" style={{ background: h === peak && v ? '#85082a' : '#f3a3b6', minHeight: v ? 3 : 1 }} />
               </div>
             ))}
           </div>
@@ -568,7 +568,7 @@ export default function Analytics() {
             </div>
           </div>
           <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-moss">
-            Less {['#efe9de', '#d4eed6', '#9fd6a4', '#62b968', '#2a652e'].map((c) => <span key={c} className="size-3 rounded-[3px]" style={{ background: c }} />)} More
+            Less {['#e9edf3', '#fadbe3', '#f3a3b6', '#e0456b', '#85082a'].map((c) => <span key={c} className="size-3 rounded-[3px]" style={{ background: c }} />)} More
           </div>
         </Card>
       </div>
