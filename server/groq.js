@@ -1,6 +1,7 @@
 // Backups for Sensai: when every Gemini model is busy or out of quota, the same request goes to the next
 // OpenAI-compatible provider that has a key, in this order:
-//   Groq (free, ~1,000/day) → GitHub Models (free with a GitHub token) → OpenRouter (free models) → DeepSeek (paid, tiny cost)
+//   Groq (free, ~1,000/day) → OpenRouter (free models) → DeepSeek (paid, tiny cost)
+// (GitHub Models was retired by GitHub on 30 July 2026, so it is not used.)
 // Each provider has a text model and a model that can read photos. A provider that is rate-limited or failing is
 // rested for a while. Responses are shaped like Gemini's ({ text } / chunks with .text), so the rest of the server
 // doesn't need to know who answered.
@@ -13,14 +14,6 @@ const PROVIDERS = [
     url: 'https://api.groq.com/openai/v1/chat/completions',
     text: [env('GROQ_TEXT_MODEL') || 'openai/gpt-oss-120b'],
     vision: [env('GROQ_VISION_MODEL') || 'qwen/qwen3.8-27b'],
-  },
-  {
-    name: 'github',
-    key: env('GITHUB_MODELS_TOKEN', 'GITHUB_TOKEN_MODELS', 'Github_Models_Token'),
-    url: 'https://models.github.ai/inference/chat/completions',
-    text: (env('GITHUB_TEXT_MODELS') || 'openai/gpt-4.1-mini,openai/gpt-4o-mini,meta/llama-4-scout-17b-16e-instruct').split(','),
-    vision: (env('GITHUB_VISION_MODELS') || 'openai/gpt-4.1-mini,openai/gpt-4o-mini').split(','),
-    headers: { Accept: 'application/vnd.github+json' },
   },
   {
     name: 'openrouter',
