@@ -244,9 +244,6 @@ export function QBankSection() {
                         <button disabled={!st.total} onClick={() => setMode([skill])} className="min-w-0 text-left leading-snug sm:truncate text-[14.5px] hover:text-jg-700 disabled:cursor-default disabled:text-moss">
                           {skill}
                         </button>
-                        <a href="https://satsuitequestionbank.collegeboard.org/digital/search" target="_blank" rel="noreferrer" title="Free official College Board questions" className="hidden shrink-0 rounded-md bg-[#2d70b3]/10 px-1.5 py-0.5 text-[10.5px] font-semibold text-[#2d70b3] group-hover:inline">
-                          Official ↗
-                        </a>
                         {lesson && (
                           <Link to={lesson.to} title="Lesson" className="hidden shrink-0 rounded-md bg-jg-50 px-1.5 py-0.5 text-[10.5px] font-semibold text-jg-700 group-hover:inline">
                             Lesson
