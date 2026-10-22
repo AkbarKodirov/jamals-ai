@@ -110,7 +110,7 @@ export function CoursePage() {
               </div>
             </div>
             <div className="mt-3 flex items-center gap-3">
-              <img src="/favicon.png" alt="" className="size-12 rounded-2xl" />
+              <img src="/brand/step12-mark.png" alt="" className="size-12 rounded-2xl" />
               <div>
                 <p className="text-[14px] font-semibold">STEP12 teachers</p>
                 <p className="text-[12.5px] text-moss">SAT team in Tashkent</p>
