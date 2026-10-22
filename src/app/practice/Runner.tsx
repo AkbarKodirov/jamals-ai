@@ -66,7 +66,7 @@ function AskTab({ item, a, auto }: { item: Item; a: Ans; auto: string | null }) 
   const s = useStore()
   const screen = describeQuestion(item.r.q, { chosen: a.value, checked: a.checked, correct: a.correct, seconds: a.seconds, where: `Question bank · ${item.r.source}`, skill: item.r.skill })
   const ctx = `${studentContext(s, 'a Question Bank question')}\n\nWHAT THE STUDENT SEES ON SCREEN RIGHT NOW:\n${screen}`
-  const { msgs, busy, send } = useHumoChat(a.checked && !a.correct ? "I can see this question and your answer. Want me to show exactly where it went wrong?" : "I can see this question. Ask for a hint, a strategy, or a full walkthrough.", ctx)
+  const { msgs, busy, send, retry } = useHumoChat(a.checked && !a.correct ? "I can see this question and your answer. Want me to show exactly where it went wrong?" : "I can see this question. Ask for a hint, a strategy, or a full walkthrough.", ctx)
   const [text, setText] = useState('')
   const fired = useRef(false)
   useEffect(() => {
@@ -80,7 +80,7 @@ function AskTab({ item, a, auto }: { item: Item; a: Ans; auto: string | null }) 
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto p-4">
-        <HumoMessages msgs={msgs} busy={busy} />
+        <HumoMessages msgs={msgs} busy={busy} onRetry={retry} />
         {msgs.length === 1 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {chips.map((c) => (

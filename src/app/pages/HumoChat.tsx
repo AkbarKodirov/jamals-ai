@@ -165,7 +165,7 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
   const c = COPY[space]
   const context = studentContext(s, space === 'desmos' ? 'the Desmos Lab (photo questions)' : 'the Ask Sensai page')
   const [hi] = useState(() => `${hello(user?.name?.split(' ')[0])} ${c.greeting}`)
-  const { msgs, busy, send } = useHumoChat(hi, context, { initial, onChange: (m) => saveChat(id, m, space), space })
+  const { msgs, busy, send, retry } = useHumoChat(hi, context, { initial, onChange: (m) => saveChat(id, m, space), space })
   const [input, setInput] = useState('')
   const [pics, setPics] = useState<string[]>([])
   const [drag, setDrag] = useState(false)
@@ -211,7 +211,7 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
       }}
     >
       <div className="card flex-1 overflow-y-auto bg-cream/40 p-4 sm:p-5">
-        <HumoMessages msgs={msgs} busy={busy} />
+        <HumoMessages msgs={msgs} busy={busy} onRetry={retry} />
         {msgs.length === 1 && (
           <>
             {space === 'desmos' && (

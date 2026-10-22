@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Send, X } from 'lucide-react'
+import { Check, Copy, RotateCcw, Send, X } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
 import { askHumo, HumoOffline, streamingText, type ChatMsg } from '../humo'
 import { RichText } from './RichText'
@@ -30,8 +30,46 @@ export function HumoReply({ msg }: { msg: ChatMsg }) {
   )
 }
 
-export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean }) {
+/** Copy / try-again row under Sensai's latest reply. */
+function ReplyActions({ msg, onRetry }: { msg: ChatMsg; onRetry?: () => void }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(msg.text.replace(/\[\[(?:desmos:\d+|plan)\]\]/g, '').replace(/\n{3,}/g, '\n\n').trim())
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      /* clipboard blocked: nothing to do */
+    }
+  }
+  return (
+    <div className="mt-1.5 flex items-center gap-1 pl-9 text-[12px] text-moss">
+      {msg.error ? (
+        onRetry && (
+          <button onClick={onRetry} className="inline-flex items-center gap-1.5 rounded-full bg-jg-500 px-3 py-1 font-semibold text-white hover:bg-jg-600">
+            <RotateCcw className="size-3.5" /> Try again
+          </button>
+        )
+      ) : (
+        <>
+          <button onClick={copy} aria-label="Copy reply" className="inline-flex items-center gap-1 rounded-lg px-2 py-1 hover:bg-soft hover:text-pine">
+            {copied ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />} {copied ? 'Copied' : 'Copy'}
+          </button>
+          {onRetry && (
+            <button onClick={onRetry} aria-label="Answer again" className="inline-flex items-center gap-1 rounded-lg px-2 py-1 hover:bg-soft hover:text-pine">
+              <RotateCcw className="size-3.5" /> Answer again
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+export function HumoMessages({ msgs, busy, onRetry }: { msgs: ChatMsg[]; busy: boolean; onRetry?: () => void }) {
   const end = useRef<HTMLDivElement>(null)
+  const lastIdx = msgs.length - 1
+  const showActions = !busy && lastIdx > 0 && msgs[lastIdx]?.role === 'humo' && msgs.slice(0, lastIdx).some((m) => m.role === 'user')
   useEffect(() => {
     end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [msgs, busy])
@@ -65,6 +103,7 @@ export function HumoMessages({ msgs, busy }: { msgs: ChatMsg[]; busy: boolean })
           </div>
         </motion.div>
       ))}
+      {showActions && <ReplyActions msg={msgs[lastIdx]} onRetry={onRetry} />}
       {busy && msgs[msgs.length - 1]?.role === 'user' && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5">
           <span className="relative">
@@ -98,7 +137,17 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
   async function send(text: string, images?: string[]) {
     const t = text.trim()
     if ((!t && !images?.length) || busy) return
-    const history = [...msgs, { role: 'user' as const, text: t, at: Date.now(), ...(images?.length ? { images } : {}) }]
+    await run([...msgs, { role: 'user' as const, text: t, at: Date.now(), ...(images?.length ? { images } : {}) }])
+  }
+  /** Asks the student's last question again (after an error, or for a fresh explanation). */
+  async function retry() {
+    if (busy) return
+    let i = msgs.length - 1
+    while (i >= 0 && msgs[i].role !== 'user') i--
+    if (i < 0) return
+    await run(msgs.slice(0, i + 1))
+  }
+  async function run(history: ChatMsg[]) {
     setMsgs(() => history)
     setBusy(true)
     const at = Date.now()
@@ -116,12 +165,12 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
   function reset(next: ChatMsg[]) {
     setMsgsRaw(next)
   }
-  return { msgs, busy, send, reset }
+  return { msgs, busy, send, reset, retry }
 }
 
 /** Slide-over chat with Sensai that already knows the test the student just took. */
 export function HumoDrawer({ open, onClose, context, greeting, suggestions, prefill, subtitle = 'Your Digital SAT tutor', autoSend }: { open: boolean; onClose: () => void; context: string; greeting: string; suggestions: string[]; prefill?: string; subtitle?: string; autoSend?: string | null }) {
-  const { msgs, busy, send } = useHumoChat(greeting, context)
+  const { msgs, busy, send, retry } = useHumoChat(greeting, context)
   const [input, setInput] = useState('')
   const sent = useRef<string | null>(null)
   useEffect(() => {
@@ -159,7 +208,7 @@ export function HumoDrawer({ open, onClose, context, greeting, suggestions, pref
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-5">
-              <HumoMessages msgs={msgs} busy={busy} />
+              <HumoMessages msgs={msgs} busy={busy} onRetry={retry} />
             </div>
             {msgs.length === 1 && (
               <div className="flex flex-wrap gap-2 px-5 pb-3">
