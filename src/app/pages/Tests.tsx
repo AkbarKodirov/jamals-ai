@@ -180,7 +180,7 @@ export default function Tests() {
             <motion.div key={t.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.04, 0.35), ease: [0.22, 1, 0.36, 1] }}>
               <Tilt className="h-full">
                 <article className="card card-hover flex h-full flex-col overflow-hidden">
-                  <div className={`relative h-24 overflow-hidden px-5 pt-4 ${t.type === 'MATH' ? 'bg-gradient-to-br from-sky-50 to-sky-100/70' : 'bg-gradient-to-br from-jg-50 to-[#fbe4ea]'}`}>
+                  <div className={`relative h-24 overflow-hidden px-5 pt-4 ${t.type === 'MATH' ? 'bg-gradient-to-br from-sky-50 to-sky-100/70' : 'bg-gradient-to-br from-jg-50 to-jg-200/40'}`}>
                     <Icon className={`absolute -bottom-5 -right-3 size-28 rotate-[-12deg] ${t.type === 'MATH' ? 'text-sky-200' : 'text-jg-200'}`} strokeWidth={1.2} />
                     <div className="relative flex items-center justify-between">
                       <span className={`inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[11.5px] font-semibold backdrop-blur ${t.type === 'MATH' ? 'text-sky-700' : 'text-jg-700'}`}>
