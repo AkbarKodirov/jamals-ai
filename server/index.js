@@ -9,7 +9,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
 import { backupNames, groqGenerate, groqReady, groqStream } from './groq.js'
-import { findQuestion, memoryNote, memorySize } from './retrieve.js'
+import { findQuestion, memoryNote, memorySize, practiceSummary } from './retrieve.js'
 import { kvBackend, kvDel, kvGet, kvSet } from './kv.js'
 import { createHash } from 'node:crypto'
 
@@ -418,7 +418,7 @@ The correct final answer is ${v.answer}${v.choice ? ` (choice ${v.choice})` : ''
 const CHAT_THINKING = { thinkingLevel: process.env.GEMINI_CHAT_THINKING || 'low' }
 
 app.post('/api/chat', async (req, res) => {
-  const { messages = [], context, space, stream } = req.body || {}
+  const { messages = [], context, space, stream, recent } = req.body || {}
   if (!gemini) return res.status(503).json({ error: NO_KEY })
   let contents = chatContents(messages)
   if (!contents.length) return res.status(400).json({ error: 'Send Sensai a question first.' })
@@ -427,6 +427,8 @@ app.post('/api/chat', async (req, res) => {
   // STEP12's own questions carry checked keys: if the student is asking about one, Sensai is told the answer first
   const lastText = messages.filter((m) => m.role === 'user').pop()?.text || ''
   const onScreen = String(context || '').match(/(?:Passage:|Question:)[\s\S]*?(?=Student's answer|The student has not answered|$)/)?.[0] || ''
+  const practice = practiceSummary(recent)
+  if (practice) system = `${system}\n\n${practice}`
   const known = findQuestion(lastText) || (onScreen ? findQuestion(onScreen) : null)
   if (known) {
     system = `${system}\n\n${memoryNote(known)}`

@@ -1,4 +1,4 @@
-import { stripHtml, type ChatMsg, type Profile, type TestQuestion, type WeekPlan } from './store'
+import { getStore, stripHtml, type ChatMsg, type Profile, type TestQuestion, type WeekPlan } from './store'
 import type { DesmosScreen } from '../../shared/desmos-render.js'
 
 export type { ChatMsg }
@@ -33,7 +33,14 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
       return { role: m.role, text: m.text, ...(keep ? { images: m.images } : m.images?.length ? { text: `${m.text} [photo of a question sent earlier]`.trim() } : {}) }
     })
     .reverse()
-  const body = { messages: slim, context, space }
+  // the last two weeks of question-bank answers (ids only): the server turns them into per-skill accuracy for Sensai
+  const since = Date.now() - 14 * 86400000
+  const recent = Object.entries(getStore().qbank)
+    .filter(([, v]) => v.at >= since)
+    .sort((a, b) => b[1].at - a[1].at)
+    .slice(0, 200)
+    .map(([id, v]) => [id, v.correct ? 1 : 0])
+  const body = { messages: slim, context, space, recent }
   if (!onText) return call<HumoAnswer>('/api/chat', body, token)
   let res: Response
   try {

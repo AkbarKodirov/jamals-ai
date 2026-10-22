@@ -13,6 +13,7 @@ const strip = (h) => String(h || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g,
 const words = (s) => (strip(s).toLowerCase().match(/[a-z0-9]+(?:'[a-z]+)?/g) || []).filter((w) => (w.length > 2 || /\d/.test(w)) && !STOP.has(w))
 
 const items = []
+const bankTopic = new Map() // bank id → { topic, section }
 function add(q, source) {
   const mc = q.options?.length === 4 && q.correct != null
   const key = mc ? `${L[q.correct]}) ${strip(q.options[q.correct]).trim()}` : q.answer != null ? String(q.answer) : null
@@ -25,7 +26,10 @@ function add(q, source) {
 
 try {
   const bank = JSON.parse(readFileSync(join(ROOT, 'public/bank/bank.json'), 'utf8'))
-  for (const q of bank) add(q, 'Question bank')
+  for (const q of bank) {
+    add(q, 'Question bank')
+    if (q.id) bankTopic.set(q.id, { topic: q.topic || q.skill || 'Other', section: q.section })
+  }
 } catch (e) {
   console.warn('Sensai memory: bank not loaded', e.message)
 }
@@ -89,3 +93,22 @@ Your solution and final answer must reach exactly this answer. If the student on
 }
 
 export const memorySize = () => items.length
+
+/** Turns the student's recent question-bank answers ([id, 1|0] pairs) into a per-skill summary for Sensai. */
+export function practiceSummary(recent) {
+  if (!Array.isArray(recent) || !recent.length) return ''
+  const by = new Map()
+  for (const [id, ok] of recent.slice(0, 200)) {
+    const t = bankTopic.get(String(id))
+    if (!t) continue
+    const k = `${t.topic} (${t.section === 'MATH' ? 'Math' : 'R&W'})`
+    const v = by.get(k) || { n: 0, ok: 0 }
+    v.n++
+    v.ok += ok ? 1 : 0
+    by.set(k, v)
+  }
+  const rows = [...by].filter(([, v]) => v.n >= 2).sort((a, b) => a[1].ok / a[1].n - b[1].ok / b[1].n)
+  if (!rows.length) return ''
+  const weak = rows.filter(([, v]) => v.ok / v.n < 0.6).slice(0, 4)
+  return `Question bank, last 14 days (skill: correct/answered, weakest first): ${rows.slice(0, 8).map(([k, v]) => `${k} ${v.ok}/${v.n}`).join('; ')}.${weak.length ? ` Struggling with: ${weak.map(([k]) => k).join(', ')} — when it fits naturally, connect your help to these and suggest a short targeted set.` : ''}`
+}
