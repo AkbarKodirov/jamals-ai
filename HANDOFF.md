@@ -85,3 +85,12 @@ STEP12 is a Digital SAT prep platform for **STEP12** in Tashkent. Its AI tutor i
 - `server/groq.js`: when every Gemini model is busy or out of free quota, Sensai answers through Groq (free tier, ~1,000 requests/day). Text uses `openai/gpt-oss-120b`; requests with photos use `qwen/qwen3.8-27b`. Key: `GROQ_API_KEY` (also read as `Groq_API_KEY`) on Render. `/api/health` shows `groq: true` when the key is set.
 - `.github/workflows/keep-awake.yml` pings the site every 10 minutes so Render's free plan never sleeps.
 - `server/retrieve.js` ("Sensai memory"): indexes every bank and practice-test question (~3,900) at startup. When a student pastes or views one, `/api/chat` adds its checked answer + explanation to the system prompt, so Sensai never contradicts STEP12's key. Word-statistics matching, no AI calls; tested 299/300 exact, 0 wrong, 0 false positives.
+
+## Oct 22 afternoon (STEP12 rebrand + Sensai upgrades)
+- Brand is **STEP12** (navy #03244a + crimson #bb0937) and the AI is **Sensai** (ensō mark, `src/three/SensaiCore.tsx`). Internal file/variable names still say `humo` — don't rename storage keys (`jamals.*`) or users lose data.
+- Backups: `server/groq.js` chains Groq → OpenRouter → DeepSeek (DeepSeek only if `DEEPSEEK_API_KEY` is set). GitHub Models was retired by GitHub on 30 Jul 2026 — don't add it back.
+- Sensai gets `recent` (last-14-day bank answers) from the client and `practiceSummary()` turns it into per-skill accuracy in the system prompt.
+- Chat: Copy / Answer again / Try again, Stop (also stops generation on the server), voice input (Web Speech API).
+- `scripts/eval-sensai.mjs` — 12 new questions, run against a local server after prompt/model changes (was 12/12).
+- Site: Open Graph preview (`public/og.png`), installable manifest, robots/sitemap, year-long cache for `/assets/*`, per-page tab titles, server self-ping on Render.
+- Content rule reminder: no College Board / Bluebook / real-exam / SAT League book items (the book says its questions come from the CB bank).
