@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
 import { groqGenerate, groqReady, groqStream } from './groq.js'
+import { findQuestion, memoryNote, memorySize } from './retrieve.js'
 import { kvBackend, kvDel, kvGet, kvSet } from './kv.js'
 import { createHash } from 'node:crypto'
 
@@ -423,6 +424,14 @@ app.post('/api/chat', async (req, res) => {
   if (!contents.length) return res.status(400).json({ error: 'Send Sensai a question first.' })
   let system = context ? `${HUMO_FULL}\n\nContext about what the student is working on right now:\n${String(context).slice(0, 14000)}` : HUMO_FULL
   if (space === 'desmos') system = `${system}\n\n${DESMOS_LAB}`
+  // STEP12's own questions carry checked keys: if the student is asking about one, Sensai is told the answer first
+  const lastText = messages.filter((m) => m.role === 'user').pop()?.text || ''
+  const onScreen = String(context || '').match(/(?:Passage:|Question:)[\s\S]*?(?=Student's answer|The student has not answered|$)/)?.[0] || ''
+  const known = findQuestion(lastText) || (onScreen ? findQuestion(onScreen) : null)
+  if (known) {
+    system = `${system}\n\n${memoryNote(known)}`
+    console.log(`Sensai memory: matched a ${known.source} question (${known.confidence}% of words)`)
+  }
   const config = { systemInstruction: system, temperature: 0.4, thinkingConfig: CHAT_THINKING }
   const question = messages.filter((m) => m.role === 'user').pop()?.text
   const started = Date.now()
@@ -657,7 +666,7 @@ app.get('/api/blitz/leaderboard', (_, res) => {
   res.json({ week: weekKey(), rows })
 })
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', tutor: 'Sensai', gemini: !!gemini, groq: groqReady, storage: kvBackend }))
+app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', tutor: 'Sensai', gemini: !!gemini, groq: groqReady, memory: memorySize(), storage: kvBackend }))
 
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')

@@ -84,3 +84,4 @@ STEP12 is a Digital SAT prep platform for **STEP12** in Tashkent. Its AI tutor i
 ## AI backup (added Oct 22)
 - `server/groq.js`: when every Gemini model is busy or out of free quota, Sensai answers through Groq (free tier, ~1,000 requests/day). Text uses `openai/gpt-oss-120b`; requests with photos use `qwen/qwen3.8-27b`. Key: `GROQ_API_KEY` (also read as `Groq_API_KEY`) on Render. `/api/health` shows `groq: true` when the key is set.
 - `.github/workflows/keep-awake.yml` pings the site every 10 minutes so Render's free plan never sleeps.
+- `server/retrieve.js` ("Sensai memory"): indexes every bank and practice-test question (~3,900) at startup. When a student pastes or views one, `/api/chat` adds its checked answer + explanation to the system prompt, so Sensai never contradicts STEP12's key. Word-statistics matching, no AI calls; tested 299/300 exact, 0 wrong, 0 false positives.
