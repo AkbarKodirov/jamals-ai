@@ -66,10 +66,12 @@ async function withFallback(req, fn, timeoutMs) {
 async function startStream(req) {
   const it = await genai.models.generateContentStream(req)
   const first = await it.next()
-  return (async function* () {
+  const gen = (async function* () {
     if (!first.done) yield first.value
     yield* it
   })()
+  gen.model = req.model
+  return gen
 }
 
 const gemini = genai && {
@@ -459,11 +461,20 @@ app.post('/api/chat', async (req, res) => {
     }
     const it = await ask((c) => gemini.models.generateContentStream({ contents: c, config }))
     let text = ''
-    for await (const chunk of it) {
-      const t = chunk.text || ''
-      if (!t) continue
-      text += t
-      send({ delta: t })
+    try {
+      for await (const chunk of it) {
+        const t = chunk.text || ''
+        if (!t) continue
+        text += t
+        send({ delta: t })
+      }
+    } catch (e) {
+      // the model broke off mid-answer (busy or rate-limited): rest it and get the whole answer from the next model
+      console.warn(`Gemini ${it.model} stopped mid-answer (${e?.status || e?.message}), finishing on another model`)
+      if (it.model) cooldown.set(it.model, Date.now() + 60_000)
+      const out = await ask((c) => gemini.models.generateContent({ contents: c, config }))
+      text = out.text || ''
+      send({ reset: true, delta: text })
     }
     const r = await finishReply(text, { question: v?.read || question, expect: expectOf(v) })
     send({ done: true, reply: r.text, desmos: r.desmos, plan: r.plan })

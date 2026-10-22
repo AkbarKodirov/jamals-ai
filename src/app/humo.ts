@@ -62,6 +62,7 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
       if (o.error) throw new Error(o.error)
       if (o.done) return o as HumoAnswer
       if (o.status && !text) onText(`*${o.status}*`)
+      if (o.reset) text = ''
       text += o.delta || ''
       if (o.delta) onText(text)
     }
