@@ -109,9 +109,11 @@ export default function HumoScene({ layout = 'hero', bg = '#050e19' }: { layout?
     humoMood.target = 0 // a fresh scene always starts calm
   }, [])
   const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  // phones get a lighter scene: lower pixel ratio and fewer particles, so it stays smooth and saves battery
+  const small = typeof window !== 'undefined' && window.innerWidth < 768
   return (
     <Canvas
-      dpr={[1, 1.75]}
+      dpr={small ? [1, 1.25] : [1, 1.75]}
       camera={{ position: [0, 0.2, 8], fov: 34 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       frameloop={reduced ? 'demand' : 'always'}
@@ -129,9 +131,9 @@ export default function HumoScene({ layout = 'hero', bg = '#050e19' }: { layout?
         <Rig layout={layout}>
           <Halo />
           <SensaiCore />
-          <Sparkles count={60} scale={[6, 5, 3]} size={2.2} speed={0.35} color="#ffd1dc" opacity={0.8} />
+          <Sparkles count={small ? 30 : 60} scale={[6, 5, 3]} size={2.2} speed={0.35} color="#ffd1dc" opacity={0.8} />
         </Rig>
-        {layout === 'hero' && <GoldDust />}
+        {layout === 'hero' && <GoldDust count={small ? 500 : 1400} />}
 
         {/* Studio lighting baked into an environment — no HDR download needed */}
         <Environment resolution={256} frames={1}>

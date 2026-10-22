@@ -96,6 +96,16 @@ export default function AppShell() {
   const s = useStore()
   const nav = useNavigate()
   const { pathname } = useLocation()
+  // browser tab title follows the page: "Question bank · STEP12"
+  useEffect(() => {
+    const all = GROUPS.flatMap((g) => g.items)
+    const hit = [...all].sort((a, b) => b.to.length - a.to.length).find((i) => (i.end ? pathname === i.to : pathname.startsWith(i.to)))
+    const extra = pathname.startsWith('/app/practice/run') ? 'Practice' : /\/app\/tests\/[^/]+\/take/.test(pathname) ? 'Test in progress' : null
+    document.title = `${extra ?? hit?.label ?? 'STEP12'} · STEP12`
+    return () => {
+      document.title = 'STEP12 — Digital SAT prep with Sensai'
+    }
+  }, [pathname])
   const days = streak(s.activeDays)
   const [more, setMore] = useState(false)
 
