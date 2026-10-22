@@ -3,10 +3,11 @@
 //   scripts/cache/bank-additions.json
 //   scripts/cache/rw-practice-additions.json
 //   scripts/cache/rw-professor-additions.json
+//   scripts/cache/rw-professor-part-*.json   (auto-loaded)
 // Items already in the bank (same id) are skipped, so the script can be re-run safely.
 // Usage: node scripts/add-bank.mjs [file.json ...]
 // Pass file names (in scripts/cache) to add only those files instead of the defaults.
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -25,8 +26,18 @@ function loadAdds(file) {
   return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : []
 }
 
+function loadProfessorParts() {
+  const cacheDir = join(ROOT, 'scripts', 'cache')
+  if (!existsSync(cacheDir)) return []
+  return readdirSync(cacheDir)
+    .filter(f => f.startsWith('rw-professor-part-') && f.endsWith('.json'))
+    .sort()
+    .flatMap(f => loadAdds(f))
+}
+
 const files = process.argv.slice(2)
-const adds = (files.length ? files : ['bank-additions.json', 'rw-practice-additions.json', 'rw-professor-additions.json']).flatMap(loadAdds)
+const defaultFiles = ['bank-additions.json', 'rw-practice-additions.json', 'rw-professor-additions.json']
+const adds = (files.length ? files.flatMap(loadAdds) : [...defaultFiles.flatMap(loadAdds), ...loadProfessorParts()])
 
 const have = new Set(bank.map((q) => q.id))
 mkdirSync(join(ROOT, 'public', 'qimg'), { recursive: true })
