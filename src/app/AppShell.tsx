@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { Settings as SettingsIcon, Sigma, Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap } from 'lucide-react'
+import { Settings as SettingsIcon, Sigma, Calculator, Menu, X as XIcon, BarChart3, BookMarked, BookOpen, CalendarCheck, ClipboardList, FileText, Flame, GraduationCap, Home, LogOut, MessageCircle, NotebookPen, Target, Trophy, Zap, Download } from 'lucide-react'
 import { HumoFab } from './components/HumoFab'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/auth'
@@ -75,6 +75,37 @@ const MOBILE = [
   { to: '/app/practice', label: 'Practice', icon: BookOpen },
   { to: '/app/vocab', label: 'Vocab', icon: BookMarked },
 ]
+
+/** "Install app" button: shown only when the browser offers to install STEP12 (Android Chrome, desktop Chrome/Edge). */
+function InstallButton() {
+  const [evt, setEvt] = useState<any>(null)
+  useEffect(() => {
+    const on = (e: Event) => {
+      e.preventDefault()
+      setEvt(e)
+    }
+    const done = () => setEvt(null)
+    window.addEventListener('beforeinstallprompt', on)
+    window.addEventListener('appinstalled', done)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', on)
+      window.removeEventListener('appinstalled', done)
+    }
+  }, [])
+  if (!evt) return null
+  return (
+    <button
+      onClick={async () => {
+        evt.prompt()
+        await evt.userChoice.catch(() => null)
+        setEvt(null)
+      }}
+      className="inline-flex h-9 items-center gap-1.5 rounded-full bg-pine px-3.5 text-[13px] font-semibold text-cream"
+    >
+      <Download className="size-4" /> Install app
+    </button>
+  )
+}
 
 export function Avatar({ size = 'size-8' }: { size?: string }) {
   const { user } = useAuth()
@@ -244,6 +275,7 @@ export default function AppShell() {
           </Link>
           <span className="hidden md:block" />
           <div className="flex items-center gap-2">
+            <InstallButton />
             <span title="Daily streak" className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-semibold ${days ? 'bg-orange-500 text-white' : 'bg-card text-moss ring-1 ring-line'}`}>
               <Flame className={`size-4 ${days ? 'animate-flicker' : ''}`} /> {days}
             </span>
