@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3001
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-change-me'
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '1007781081540-u54cner78n5lvsq76ftp185a9825ec4a.apps.googleusercontent.com'
 // Free-tier models, tried in order: if one is rate-limited or retired, Humo falls back to the next.
-const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.8-flash,gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
+const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-3.6-flash,gemini-3.5-flash,gemini-3.8-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite').split(',').map((m) => m.trim())
 const genai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null
 // a model that just failed or timed out is skipped for a while, so students don't wait on it again
 const cooldown = new Map()
@@ -53,7 +53,9 @@ async function withFallback(req, fn, timeoutMs) {
       last = e
       const code = e?.status || e?.code
       if (![404, 429, 500, 503, 'timeout'].includes(code)) throw e
-      cooldown.set(model, Date.now() + (code === 404 ? 3600_000 : 60_000))
+      // a used-up daily quota says how long until it resets; skip that model until then instead of retrying it every minute
+      const wait = Number(String(e?.message || '').match(/retry in ([\d.]+)s/i)?.[1] || 0) * 1000
+      cooldown.set(model, Date.now() + (code === 404 ? 3600_000 : code === 429 && wait ? Math.min(wait, 6 * 3600_000) : 60_000))
       console.warn(`Gemini ${model} unavailable (${code}), trying next model`)
     }
   }
