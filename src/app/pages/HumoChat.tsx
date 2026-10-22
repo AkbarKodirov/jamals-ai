@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Camera, History, ImagePlus, MessageSquarePlus, Pencil, Pin, PinOff, Search, Send, Trash2, X } from 'lucide-react'
+import { Camera, History, ImagePlus, MessageSquarePlus, Mic, Pencil, Pin, PinOff, Search, Send, Trash2, X } from 'lucide-react'
 import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
 import { setStore, useStore, type Chat, type ChatMsg } from '../store'
 import { studentContext } from '../humoContext'
@@ -159,6 +159,31 @@ function HistoryList({ active, onPick, onNew, space }: { active: string; onPick:
   )
 }
 
+/** Speak instead of typing: browser speech recognition in the student's language (hidden where unsupported). */
+function useDictation(lang: string, onText: (t: string) => void) {
+  const Rec = typeof window !== 'undefined' ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition) : null
+  const [on, setOn] = useState(false)
+  const rec = useRef<any>(null)
+  function toggle() {
+    if (!Rec) return
+    if (on) {
+      rec.current?.stop()
+      return
+    }
+    const r = new Rec()
+    r.lang = lang
+    r.interimResults = false
+    r.continuous = false
+    r.onresult = (e: any) => onText(Array.from(e.results as ArrayLike<any>).map((x: any) => x[0].transcript).join(' '))
+    r.onend = () => setOn(false)
+    r.onerror = () => setOn(false)
+    rec.current = r
+    setOn(true)
+    r.start()
+  }
+  return { supported: !!Rec, on, toggle }
+}
+
 function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; space: Space }) {
   const s = useStore()
   const { user } = useAuth()
@@ -172,6 +197,9 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
   const box = useRef<HTMLTextAreaElement>(null)
   const file = useRef<HTMLInputElement>(null)
   const cam = useRef<HTMLInputElement>(null)
+  const dictation = useDictation({ en: 'en-US', uz: 'uz-UZ', ru: 'ru-RU' }[s.settings.language] ?? 'en-US', (t) =>
+    setInput((v) => (v.trim() ? `${v.trim()} ${t}` : t)),
+  )
 
   async function addFiles(files: FileList | File[]) {
     const list = [...files].filter((f) => f.type.startsWith('image/')).slice(0, 3 - pics.length)
@@ -293,6 +321,12 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
             placeholder={c.placeholder}
             className="max-h-40 flex-1 resize-none bg-transparent px-2 py-2.5 text-[14.5px] placeholder:text-moss/60 focus:outline-none"
           />
+          {dictation.supported && (
+            <button type="button" aria-label={dictation.on ? 'Stop listening' : 'Speak your question'} onClick={dictation.toggle} className={`relative grid size-11 shrink-0 place-items-center rounded-xl ${dictation.on ? 'bg-jg-500 text-white' : 'text-moss hover:bg-cream'}`}>
+              {dictation.on && <span className="absolute inset-0 animate-ping rounded-xl bg-jg-500/40" />}
+              <Mic className="relative size-5" />
+            </button>
+          )}
           <button aria-label="Send" disabled={busy || (!input.trim() && !pics.length)} className={`grid size-11 place-items-center rounded-xl text-cream disabled:opacity-40 ${space === 'desmos' ? 'bg-[#2d70b3]' : 'bg-pine'}`}>
             <Send className="size-4" />
           </button>
