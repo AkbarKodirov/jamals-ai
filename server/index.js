@@ -470,6 +470,11 @@ app.post('/api/chat', async (req, res) => {
   }
   // streaming: one JSON object per line — {"delta": "..."} while Sensai writes, then {"done": true, ...}
   let opened = false
+  // the student pressed Stop or closed the page: stop reading from the model so no more quota is spent
+  let gone = false
+  res.on('close', () => {
+    if (!res.writableEnded) gone = true
+  })
   const send = (o) => {
     if (!opened) {
       res.writeHead(200, { 'Content-Type': 'application/x-ndjson; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
@@ -487,6 +492,7 @@ app.post('/api/chat', async (req, res) => {
     let text = ''
     try {
       for await (const chunk of it) {
+        if (gone) break
         const t = chunk.text || ''
         if (!t) continue
         text += t
@@ -499,6 +505,10 @@ app.post('/api/chat', async (req, res) => {
       const out = await ask((c) => gemini.models.generateContent({ contents: c, config }))
       text = out.text || ''
       send({ reset: true, delta: text })
+    }
+    if (gone) {
+      console.log(`Chat stopped by the student after ${Date.now() - started} ms`)
+      return res.end()
     }
     const r = await finishReply(text, { question: v?.read || question, expect: expectOf(v) })
     send({ done: true, reply: r.text, desmos: r.desmos, plan: r.plan })

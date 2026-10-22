@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Camera, History, ImagePlus, MessageSquarePlus, Mic, Pencil, Pin, PinOff, Search, Send, Trash2, X } from 'lucide-react'
+import { Camera, History, ImagePlus, MessageSquarePlus, Mic, Pencil, Pin, PinOff, Search, Send, Square, Trash2, X } from 'lucide-react'
 import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
 import { setStore, useStore, type Chat, type ChatMsg } from '../store'
 import { studentContext } from '../humoContext'
@@ -190,7 +190,7 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
   const c = COPY[space]
   const context = studentContext(s, space === 'desmos' ? 'the Desmos Lab (photo questions)' : 'the Ask Sensai page')
   const [hi] = useState(() => `${hello(user?.name?.split(' ')[0])} ${c.greeting}`)
-  const { msgs, busy, send, retry } = useHumoChat(hi, context, { initial, onChange: (m) => saveChat(id, m, space), space })
+  const { msgs, busy, send, retry, stop } = useHumoChat(hi, context, { initial, onChange: (m) => saveChat(id, m, space), space })
   const [input, setInput] = useState('')
   const [pics, setPics] = useState<string[]>([])
   const [drag, setDrag] = useState(false)
@@ -327,9 +327,15 @@ function ChatPane({ id, initial, space }: { id: string; initial?: ChatMsg[]; spa
               <Mic className="relative size-5" />
             </button>
           )}
-          <button aria-label="Send" disabled={busy || (!input.trim() && !pics.length)} className={`grid size-11 place-items-center rounded-xl text-cream disabled:opacity-40 ${space === 'desmos' ? 'bg-[#2d70b3]' : 'bg-pine'}`}>
-            <Send className="size-4" />
-          </button>
+          {busy ? (
+            <button type="button" aria-label="Stop" onClick={stop} className="grid size-11 place-items-center rounded-xl bg-jg-500 text-white">
+              <Square className="size-3.5 fill-current" />
+            </button>
+          ) : (
+            <button aria-label="Send" disabled={!input.trim() && !pics.length} className={`grid size-11 place-items-center rounded-xl text-cream disabled:opacity-40 ${space === 'desmos' ? 'bg-[#2d70b3]' : 'bg-pine'}`}>
+              <Send className="size-4" />
+            </button>
+          )}
         </div>
       </form>
     </div>

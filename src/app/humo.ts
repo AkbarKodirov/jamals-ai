@@ -21,7 +21,14 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
 export type HumoAnswer = { reply: string; desmos?: DesmosScreen[]; plan?: WeekPlan | null }
 
 /** Ask Sensai. With `onText`, the reply streams in: `onText` gets the text written so far, then the checked answer resolves. */
-export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos', onText?: (text: string) => void): Promise<HumoAnswer> {
+/** Thrown when the student presses Stop; carries what Sensai had written so far. */
+export class HumoStopped extends Error {
+  constructor(public partial: string) {
+    super('stopped')
+  }
+}
+
+export async function askHumo(messages: ChatMsg[], token: string | null, context?: string, space?: 'humo' | 'desmos', onText?: (text: string) => void, signal?: AbortSignal): Promise<HumoAnswer> {
   // text and the latest question photos go to the model; Desmos screens, plans and error notes stay on this device
   let photos = 0
   const slim = messages
@@ -44,8 +51,9 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
   if (!onText) return call<HumoAnswer>('/api/chat', body, token)
   let res: Response
   try {
-    res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...body, stream: true }) })
+    res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...body, stream: true }), signal })
   } catch {
+    if (signal?.aborted) throw new HumoStopped('')
     throw new HumoOffline('The Sensai server is not running. Start it with npm run dev:all.')
   }
   if (!res.ok || !res.body) {
@@ -57,7 +65,14 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
   let buf = ''
   let text = ''
   for (;;) {
-    const { value, done } = await reader.read()
+    let chunk: ReadableStreamReadResult<string>
+    try {
+      chunk = await reader.read()
+    } catch (e) {
+      if (signal?.aborted) throw new HumoStopped(text)
+      throw e
+    }
+    const { value, done } = chunk
     if (done) break
     buf += value
     let nl

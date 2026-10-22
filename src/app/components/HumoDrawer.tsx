@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Copy, RotateCcw, Send, X } from 'lucide-react'
 import { useAuth } from '../../lib/auth'
-import { askHumo, HumoOffline, streamingText, type ChatMsg } from '../humo'
+import { askHumo, HumoOffline, HumoStopped, streamingText, type ChatMsg } from '../humo'
 import { RichText } from './RichText'
 import { DesmosScreen } from '../../desmos/DesmosScreen'
 import { PlanProposal } from './PlanProposal'
@@ -126,6 +126,7 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
   const { token } = useAuth()
   const [msgs, setMsgsRaw] = useState<ChatMsg[]>(() => opts.initial ?? [{ role: 'humo', text: greeting }])
   const [busy, setBusy] = useState(false)
+  const ctl = useRef<AbortController | null>(null)
   const onChange = useRef(opts.onChange)
   onChange.current = opts.onChange
   const setMsgs = (fn: (m: ChatMsg[]) => ChatMsg[]) =>
@@ -153,19 +154,30 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
     const at = Date.now()
     // the streaming reply is the message right after `history`; it is replaced by the checked answer at the end
     const put = (msg: ChatMsg) => setMsgs((m) => [...m.slice(0, history.length), msg])
+    ctl.current = new AbortController()
     try {
-      const r = await askHumo(history, token, context, opts.space, (t) => put({ role: 'humo', text: streamingText(t), at }))
+      const r = await askHumo(history, token, context, opts.space, (t) => put({ role: 'humo', text: streamingText(t), at }), ctl.current.signal)
       put({ role: 'humo', text: r.reply, desmos: r.desmos?.length ? r.desmos : undefined, plan: r.plan ?? undefined, at })
     } catch (e) {
+      if (e instanceof HumoStopped) {
+        const kept = streamingText(e.partial)
+        put({ role: 'humo', text: kept ? `${kept}\n\n*Stopped.*` : '*Stopped.*', at })
+        return
+      }
       put({ role: 'humo', error: true, text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() })
     } finally {
+      ctl.current = null
       setBusy(false)
     }
+  }
+  /** Stops the reply Sensai is writing; what it wrote so far stays. */
+  function stop() {
+    ctl.current?.abort()
   }
   function reset(next: ChatMsg[]) {
     setMsgsRaw(next)
   }
-  return { msgs, busy, send, reset, retry }
+  return { msgs, busy, send, reset, retry, stop }
 }
 
 /** Slide-over chat with Sensai that already knows the test the student just took. */
