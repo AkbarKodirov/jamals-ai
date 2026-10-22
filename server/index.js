@@ -237,7 +237,7 @@ review (review last test), desmos (Desmos Lab), custom (any other task). 0–5 t
 The app shows your plan as a card with an "Apply" button right after your words; never claim it is already applied and don't write anything after the block.`
 
 const HUMO_FULL = `${HUMO_SYSTEM}\n\n${DESMOS_GUIDE}\n\n${PLAN_GUIDE}`
-const NO_KEY = 'Sensai needs a Gemini API key. Add GEMINI_API_KEY to .env (free at aistudio.google.com) and restart the server.'
+const NO_KEY = 'Sensai is taking a short break. Please try again later.' // (server has no GEMINI_API_KEY)
 
 /* ---------- Sensai replies: pull out checked Desmos screens and plan proposals ---------- */
 const PLAN_KINDS = new Set(['drill-rw', 'drill-math', 'skill', 'vocab', 'mistakes', 'lesson', 'blitz', 'test', 'review', 'desmos', 'custom'])
@@ -464,7 +464,7 @@ app.post('/api/chat', async (req, res) => {
       res.json({ reply: r.text, desmos: r.desmos, plan: r.plan, tutor: 'Sensai' })
     } catch (e) {
       console.error('Chat failed:', e?.status || '', e?.message || e)
-      res.status(502).json({ error: 'Sensai could not reach Gemini. Check GEMINI_API_KEY and try again.' })
+      res.status(502).json({ error: 'Sensai is very busy right now. Please try again in a minute.' })
     }
     return
   }
@@ -515,7 +515,7 @@ app.post('/api/chat', async (req, res) => {
     console.log(`Chat answered in ${Date.now() - started} ms (${contents.length} turns)`)
   } catch (e) {
     console.error('Chat failed:', e?.status || '', e?.message || e)
-    const error = 'Sensai could not reach Gemini. Check GEMINI_API_KEY and try again.'
+    const error = 'Sensai is very busy right now. Please try again in a minute.'
     if (opened) send({ error })
     else res.status(502).json({ error })
   }

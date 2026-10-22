@@ -34,13 +34,13 @@ const PRIVACY: Section[] = [
   {
     h: 'AI processing',
     p: [
-      "Messages you send to Sensai are processed by Google's Gemini API to generate a reply. Don't include sensitive personal information (such as passport numbers or health details) in messages to Sensai.",
+      "Messages you send to Sensai are processed by AI providers to generate a reply: Google Gemini first, and Groq or OpenRouter as backups when Gemini is busy. Your email address is not sent with your messages. Don't include sensitive personal information (such as passport numbers or health details) in messages to Sensai.",
     ],
   },
   {
     h: 'Sharing',
     p: [
-      'We share information only with service providers who help us run STEP12 (hosting, Google sign-in, Google Gemini), with your teacher if you joined through STEP12, or when required by law.',
+      'We share information only with service providers who help us run STEP12 (hosting, Google sign-in, and the AI providers Google Gemini, Groq and OpenRouter), with your teacher if you joined through STEP12, or when required by law.',
     ],
   },
   {

@@ -10,7 +10,7 @@ async function call<T>(url: string, body: unknown, token: string | null): Promis
   try {
     res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) })
   } catch {
-    throw new HumoOffline('The Sensai server is not running. Start it with npm run dev:all.')
+    throw new HumoOffline('Sensai can’t be reached right now. Check your internet connection and try again in a moment.')
   }
   const data = await res.json().catch(() => ({}))
   if (res.status === 503) throw new HumoOffline(data.error || 'Sensai needs a Gemini API key.')
@@ -54,7 +54,7 @@ export async function askHumo(messages: ChatMsg[], token: string | null, context
     res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...body, stream: true }), signal })
   } catch {
     if (signal?.aborted) throw new HumoStopped('')
-    throw new HumoOffline('The Sensai server is not running. Start it with npm run dev:all.')
+    throw new HumoOffline('Sensai can’t be reached right now. Check your internet connection and try again in a moment.')
   }
   if (!res.ok || !res.body) {
     const data = await res.json().catch(() => ({}))

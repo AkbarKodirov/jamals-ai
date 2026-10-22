@@ -164,7 +164,7 @@ export function useHumoChat(greeting: string, context?: string, opts: { initial?
         put({ role: 'humo', text: kept ? `${kept}\n\n*Stopped.*` : '*Stopped.*', at })
         return
       }
-      put({ role: 'humo', error: true, text: e instanceof HumoOffline ? `I'm offline right now. ${e.message}` : (e as Error).message, at: Date.now() })
+      put({ role: 'humo', error: true, text: e instanceof HumoOffline ? e.message : (e as Error).message, at: Date.now() })
     } finally {
       ctl.current = null
       setBusy(false)
