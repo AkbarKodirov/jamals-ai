@@ -2,6 +2,7 @@
 // Inputs:
 //   scripts/cache/bank-additions.json
 //   scripts/cache/rw-practice-additions.json
+//   scripts/cache/rw-professor-additions.json
 // Items already in the bank (same id) are skipped, so the script can be re-run safely.
 // Usage: node scripts/add-bank.mjs [file.json ...]
 // Pass file names (in scripts/cache) to add only those files instead of the defaults.
@@ -25,7 +26,7 @@ function loadAdds(file) {
 }
 
 const files = process.argv.slice(2)
-const adds = (files.length ? files : ['bank-additions.json', 'rw-practice-additions.json']).flatMap(loadAdds)
+const adds = (files.length ? files : ['bank-additions.json', 'rw-practice-additions.json', 'rw-professor-additions.json']).flatMap(loadAdds)
 
 const have = new Set(bank.map((q) => q.id))
 mkdirSync(join(ROOT, 'public', 'qimg'), { recursive: true })
