@@ -8,7 +8,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answerValue, DESMOS_GUIDE, prepareScreen } from './desmos.js'
-import { groqGenerate, groqReady, groqStream } from './groq.js'
+import { backupNames, groqGenerate, groqReady, groqStream } from './groq.js'
 import { findQuestion, memoryNote, memorySize } from './retrieve.js'
 import { kvBackend, kvDel, kvGet, kvSet } from './kv.js'
 import { createHash } from 'node:crypto'
@@ -83,7 +83,7 @@ async function withGroq(geminiCall, groqCall, req) {
     return await geminiCall()
   } catch (e) {
     if (!groqReady || ![404, 429, 500, 503, 'timeout'].includes(e?.status || e?.code)) throw e
-    console.warn(`All Gemini models unavailable (${e?.status || e?.code}), answering with Groq`)
+    console.warn(`All Gemini models unavailable (${e?.status || e?.code}), answering with a backup (${backupNames.join(' → ')})`)
     return groqCall(req)
   }
 }
@@ -666,7 +666,7 @@ app.get('/api/blitz/leaderboard', (_, res) => {
   res.json({ week: weekKey(), rows })
 })
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', tutor: 'Sensai', gemini: !!gemini, groq: groqReady, memory: memorySize(), storage: kvBackend }))
+app.get('/api/health', (_, res) => res.json({ status: 'ok', platform: 'STEP12', tutor: 'Sensai', gemini: !!gemini, groq: groqReady, backups: backupNames, memory: memorySize(), storage: kvBackend }))
 
 /* ---------- serve the built website from the same server (one free service on Render) ---------- */
 const DIST = join(__dirname, '..', 'dist')
