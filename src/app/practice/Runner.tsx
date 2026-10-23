@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, GraduationCap, Highlighter, Info, Lightbulb, MessageCircle, Pause, Play, Shuffle, StickyNote, Timer, X } from 'lucide-react'
-import { useAuth } from '../../lib/auth'
+import { Bookmark, Calculator, Check, ChevronDown, ChevronLeft, ChevronRight, GraduationCap, Highlighter, MessageCircle, Pause, Play, StickyNote, Timer, X } from 'lucide-react'
 import { isCorrect, loadBank, markActive, recordBank, resolveRef, setStore, toggleSaved, toggleSavedBank, useStore, type BankQ, type QRef, type Resolved } from '../store'
 import { describeQuestion } from '../screen'
 import { studentContext } from '../humoContext'
 import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
-import { DesmosSolvePanel, HumoExplain } from '../components/HumoExplain'
 import { Highlightable } from '../components/Highlightable'
-import { RichText } from '../components/RichText'
-import { HumoOffline, similarQuestion, type Similar } from '../humo'
 import { lessonFor } from '../learn/courses'
 
 const L = ['A', 'B', 'C', 'D']
@@ -59,8 +55,8 @@ export async function buildSession(p: URLSearchParams, st: ReturnType<typeof use
   })
 }
 
-/* ---------------- side panel: Ask Sensai / Explanation / Similar / Info ---------------- */
-type Tab = 'ask' | 'explain' | 'similar' | 'info'
+/* ---------------- side panel: Ask Sensai ---------------- */
+type Tab = 'ask'
 
 function AskTab({ item, a, auto }: { item: Item; a: Ans; auto: string | null }) {
   const s = useStore()
@@ -137,118 +133,8 @@ function SolutionCard({ b }: { b: BankQ }) {
   )
 }
 
-function ExplainTab({ item, a }: { item: Item; a: Ans }) {
-  if (!a.checked)
-    return (
-      <div className="p-6 text-center text-[13.5px] text-moss">
-        <Lightbulb className="mx-auto size-6 text-amber-500" />
-        <p className="mt-3">Check your answer first — then Sensai explains it. Stuck? Ask Sensai for a hint instead.</p>
-        {item.r.bank?.solution && (
-          <div className="mt-4 space-y-2 text-left">
-            {item.r.bank.solution.hints.map((h, i) => (
-              <details key={i} className="rounded-xl bg-amber-50 px-3 py-2 text-amber-900">
-                <summary className="cursor-pointer font-semibold">Hint {i + 1}</summary>
-                <p className="mt-1">{h}</p>
-              </details>
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  const b = item.r.bank
-  return (
-    <div className="space-y-4 overflow-y-auto p-4">
-      {b?.explanation && (
-        <div className="rounded-2xl border border-line bg-card p-4 text-[13.5px] leading-relaxed">
-          <p className="text-[11.5px] font-semibold uppercase tracking-wide text-jg-700">Answer explanation</p>
-          <p className="mt-1.5">{b.explanation}</p>
-        </div>
-      )}
-      {b?.solution && <SolutionCard b={b} />}
-      <HumoExplain testId={b ? 'bank' : item.ref.testId} qKey={b ? b.id : `${item.ref.module}:${item.ref.index}`} q={item.r.q} compact />
-      {item.r.section === 'MATH' && !b?.solution && <DesmosSolvePanel id={item.key} q={item.r.q} />}
-      {b?.bankId && <DesmosSolvePanel id={item.key} q={item.r.q} />}
-    </div>
-  )
-}
 
-function SimilarTab({ item }: { item: Item }) {
-  const { token } = useAuth()
-  const [st, setSt] = useState<{ busy?: boolean; q?: Similar; error?: string; pick?: number }>({})
-  async function go() {
-    setSt({ busy: true })
-    try {
-      setSt({ q: await similarQuestion(item.r.q, item.r.skill, item.r.section, token) })
-    } catch (e) {
-      setSt({ error: e instanceof HumoOffline ? `Sensai is offline: ${e.message}` : (e as Error).message })
-    }
-  }
-  return (
-    <div className="space-y-3 overflow-y-auto p-4">
-      <p className="text-[13px] text-moss">Sensai writes a brand-new question on the same skill ({item.r.skill}) so you can test the idea again right away.</p>
-      <button onClick={go} disabled={st.busy} className="btn btn-dark h-10 w-full text-[13px] disabled:opacity-60">
-        {st.busy ? <span className="size-4 animate-spin rounded-full border-2 border-cream border-t-transparent" /> : <Shuffle className="size-4" />} {st.q ? 'Another one' : 'Write a similar question'}
-      </button>
-      {st.error && <p className="text-[13px] text-red-600">{st.error}</p>}
-      {st.q && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-line bg-card p-4">
-          {st.q.passage && <p className="rounded-xl bg-cream p-3 font-serif text-[14.5px] leading-relaxed">{st.q.passage}</p>}
-          <p className="mt-3 text-[14px] font-medium">{st.q.question}</p>
-          <div className="mt-3 space-y-1.5">
-            {st.q.options.map((o, i) => {
-              const done = st.pick != null
-              const right = done && i === st.q!.correct
-              const wrong = st.pick === i && i !== st.q!.correct
-              return (
-                <button key={i} disabled={done} onClick={() => setSt((x) => ({ ...x, pick: i }))} className={`flex w-full items-center gap-2.5 rounded-xl border-2 px-3 py-2 text-left text-[13.5px] ${right ? 'border-emerald-500 bg-emerald-50' : wrong ? 'border-red-400 bg-red-50' : 'border-line hover:border-line-strong'}`}>
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full border border-pine/30 text-[10px] font-bold">{L[i]}</span>
-                  {o}
-                </button>
-              )
-            })}
-          </div>
-          {st.pick != null && (
-            <div className="mt-3 rounded-xl bg-jg-50 p-3 text-[13px] text-pine">
-              <RichText text={st.q.explanation} />
-            </div>
-          )}
-        </motion.div>
-      )}
-    </div>
-  )
-}
 
-function InfoTab({ item }: { item: Item }) {
-  const s = useStore()
-  const p = item.r.bank ? s.qbank[item.r.bank.id] : null
-  const lesson = lessonFor(item.r.skill)
-  return (
-    <div className="space-y-3 p-4 text-[13.5px]">
-      {[
-        ['Section', item.r.section === 'MATH' ? 'Math' : 'Reading & Writing'],
-        ['Topic', item.r.topic ?? item.r.skill],
-        ['Difficulty', item.r.difficulty],
-        ['Source', item.r.source],
-        ['Your history', p ? `${p.tries} tr${p.tries === 1 ? 'y' : 'ies'} · last ${p.correct ? 'correct' : 'incorrect'}` : 'First time'],
-      ].map(([k, v]) => (
-        <div key={k} className="flex justify-between gap-4 border-b border-line pb-2">
-          <span className="text-moss">{k}</span>
-          <span className="text-right font-medium">{v}</span>
-        </div>
-      ))}
-      {lesson && (
-        <Link to={lesson.to} className="flex items-center gap-3 rounded-2xl bg-cream p-3 hover:bg-soft">
-          <GraduationCap className="size-5 text-jg-700" />
-          <span className="flex-1">
-            <span className="block font-semibold">Learn: {lesson.title}</span>
-            <span className="text-[12px] text-moss">{lesson.course}</span>
-          </span>
-          <ChevronRight className="size-4" />
-        </Link>
-      )}
-    </div>
-  )
-}
 
 /* ---------------- the session ---------------- */
 function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolean; back: string; start?: number }) {
@@ -306,7 +192,6 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
     setI(Math.max(0, n))
     setAuto(null)
     setNavOpen(false)
-    if (panel === 'similar') setPanel(null)
   }
   function openWhy() {
     setAuto('Why is my answer incorrect? Show me exactly where my thinking went wrong.')
@@ -496,9 +381,6 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
                             <img src="/sensai-mark.png" alt="" className="size-4 rounded" /> Why was I wrong?
                           </button>
                         )}
-                        <button onClick={() => setPanel('explain')} className="rounded-full bg-card px-3.5 py-1.5 text-[12.5px] font-semibold ring-1 ring-line">
-                          Explanation
-                        </button>
                       </span>
                     </motion.div>
                   )}
@@ -523,9 +405,6 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
                 {(
                   [
                     ['ask', 'Ask Sensai', MessageCircle],
-                    ['explain', 'Explanation', Lightbulb],
-                    ['similar', 'Similar', Shuffle],
-                    ['info', 'Info', Info],
                   ] as const
                 ).map(([k, l, Icon]) => (
                   <button key={k} onClick={() => setPanel(k)} className={`relative flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium ${panel === k ? 'text-pine' : 'text-moss hover:text-pine'}`}>
@@ -539,9 +418,6 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto">
                 {panel === 'ask' && <AskTab key={`${item.key}|${a.checked}`} item={item} a={a} auto={auto} />}
-                {panel === 'explain' && <ExplainTab key={item.key} item={item} a={a} />}
-                {panel === 'similar' && <SimilarTab key={item.key} item={item} />}
-                {panel === 'info' && <InfoTab item={item} />}
               </div>
             </motion.aside>
           )}
@@ -571,12 +447,6 @@ function Session({ items, rush, back, start = 0 }: { items: Item[]; rush: boolea
         <div className="flex flex-1 items-center justify-center gap-1.5 overflow-x-auto">
           <button onClick={() => setPanel(panel === 'ask' ? null : 'ask')} className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#0b1d36] to-[#85082a] px-3.5 text-[13px] font-semibold text-cream">
             <img src="/sensai-mark.png" alt="" className="size-5 rounded-md" /> Ask Sensai
-          </button>
-          <button onClick={() => setPanel('explain')} className="hidden h-10 shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-3 text-[13px] font-semibold text-amber-800 sm:inline-flex">
-            <Lightbulb className="size-4" /> Explanation
-          </button>
-          <button onClick={() => setPanel('similar')} className="hidden h-10 shrink-0 items-center gap-1.5 rounded-xl bg-fuchsia-50 px-3 text-[13px] font-semibold text-fuchsia-700 md:inline-flex">
-            <Shuffle className="size-4" /> Similar
           </button>
           {lessonFor(item.r.skill) && (
             <Link to={lessonFor(item.r.skill)!.to} className="hidden h-10 shrink-0 items-center gap-1.5 rounded-xl bg-jg-50 px-3 text-[13px] font-semibold text-jg-700 md:inline-flex">
