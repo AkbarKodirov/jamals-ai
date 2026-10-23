@@ -26,8 +26,12 @@ function add(q, source) {
 
 try {
   const bank = JSON.parse(readFileSync(join(ROOT, 'public/bank/bank.json'), 'utf8'))
+  // The written explanations live beside the bank so the browser does not download them
+  // (see scripts/split-explanations.mjs); on the server we read both and put them back together.
+  const expPath = join(ROOT, 'public/bank/explanations.json')
+  const exp = existsSync(expPath) ? JSON.parse(readFileSync(expPath, 'utf8')) : {}
   for (const q of bank) {
-    add(q, 'Question bank')
+    add(q.explanation || !q.id || !exp[q.id] ? q : { ...q, explanation: exp[q.id] }, 'Question bank')
     if (q.id) bankTopic.set(q.id, { topic: q.topic || q.skill || 'Other', section: q.section })
   }
 } catch (e) {

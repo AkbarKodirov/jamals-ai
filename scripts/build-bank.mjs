@@ -7,6 +7,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import { splitExplanations } from './split-explanations.mjs'
 
 const ROOT = new URL('..', import.meta.url).pathname
 const SHAKHNA = process.argv[2] || '/home/claude/shakhna-academy/client/src/data'
@@ -165,3 +166,4 @@ writeFileSync(join(ROOT, 'public/bank/bank.json'), JSON.stringify(out))
 const c = (k) => Object.entries(out.reduce((a, q) => ((a[q[k]] = (a[q[k]] || 0) + 1), a), {}))
 console.log('total', out.length, c('section'), c('difficulty'))
 console.log(c('skill'))
+splitExplanations()

@@ -13,6 +13,7 @@ import { GoogleGenAI } from '@google/genai'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import { splitExplanations } from './split-explanations.mjs'
 import { ALL_TOPICS, coarseOf } from '../shared/topics.js'
 import { drawFigure } from './figure.mjs'
 
@@ -199,6 +200,7 @@ for (const g of genned) {
   })
 }
 writeFileSync(join(ROOT, 'public/bank/bank.json'), JSON.stringify(final))
+splitExplanations()
 const by = {}
 for (const q of final) by[q.topic] = (by[q.topic] || 0) + 1
 console.log('bank', final.length, by)

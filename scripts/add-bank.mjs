@@ -12,6 +12,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ALL_TOPICS, coarseOf } from '../shared/topics.js'
 import { drawFigure } from './figure.mjs'
+import { splitExplanations } from './split-explanations.mjs'
 
 // Windows-safe root path
 const __filename = fileURLToPath(import.meta.url)
@@ -44,7 +45,10 @@ for (const g of adds) {
   const id = `j-${createHash('sha1').update(g.question + (g.passage || '')).digest('hex').slice(0, 10)}`
   if (have.has(id)) continue
   let image = null
-  if (g.figure?.shapes?.length) {
+  if (typeof g.image === 'string' && g.image) {
+    // figure already drawn and saved under public/qimg (e.g. a table cropped from a book)
+    image = g.image
+  } else if (g.figure?.shapes?.length) {
     const name = `fig-${id.slice(2)}.svg`
     writeFileSync(join(ROOT, 'public', 'qimg', name), drawFigure(g.figure))
     image = `/qimg/${name}`
@@ -74,3 +78,4 @@ for (const g of adds) {
 }
 writeFileSync(BANK, JSON.stringify(bank))
 console.log(`added ${added}, bank now ${bank.length}`)
+splitExplanations()
