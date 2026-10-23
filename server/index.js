@@ -143,7 +143,8 @@ let movedLive = false
 async function checkMoved() {
   try {
     const j = await fetch(`${CANONICAL_URL}/api/health`, { signal: AbortSignal.timeout(20_000) }).then((r) => r.json())
-    movedLive = j?.platform === 'STEP12'
+    // only once the new site is fully set up (same database, AI key present)
+    movedLive = j?.platform === 'STEP12' && j?.storage === 'postgres' && j?.gemini === true
   } catch {
     movedLive = false
   }
