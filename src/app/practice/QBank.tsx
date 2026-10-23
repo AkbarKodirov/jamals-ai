@@ -163,7 +163,7 @@ export function QBankSection() {
   const skillsIn = (domain: string) => TOPICS[sec].find((d) => d.domain === domain)?.topics.map(([n]) => n) ?? []
   const url = (skills: string[], m: 'practice' | 'rush') => {
     const q = new URLSearchParams({ section: sec, status, order: m === 'rush' ? 'random' : order, back: `/app/practice/${sec}` })
-    if (skills.length) q.set('skills', skills.join(','))
+    if (skills.length) q.set('skills', skills.join('|'))
     if (diffs.length) q.set('diff', diffs.join(','))
     if (m === 'rush') {
       q.set('mode', 'rush')

@@ -30,7 +30,11 @@ export async function buildSession(p: URLSearchParams, st: ReturnType<typeof use
   }
   const bank = await loadBank()
   const section = p.get('section')
-  const skills = p.get('skills')?.split(',').filter(Boolean)
+  // topics are joined with "|" because some topic names contain commas ("Form, Structure, and Sense");
+  // older links used "," — a whole value that is itself a topic name is kept as one
+  const rawSkills = p.get('skills')
+  const known = (x: string) => bank.some((b) => b.topic === x || b.skill === x)
+  const skills = rawSkills ? (rawSkills.includes('|') || known(rawSkills) ? rawSkills.split('|') : rawSkills.split(',')).map((x) => x.trim()).filter(Boolean) : undefined
   const diffs = p.get('diff')?.split(',').filter(Boolean)
   const status = p.get('status') || 'all'
   const set = p.get('set')
