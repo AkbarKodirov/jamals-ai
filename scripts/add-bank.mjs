@@ -29,6 +29,9 @@ const files = process.argv.slice(2)
 const adds = (files.length ? files : ['bank-additions.json', 'rw-practice-additions.json', 'rw-professor-additions.json']).flatMap(loadAdds)
 
 const have = new Set(bank.map((q) => q.id))
+// questions the owner had removed must never come back from the caches
+const REMOVED = join(ROOT, 'scripts', 'removed-bank-ids.json')
+for (const id of existsSync(REMOVED) ? JSON.parse(readFileSync(REMOVED, 'utf8')).ids : []) have.add(id)
 mkdirSync(join(ROOT, 'public', 'qimg'), { recursive: true })
 
 let added = 0
