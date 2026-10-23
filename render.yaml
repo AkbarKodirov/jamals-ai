@@ -1,7 +1,7 @@
 # One free Render web service: builds the React site and serves it together with the API.
 services:
   - type: web
-    name: jamals-ai
+    name: step12
     runtime: node
     plan: free
     buildCommand: npm install --include=dev && npm run build
