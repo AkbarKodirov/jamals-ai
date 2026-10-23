@@ -7,6 +7,7 @@ import { describeQuestion } from '../screen'
 import { studentContext } from '../humoContext'
 import { HumoMessages, useHumoChat } from '../components/HumoDrawer'
 import { Highlightable } from '../components/Highlightable'
+import { clearHighlights } from '../highlights'
 import { lessonFor } from '../learn/courses'
 
 const L = ['A', 'B', 'C', 'D']
@@ -471,6 +472,11 @@ export default function Runner() {
   const s = useStore()
   const [items, setItems] = useState<Item[] | null>(null)
   const sig = p.toString()
+  // highlights belong to this session only: a new set (or leaving) starts clean
+  useEffect(() => {
+    clearHighlights()
+    return clearHighlights
+  }, [sig])
   useEffect(() => {
     let alive = true
     setItems(null)

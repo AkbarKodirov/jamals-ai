@@ -2,7 +2,8 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { StickyNote, Trash2, Underline, X } from 'lucide-react'
-import { setStore, useStore, type Highlight } from '../store'
+import { type Highlight } from '../store'
+import { setHighlights, useHighlights } from '../highlights'
 
 const COLORS: Record<Highlight['color'], string> = {
   yellow: 'hl-yellow',
@@ -57,8 +58,7 @@ type Tool = { x: number; y: number; start?: number; end?: number; idx?: number }
  * underline it, or attach a note. Saved per question on this device. Only used on R&W questions.
  */
 export function Highlightable({ html, text, storeKey, enabled = true, className = '' }: { html?: string; text?: string; storeKey: string; enabled?: boolean; className?: string }) {
-  const s = useStore()
-  const list = s.highlights[storeKey] ?? []
+  const list = useHighlights(storeKey)
   const ref = useRef<HTMLDivElement>(null)
   const [tool, setTool] = useState<Tool | null>(null)
   const [note, setNote] = useState<{ idx: number; value: string } | null>(null)
@@ -71,7 +71,7 @@ export function Highlightable({ html, text, storeKey, enabled = true, className 
     paint(el, list)
   }, [html, text, list])
 
-  const save = useCallback((next: Highlight[]) => setStore((x) => ({ ...x, highlights: { ...x.highlights, [storeKey]: next } })), [storeKey])
+  const save = useCallback((next: Highlight[]) => setHighlights(storeKey, next), [storeKey])
 
   useEffect(() => {
     if (!tool) return

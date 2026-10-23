@@ -5,6 +5,7 @@ import { Highlighter, Bookmark, Calculator, Check, ChevronDown, ChevronLeft, Che
 import { isCorrect, loadTest, markActive, scaleSection, setStore, useAsync, type Attempt, type Mode, type Test, type TestQuestion } from '../store'
 import { HumoExplain } from '../components/HumoExplain'
 import { Highlightable } from '../components/Highlightable'
+import { clearHighlights } from '../highlights'
 import { RichText } from '../components/RichText'
 import { askHumo, questionPayload } from '../humo'
 import { useAuth } from '../../lib/auth'
@@ -78,6 +79,11 @@ function HintButton({ q, value }: { q: TestQuestion; value: string | null }) {
 
 function Runner({ test, mode }: { test: Test; mode: Mode }) {
   const nav = useNavigate()
+  // highlights last for this test only (like Bluebook)
+  useEffect(() => {
+    clearHighlights()
+    return clearHighlights
+  }, [test.id])
   const timed = mode !== 'practice'
   const perModule = (test.type === 'MATH' ? 35 : 32) * 60 * (mode === 'sprint' ? 0.7 : 1)
 

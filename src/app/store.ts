@@ -146,7 +146,7 @@ const keyFor = (id: string) => `jamals.progress.${id}`
 function hydrate(saved: Partial<State> | null): State {
   // returning students who already used the app skip onboarding
   return saved
-    ? { ...initial, onboarded: !!(saved.attempts?.length || saved.drills?.length || saved.chats?.length || saved.plan), ...saved, settings: { ...initial.settings, ...saved.settings }, profile: { ...initial.profile, ...saved.profile } }
+    ? { ...initial, onboarded: !!(saved.attempts?.length || saved.drills?.length || saved.chats?.length || saved.plan), ...saved, highlights: {}, settings: { ...initial.settings, ...saved.settings }, profile: { ...initial.profile, ...saved.profile } }  // highlights are session-only now (src/app/highlights.ts): old saved ones are dropped
     : initial
 }
 
