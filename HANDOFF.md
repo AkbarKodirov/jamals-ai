@@ -5,7 +5,7 @@ The current state of the project, written for whoever continues the work. Read t
 ## What it is
 STEP12 is a Digital SAT prep platform for **STEP12** in Tashkent. Its AI tutor is **Sensai**, a golden 3D bird powered by Google Gemini.
 - Repo: `AkbarKodirov/jamals-ai` (branch `main`).
-- Live at https://jamals-ai.onrender.com. Render's free plan auto-deploys every push to `main` in about 3–5 minutes.
+- Live at https://step12.onrender.com (Render service "step12"; repo AkbarKodirov/step12). Render's free plan auto-deploys every push to `main` in about 3–5 minutes.
 - The owner is Akbarjon. He writes casually ("bro") and wants a polished, OnePrep-quality product.
 - Students use phones a lot, so every change must work at a 390px width.
 

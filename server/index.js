@@ -137,7 +137,7 @@ const app = express()
 /* ---------- moving to the STEP12 address ----------
    The old Render service (jamals-ai.onrender.com) sends every page visit to the new STEP12 address — but only once
    the new site is up and answers as STEP12, so nobody is ever redirected to a dead page. API calls are not redirected. */
-const CANONICAL_URL = (process.env.CANONICAL_URL || 'https://step12-app.onrender.com').replace(/\/$/, '')
+const CANONICAL_URL = (process.env.CANONICAL_URL || 'https://step12.onrender.com').replace(/\/$/, '')
 const isOldService = !!process.env.RENDER_EXTERNAL_URL && !process.env.RENDER_EXTERNAL_URL.startsWith(CANONICAL_URL)
 let movedLive = false
 async function checkMoved() {
