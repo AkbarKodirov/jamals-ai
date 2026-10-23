@@ -133,6 +133,29 @@ async function upsertUser(data) {
 
 /* ---------- app ---------- */
 const app = express()
+
+/* ---------- moving to the STEP12 address ----------
+   The old Render service (jamals-ai.onrender.com) sends every page visit to the new STEP12 address — but only once
+   the new site is up and answers as STEP12, so nobody is ever redirected to a dead page. API calls are not redirected. */
+const CANONICAL_URL = (process.env.CANONICAL_URL || 'https://step12-app.onrender.com').replace(/\/$/, '')
+const isOldService = !!process.env.RENDER_EXTERNAL_URL && !process.env.RENDER_EXTERNAL_URL.startsWith(CANONICAL_URL)
+let movedLive = false
+async function checkMoved() {
+  try {
+    const j = await fetch(`${CANONICAL_URL}/api/health`, { signal: AbortSignal.timeout(20_000) }).then((r) => r.json())
+    movedLive = j?.platform === 'STEP12'
+  } catch {
+    movedLive = false
+  }
+}
+if (isOldService) {
+  checkMoved()
+  setInterval(checkMoved, 10 * 60_000).unref()
+}
+app.use((req, res, next) => {
+  if (movedLive && !req.path.startsWith('/api/')) return res.redirect(301, `${CANONICAL_URL}${req.originalUrl}`)
+  next()
+})
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || true }))
 app.use(express.json({ limit: '12mb' }))
 
@@ -708,6 +731,8 @@ app.listen(PORT, () => console.log(`STEP12 backend running on http://localhost:$
 // (Backs up the GitHub keep-awake job, whose schedule GitHub can delay.)
 if (process.env.RENDER_EXTERNAL_URL) {
   setInterval(() => {
+    // once the move is done, the old service may sleep (it only redirects), saving free instance hours
+    if (isOldService && movedLive) return
     fetch(`${process.env.RENDER_EXTERNAL_URL}/api/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {})
   }, 10 * 60_000).unref()
 }

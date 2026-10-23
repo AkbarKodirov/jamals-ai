@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - run: curl -fsS --max-time 90 https://jamals-ai.onrender.com/api/health || true
+      - run: curl -fsS --max-time 90 https://step12-app.onrender.com/api/health || true

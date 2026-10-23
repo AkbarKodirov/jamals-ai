@@ -16,3 +16,7 @@ services:
         sync: false # paste your key in the Render dashboard when asked
       - key: DATABASE_URL
         sync: false
+      - key: GROQ_API_KEY
+        sync: false # free backup AI (console.groq.com)
+      - key: OPENROUTER_API_KEY
+        sync: false # free backup AI (openrouter.ai)

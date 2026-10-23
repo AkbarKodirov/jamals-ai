@@ -4,4 +4,4 @@ Disallow: /app
 Disallow: /api/
 Disallow: /auth/
 
-Sitemap: https://jamals-ai.onrender.com/sitemap.xml
+Sitemap: https://step12-app.onrender.com/sitemap.xml
