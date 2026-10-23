@@ -20,7 +20,8 @@ type AuthCtx = {
   signOut: () => void
 }
 
-const KEY = 'jamals.session'
+const KEY = 'step12.session'
+const OLD_KEY = 'jamals.session' // before the STEP12 rebrand
 const Ctx = createContext<AuthCtx | null>(null)
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
@@ -45,7 +46,7 @@ function isOffline(e: unknown) {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(() => {
     try {
-      const raw = localStorage.getItem(KEY)
+      const raw = localStorage.getItem(KEY) ?? localStorage.getItem(OLD_KEY)
       return raw ? (JSON.parse(raw) as Session) : null
     } catch {
       return null
@@ -56,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       if (session) localStorage.setItem(KEY, JSON.stringify(session))
       else localStorage.removeItem(KEY)
+      localStorage.removeItem(OLD_KEY)
     } catch {
       /* storage blocked — session lives in memory */
     }
@@ -87,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signInDemo = useCallback(() => {
-    setSession({ token: 'demo', user: { id: 'demo', name: 'Demo student', email: 'demo@jamals.ai', provider: 'demo' } })
+    setSession({ token: 'demo', user: { id: 'demo', name: 'Demo student', email: 'demo@step12.uz', provider: 'demo' } })
   }, [])
 
   const signOut = useCallback(() => setSession(null), [])

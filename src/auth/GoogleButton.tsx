@@ -28,7 +28,7 @@ export const inAppBrowser = () => /Telegram|Instagram|FBAN|FBAV|Line\/|; wv\)|Mi
 export function googleRedirect() {
   const state = Math.random().toString(36).slice(2)
   try {
-    sessionStorage.setItem('jamals.oauth', state)
+    sessionStorage.setItem('step12.oauth', state)
   } catch {
     /* ignore */
   }

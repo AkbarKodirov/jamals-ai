@@ -94,7 +94,7 @@ export default function Settings() {
     const blob = new Blob([JSON.stringify({ app: 'STEP12', exportedAt: new Date().toISOString(), user: { name: user?.name, email: user?.email }, progress: getStore() }, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = `jamals-ai-progress-${new Date().toISOString().slice(0, 10)}.json`
+    a.download = `step12-progress-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
   }
   async function importData(f: File) {
@@ -116,6 +116,7 @@ export default function Settings() {
     }
     resetStore()
     try {
+      localStorage.removeItem(`step12.progress.${user?.email?.toLowerCase()}`)
       localStorage.removeItem(`jamals.progress.${user?.email?.toLowerCase()}`)
     } catch {
       /* ignore */

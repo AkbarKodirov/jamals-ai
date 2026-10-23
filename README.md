@@ -24,7 +24,7 @@ The exam platform of **STEP12** (Tashkent, since 2020): Digital SAT and IELTS pr
 | `/app/analytics` · `/app/results` · `/app/mistakes` · `/app/calculator` | Accuracy by section and skill, pacing, trend, heatmap; results history; saved & mistakes; score calculator |
 | Everywhere | Floating **Ask Sensai** button that knows the page and the student's goals |
 
-Brand follows [jamals.uz](https://jamals.uz): ink `#0a0f0e`, pine `#1b2925`, green `#48ae4f` / `#62b968`, cream `#faf7f1`, Literata + Onest. Tokens live in `src/index.css`.
+Brand follows [step12.uz](https://step12.uz): navy `#03244a`, crimson `#bb0937` (UI scale `jg-*` in `src/index.css`), Literata + Onest. The AI tutor is Sensai.
 
 ## Run locally
 

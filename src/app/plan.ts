@@ -91,7 +91,7 @@ export function planToIcs(plan: WeekPlan, profile: Profile, origin: string) {
     const end = new Date(start.getTime() + mins * 60000)
     return [
       'BEGIN:VEVENT',
-      `UID:jamals-${d}-${start.getTime()}@jamals-ai`,
+      `UID:step12-${d}-${start.getTime()}@step12.uz`,
       `DTSTAMP:${icsDate(new Date())}`,
       `DTSTART:${icsDate(start)}`,
       `DTEND:${icsDate(end)}`,
@@ -107,7 +107,7 @@ export function planToIcs(plan: WeekPlan, profile: Profile, origin: string) {
     ]
   })
   const exam = profile.testDate
-    ? ['BEGIN:VEVENT', `UID:jamals-sat-${profile.testDate}@jamals-ai`, `DTSTAMP:${icsDate(new Date())}`, `DTSTART;VALUE=DATE:${profile.testDate.replace(/-/g, '')}`, 'SUMMARY:Digital SAT test day 🎯', 'END:VEVENT']
+    ? ['BEGIN:VEVENT', `UID:step12-sat-${profile.testDate}@step12.uz`, `DTSTAMP:${icsDate(new Date())}`, `DTSTART;VALUE=DATE:${profile.testDate.replace(/-/g, '')}`, 'SUMMARY:Digital SAT test day 🎯', 'END:VEVENT']
     : []
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//STEP12//Study plan//EN', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:STEP12 · SAT plan', ...ev, ...exam, 'END:VCALENDAR'].join('\r\n')
 }
@@ -116,7 +116,7 @@ export function downloadIcs(plan: WeekPlan, profile: Profile) {
   const blob = new Blob([planToIcs(plan, profile, location.origin)], { type: 'text/calendar' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = 'jamals-ai-study-plan.ics'
+  a.download = 'step12-study-plan.ics'
   a.click()
   setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }

@@ -52,8 +52,8 @@ for (const g of adds) {
   const mc = g.options?.length === 4
   bank.push({
     id,
-    set: 'jamals',
-    setName: 'Jamals originals',
+    set: 'step12',
+    setName: 'STEP12 collection',
     section: t.section,
     domain: t.domain,
     topic: t.name,

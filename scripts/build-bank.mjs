@@ -1,5 +1,5 @@
 // Builds public/bank/bank.json — the Question Bank — from:
-//   • Jamals' own question sets (Shakhna Academy data files, original content)
+//   • STEP12's own question sets (Shakhna Academy data files, original content)
 //   • tests already in public/tests that are NOT "Practice Test N" (those stay full tests)
 //   • the desmos-sat-coach skill's 132 verified Math questions
 // Images embedded as data: URLs are written to public/qimg/ so the JSON stays small.
@@ -66,7 +66,7 @@ function push(setId, setName, type, q, i, difficulty) {
   })
 }
 
-/* 1 — Shakhna Academy sets written by Jamals / Akbarjon Kodirov */
+/* 1 — Shakhna Academy sets written by Akbarjon Kodirov */
 const SETS = [
   ['englishFinal2', 'ef2', 'English Final 2', (m) => (m === 0 ? 'Medium' : 'Hard')],
   ['englishFinal3', 'ef3', 'English Final 3', () => 'Hard'],

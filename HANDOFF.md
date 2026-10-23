@@ -87,7 +87,7 @@ STEP12 is a Digital SAT prep platform for **STEP12** in Tashkent. Its AI tutor i
 - `server/retrieve.js` ("Sensai memory"): indexes every bank and practice-test question (~3,900) at startup. When a student pastes or views one, `/api/chat` adds its checked answer + explanation to the system prompt, so Sensai never contradicts STEP12's key. Word-statistics matching, no AI calls; tested 299/300 exact, 0 wrong, 0 false positives.
 
 ## Oct 22 afternoon (STEP12 rebrand + Sensai upgrades)
-- Brand is **STEP12** (navy #03244a + crimson #bb0937) and the AI is **Sensai** (ensō mark, `src/three/SensaiCore.tsx`). Internal file/variable names still say `humo` — don't rename storage keys (`jamals.*`) or users lose data.
+- Brand is **STEP12** (navy #03244a + crimson #bb0937) and the AI is **Sensai** (ensō mark, `src/three/SensaiCore.tsx`). Internal file/variable names still say `humo`. Storage keys are now `step12.session` / `step12.progress.<email>`; old `jamals.*` keys are read once and moved over (keep that fallback).
 - Backups: `server/groq.js` chains Groq → OpenRouter → DeepSeek (DeepSeek only if `DEEPSEEK_API_KEY` is set). GitHub Models was retired by GitHub on 30 Jul 2026 — don't add it back.
 - Sensai gets `recent` (last-14-day bank answers) from the client and `practiceSummary()` turns it into per-skill accuracy in the system prompt.
 - Chat: Copy / Answer again / Try again, Stop (also stops generation on the server), voice input (Web Speech API).

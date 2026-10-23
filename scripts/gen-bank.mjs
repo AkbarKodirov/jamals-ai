@@ -1,6 +1,6 @@
 // Builds the Question Bank on the official Digital SAT topic map (same topics as OnePrep).
 //
-//  1. Takes Jamals' ORIGINAL questions already in public/bank/bank.json (sets marked original by
+//  1. Takes STEP12's ORIGINAL questions already in public/bank/bank.json (sets marked original by
 //     their authors) and classifies each into a topic + difficulty with Gemini.
 //  2. Writes new original questions for every topic that has fewer than TARGET, then has a second,
 //     independent Gemini pass solve each one WITHOUT the key. Only questions where the solver agrees
@@ -180,8 +180,8 @@ for (const g of genned) {
   const mc = g.options?.length === 4
   final.push({
     id: `j-${g.id}`,
-    set: 'jamals',
-    setName: 'Jamals originals',
+    set: 'step12',
+    setName: 'STEP12 collection',
     section: g.section,
     domain: g.domain,
     topic: g.topic,
