@@ -21,8 +21,8 @@ const PROVIDERS = [
     name: 'nvidia',
     key: env('NVIDIA_API_KEY', 'Nvidia_API_KEY'),
     url: 'https://integrate.api.nvidia.com/v1/chat/completions',
-    text: (env('NVIDIA_TEXT_MODELS') || 'openai/gpt-oss-120b,nvidia/nemotron-3-super-120b-a12b,meta/llama-3.3-70b-instruct').split(','),
-    vision: (env('NVIDIA_VISION_MODELS') || 'meta/llama-4-maverick-17b-128e-instruct,nvidia/nemotron-3.5-super-vl').split(','),
+    text: (env('NVIDIA_TEXT_MODELS') || 'nvidia/nemotron-3-super-120b-a12b,deepseek-ai/deepseek-v4.1-flash,openai/gpt-oss-20b').split(','),
+    vision: (env('NVIDIA_VISION_MODELS') || 'nvidia/nemotron-3.5-super-vl-120b-a12b').split(','),
   },
   {
     name: 'mistral',
@@ -44,8 +44,8 @@ const PROVIDERS = [
     name: 'sambanova',
     key: env('SAMBANOVA_API_KEY', 'SambaNova_API_KEY'),
     url: 'https://api.sambanova.ai/v1/chat/completions',
-    text: (env('SAMBANOVA_TEXT_MODELS') || 'gpt-oss-120b,DeepSeek-V3.1,Meta-Llama-3.3-70B-Instruct').split(','),
-    vision: (env('SAMBANOVA_VISION_MODELS') || 'Llama-4-Maverick-17B-128E-Instruct').split(','),
+    text: (env('SAMBANOVA_TEXT_MODELS') || 'gpt-oss-120b,DeepSeek-V3.2,Meta-Llama-3.3-70B-Instruct').split(','),
+    vision: (env('SAMBANOVA_VISION_MODELS') || 'gemma-4-31B-it').split(','),
   },
   {
     name: 'cloudflare',
