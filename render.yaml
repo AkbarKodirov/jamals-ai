@@ -20,3 +20,7 @@ services:
         sync: false # free backup AI (console.groq.com)
       - key: OPENROUTER_API_KEY
         sync: false # free backup AI (openrouter.ai)
+      - key: NVIDIA_API_KEY
+        sync: false # build.nvidia.com (free, NVIDIA Developer Program)
+      - key: MISTRAL_API_KEY
+        sync: false # console.mistral.ai (free tier)
